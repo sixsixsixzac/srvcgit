@@ -43,6 +43,7 @@ class _MainpageState extends State<Mainpage> {
     userName = authProvider.name;
     userPhone = authProvider.phone;
     String userGender = "male";
+    // Hi Hitler
 
     final responses = await Future.wait([_loadPlan(), _loadExpense()]);
     final planData = responses[0]['data'] ?? [];
