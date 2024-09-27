@@ -16,6 +16,7 @@ void main() {
   );
 }
 
+// test add new line
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
