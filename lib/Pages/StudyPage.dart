@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/tag.dart';
+import 'package:srvc/Models/video.dart';
+import 'package:srvc/Pages/_VideoDetail.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/HexColor.dart';
 
@@ -14,13 +16,37 @@ class StudyPage extends StatefulWidget {
 }
 
 class _StudyPageState extends State<StudyPage> {
+  final ApiService apiService = ApiService(serverURL);
   bool showContainer = false;
+  List<VideoModel> videoList = [];
   List<String> selectedOptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    fetch();
+  }
 
   void updateSelectedOptions(List<String> options) {
     setState(() {
       selectedOptions = options;
     });
+  }
+
+  Future<void> fetch() async {
+    final resp = await getLerning();
+    setState(() {
+      videoList = (resp['data'] as List).map((video) => VideoModel.fromJson(video as Map<String, dynamic>)).toList();
+    });
+  }
+
+  Future<Map<String, dynamic>> getLerning() async {
+    final response = await apiService.post("/SRVC/StudyController.php", {
+      'act': 'getLerning',
+    });
+
+    return response;
   }
 
   @override
@@ -69,7 +95,7 @@ class _StudyPageState extends State<StudyPage> {
                           ),
                           const SizedBox(width: 5),
                           AutoSizeText(
-                            "เลือกหัวข้อ (${selectedOptions.length})", // Display the count here
+                            "เลือกหัวข้อ (${selectedOptions.length})",
                             maxLines: 1,
                             minFontSize: 16,
                             maxFontSize: 20,
@@ -83,38 +109,46 @@ class _StudyPageState extends State<StudyPage> {
               ),
             ),
             Expanded(
-                child: Container(
-              margin: const EdgeInsets.all(10),
-              width: MediaQuery.of(context).size.width * 1,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      color: Colors.transparent,
-                      child: const Row(
-                        children: [
-                          AutoSizeText(
-                            "คอรส์แนะนำ",
-                            maxLines: 1,
-                            minFontSize: 20,
-                            maxFontSize: 24,
-                            style: TextStyle(
-                              fontFamily: 'thaifont',
-                              fontWeight: FontWeight.bold,
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width * 1,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.transparent,
+                        child: const Row(
+                          children: [
+                            AutoSizeText(
+                              "คอรส์แนะนำ",
+                              maxLines: 1,
+                              minFontSize: 20,
+                              maxFontSize: 24,
+                              style: TextStyle(
+                                fontFamily: 'thaifont',
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    setCard(),
-                    setCard(),
-                    setCard(),
-                    setCard(),
-                    setCard(),
-                  ],
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 1,
+                        child: ListView.builder(
+                          itemCount: videoList.length,
+                          itemBuilder: (context, index) {
+                            final video = videoList[index];
+                            return SetCard(
+                              video: video,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ))
+            )
           ],
         ),
         if (showContainer)
@@ -284,67 +318,86 @@ class _MultiSelectButtonState extends State<MultiSelectButton> {
   }
 }
 
-class setCard extends StatelessWidget {
-  const setCard({super.key});
+class SetCard extends StatelessWidget {
+  final VideoModel video;
+  const SetCard({super.key, required this.video});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                ),
-                child: Image.asset(
-                  'assets/images/test/090824134245-120724115502-set-1433.jpg',
-                  width: MediaQuery.of(context).size.width * 1,
-                  fit: BoxFit.cover,
-                  height: 100,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VideoDetail()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  decoration: const BoxDecoration(),
+                  child: Image.network(
+                    '$serverImages/${video.thumbnail}',
+                    width: MediaQuery.of(context).size.width * 1,
+                    fit: BoxFit.cover,
+                    height: 100,
+                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                      return const Center(child: Icon(Icons.error));
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(left: 10),
-              height: 100,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 10),
+                height: 100,
+                child: Column(
+                  children: [
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const AutoSizeText(
-                            "รู้ก่อนเป็นหนี้จะได้ไม่รู้งี้ทีหลัง",
+                          AutoSizeText(
+                            video.title,
                             maxLines: 1,
                             minFontSize: 14,
                             maxFontSize: 20,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'thaifont',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           AutoSizeText(
-                            "#วางแผนการเงิน #หนี้",
+                            video.desc ?? "",
                             maxLines: 1,
                             minFontSize: 14,
                             maxFontSize: 20,
@@ -355,30 +408,30 @@ class setCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Icon(FontAwesomeIcons.clock, size: 14, color: HexColor('#198754')),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: AutoSizeText(
-                          "1 ชั่วโมง",
-                          maxLines: 1,
-                          minFontSize: 14,
-                          maxFontSize: 20,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontFamily: 'thaifont', color: HexColor('#198754')),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(FontAwesomeIcons.clock, size: 14, color: HexColor('#198754')),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: AutoSizeText(
+                            "1 ชั่วโมง",
+                            maxLines: 1,
+                            minFontSize: 14,
+                            maxFontSize: 20,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontFamily: 'thaifont', color: HexColor('#198754')),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

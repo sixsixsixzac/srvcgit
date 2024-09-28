@@ -1,6 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:srvc/Widgets/BounceAnim.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddExpense extends StatefulWidget {
@@ -13,8 +11,7 @@ class AddExpense extends StatefulWidget {
 class __AddExpenseState extends State<AddExpense> {
   @override
   Widget build(BuildContext context) {
-
-    return PopUp();
+    return const PopUp();
     // return Scaffold(
     //   backgroundColor: Colors.white,
     //   body: Center(
@@ -59,71 +56,158 @@ class PopUp extends StatefulWidget {
 class _PopUpState extends State<PopUp> {
   int active = 0;
   List<Map<String, dynamic>> options = [
-    {'menuIcon': Image.asset('assets/images/types/food.png', width: 25.0, height: 25.0,), 'menuTextTH': 'อาหาร', 'menuTextEN': 'food'},
-    {'menuIcon': Image.asset('assets/images/types/apartments.png', width: 25.0, height: 25.0,), 'menuTextTH': 'ค่าเช่า', 'menuTextEN': 'apartments'},
-    {'menuIcon': Image.asset('assets/images/types/baby.png', width: 25.0, height: 25.0,), 'menuTextTH': 'ลูก', 'menuTextEN': 'baby'},
-    {'menuIcon': Image.asset('assets/images/types/car.png', width: 25.0, height: 25.0,), 'menuTextTH': 'การเดินทาง', 'menuTextEN': 'car'},
-    {'menuIcon': Image.asset('assets/images/types/heal.png', width: 25.0, height: 25.0,), 'menuTextTH': 'พยาบาล', 'menuTextEN': 'heal'},
-    {'menuIcon': Image.asset('assets/images/types/internet.png', width: 25.0, height: 25.0,), 'menuTextTH': 'อินเทอร์เน็ต', 'menuTextEN': 'internet'},
-    {'menuIcon': Image.asset('assets/images/types/pet.png', width: 25.0, height: 25.0,), 'menuTextTH': 'สัตว์เลี้ยง', 'menuTextEN': 'pet'},
-    {'menuIcon': Image.asset('assets/images/types/shirt.png', width: 25.0, height: 25.0,), 'menuTextTH': 'เสื้อผ้า', 'menuTextEN': 'shirt'},
-    {'menuIcon': Image.asset('assets/images/types/study.png', width: 25.0, height: 25.0,), 'menuTextTH': 'การศึกษา', 'menuTextEN': 'study'},
-    {'menuIcon': Image.asset('assets/images/types/tax.png', width: 25.0, height: 25.0,), 'menuTextTH': 'ภาษี', 'menuTextEN': 'tax'},
-    {'menuIcon': Image.asset('assets/images/types/teeth.png', width: 25.0, height: 25.0,), 'menuTextTH': 'ทำฟัน', 'menuTextEN': 'teeth'},
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/food.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'อาหาร',
+      'menuTextEN': 'food'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/apartments.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'ค่าเช่า',
+      'menuTextEN': 'apartments'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/baby.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'ลูก',
+      'menuTextEN': 'baby'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/car.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'การเดินทาง',
+      'menuTextEN': 'car'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/heal.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'พยาบาล',
+      'menuTextEN': 'heal'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/internet.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'อินเทอร์เน็ต',
+      'menuTextEN': 'internet'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/pet.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'สัตว์เลี้ยง',
+      'menuTextEN': 'pet'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/shirt.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'เสื้อผ้า',
+      'menuTextEN': 'shirt'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/study.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'การศึกษา',
+      'menuTextEN': 'study'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/tax.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'ภาษี',
+      'menuTextEN': 'tax'
+    },
+    {
+      'menuIcon': Image.asset(
+        'assets/images/types/teeth.png',
+        width: 25.0,
+        height: 25.0,
+      ),
+      'menuTextTH': 'ทำฟัน',
+      'menuTextEN': 'teeth'
+    },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-              height: MediaQuery.of(context).size.height * 0.05,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
                     FontAwesomeIcons.times,
                     size: 20.0,
                     color: Colors.pink[400],
                   ),
-                  Icon(
-                    FontAwesomeIcons.check,
-                    size: 20.0,
-                    color: Colors.pink[400],
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  FontAwesomeIcons.check,
+                  size: 20.0,
+                  color: Colors.pink[400],
+                ),
+              ],
             ),
-            Container(
+          ),
+          Container(
+            padding: const EdgeInsets.all(5.0),
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: generateMenu(),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            decoration: BoxDecoration(
+              border: Border.all(width: 1.0, color: Colors.black),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
+              color: Colors.pink,
+            ),
+            child: const Padding(
               padding: EdgeInsets.all(5.0),
-              height: MediaQuery.of(context).size.height * 0.55,
-              child: generateMenu(),
+              child: Column(
+                children: [],
+              ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.4,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1.0,
-                  color: Colors.black
-                ),
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                color: Colors.pink
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: [
-                    
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
@@ -165,7 +249,7 @@ class _PopUpState extends State<PopUp> {
                   child: Text(
                     options[index]['menuTextTH'],
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold), 
+                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -176,16 +260,9 @@ class _PopUpState extends State<PopUp> {
     );
   }
 
-  Widget generateBtn (text, background_color) {
+  Widget generateBtn(text, background_color) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-          color: background_color
-        ),
-        borderRadius: BorderRadius.circular(10.0),
-        color: background_color
-      ),
+      decoration: BoxDecoration(border: Border.all(width: 1.0, color: background_color), borderRadius: BorderRadius.circular(10.0), color: background_color),
       child: text,
       height: 20.0,
     );
