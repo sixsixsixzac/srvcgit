@@ -42,8 +42,6 @@ class _MainpageState extends State<Mainpage> {
 
     userName = authProvider.name;
     userPhone = authProvider.phone;
-    String userGender = "male";
-    // Hi Hitler
 
     final responses = await Future.wait([_loadPlan(), _loadExpense()]);
     final planData = responses[0]['data'] ?? [];
@@ -108,18 +106,23 @@ class _MainpageState extends State<Mainpage> {
                     ),
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           flex: 7,
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: AutoSizeText(
-                              "ฟรีคอรสสำหรับการบริหารจัดการหนี้และการลุงทุน คลิกเลย!",
-                              maxLines: 2,
-                              minFontSize: 16,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'thaifont',
-                              ),
+                            padding: const EdgeInsets.all(4.0),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return AutoSizeText(
+                                  "ฟรีคอรสสำหรับการบริหารจัดการหนี้และการลุงทุน คลิกเลย!",
+                                  maxLines: constraints.maxHeight <= 45 ? 1 : 2,
+                                  minFontSize: 16,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'thaifont',
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
