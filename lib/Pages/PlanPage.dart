@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PlanPage extends StatefulWidget {
   const PlanPage({super.key});
@@ -10,6 +11,8 @@ class PlanPage extends StatefulWidget {
 class _PlanPageState extends State<PlanPage> {
   @override
   Widget build(BuildContext context) {
-    return const Text("PlanPage");
+    return const Placeholder();
   }
 }
+
+
