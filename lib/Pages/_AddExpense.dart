@@ -117,24 +117,7 @@ class _PopUpState extends State<PopUp> {
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: generateBtn(Image.asset('assets/images/icons/wallet.png'), Colors.pink[100]),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: generateBtn(Text(''), Colors.white),
-                          ),
-                        ),
-                      ],
-                    )
+                    
                   ],
                 ),
               ),
@@ -200,11 +183,11 @@ class _PopUpState extends State<PopUp> {
           width: 1.0,
           color: background_color
         ),
-        borderRadius: BorderRadius.circular(7.0),
+        borderRadius: BorderRadius.circular(10.0),
         color: background_color
       ),
       child: text,
-      height: 25.0,
+      height: 20.0,
     );
   }
 }
