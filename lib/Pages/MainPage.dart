@@ -1,11 +1,10 @@
-import 'dart:ffi';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/HexColor.dart';
+import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
@@ -18,6 +17,7 @@ class Mainpage extends StatefulWidget {
 }
 
 class _MainpageState extends State<Mainpage> {
+  @override
   bool mounted = false;
   final ApiService apiService = ApiService(ServerURL);
   List<Map<String, dynamic>> plans = [];
@@ -264,7 +264,12 @@ class _MainpageState extends State<Mainpage> {
           bottom: 16,
           right: 16,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddExpense()),
+              );
+            },
             backgroundColor: Colors.white,
             child: const Icon(
               FontAwesomeIcons.add,
