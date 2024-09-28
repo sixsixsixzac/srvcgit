@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Pages/FamilyPage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
@@ -35,7 +36,6 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void logoutUser() {
-    print("object");
     Provider.of<AuthProvider>(context, listen: false).logout();
 
     Navigator.of(context).pushAndRemoveUntil(
@@ -107,7 +107,13 @@ class _MainpageState extends State<Mainpage> {
                         width: 70,
                         child: Stack(
                           children: [
-                            Image.asset('assets/images/icons/family-symbol.png'),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const FamilyPage()),
+                              ),
+                              child: Image.asset('assets/images/icons/family-symbol.png'),
+                            ),
                             Positioned(
                               top: 5,
                               right: 10,
@@ -329,7 +335,7 @@ class _MainpageState extends State<Mainpage> {
                       if (expenses.isEmpty)
                         Container(
                           width: MediaQuery.of(context).size.width * 1,
-                          height: MediaQuery.of(context).size.height * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.30,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(10),

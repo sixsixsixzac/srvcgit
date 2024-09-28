@@ -227,9 +227,8 @@ class _PopUpState extends State<PopUp> {
         return GestureDetector(
           onTap: () {
             setState(() {
-              active = index; // อัพเดท active เมื่อมีการกด
+              active = index;
             });
-            print(index);
           },
           child: Container(
             decoration: BoxDecoration(

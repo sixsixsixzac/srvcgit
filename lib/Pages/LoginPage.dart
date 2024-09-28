@@ -123,6 +123,8 @@ class _LoginPageState extends State<LoginPage> {
                           GestureDetector(
                             onTap: () async {
                               final response = await loginUser(_phoneController.text, _passwordController.text);
+                              // final user = UserModel.fromJson(response['data']);
+
                               bool status = response['status'];
 
                               if (!mounted) return;

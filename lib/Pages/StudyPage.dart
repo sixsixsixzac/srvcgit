@@ -7,6 +7,7 @@ import 'package:srvc/Models/video.dart';
 import 'package:srvc/Pages/_VideoDetail.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/HexColor.dart';
+import 'package:shimmer/shimmer.dart';
 
 class StudyPage extends StatefulWidget {
   const StudyPage({super.key});
@@ -279,40 +280,47 @@ class _MultiSelectButtonState extends State<MultiSelectButton> {
         ),
         (isLoading)
             ? const Center(child: CircularProgressIndicator())
-            : Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.start,
-                direction: Axis.horizontal,
-                spacing: 10,
-                runSpacing: 10,
-                children: tagList.map((tag) {
-                  final bool isSelected = widget.selected.contains(tag.name);
-                  return FilterChip(
-                    label: Text(
-                      tag.name,
-                      style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontFamily: 'thaifont'),
+            : (tagList.isEmpty)
+                ? const Text(
+                    "ไม่พบรายการ",
+                    style: TextStyle(
+                      fontFamily: 'thaifont',
                     ),
-                    selected: isSelected,
-                    onSelected: (isSelected) {
-                      setState(() {
-                        if (isSelected) {
-                          widget.selected.add(tag.name);
-                        } else {
-                          widget.selected.remove(tag.name);
-                        }
-                        widget.onSelectionChanged(widget.selected);
-                      });
-                    },
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    backgroundColor: Colors.grey[100],
-                    selectedColor: Colors.blue,
-                    checkmarkColor: Colors.white,
-                  );
-                }).toList(),
-              ),
+                  )
+                : Wrap(
+                    alignment: WrapAlignment.start,
+                    runAlignment: WrapAlignment.start,
+                    direction: Axis.horizontal,
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: tagList.map((tag) {
+                      final bool isSelected = widget.selected.contains(tag.name);
+                      return FilterChip(
+                        label: Text(
+                          tag.name,
+                          style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontFamily: 'thaifont'),
+                        ),
+                        selected: isSelected,
+                        onSelected: (isSelected) {
+                          setState(() {
+                            if (isSelected) {
+                              widget.selected.add(tag.name);
+                            } else {
+                              widget.selected.remove(tag.name);
+                            }
+                            widget.onSelectionChanged(widget.selected);
+                          });
+                        },
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        backgroundColor: Colors.grey[100],
+                        selectedColor: Colors.blue,
+                        checkmarkColor: Colors.white,
+                      );
+                    }).toList(),
+                  ),
       ],
     );
   }
@@ -324,7 +332,7 @@ class SetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.push(
           context,
@@ -353,24 +361,9 @@ class SetCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
                   decoration: const BoxDecoration(),
-                  child: Image.network(
-                    '$serverImages/${video.thumbnail}',
-                    width: MediaQuery.of(context).size.width * 1,
-                    fit: BoxFit.cover,
-                    height: 100,
-                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                      return const Center(child: Icon(Icons.error));
-                    },
+                  child: ThumbnailWidget(
+                    thumbnail: video.thumbnail,
+                    src: serverImages,
                   ),
                 ),
               ),
@@ -432,6 +425,69 @@ class SetCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ThumbnailWidget extends StatelessWidget {
+  final String src;
+  final String thumbnail;
+
+  const ThumbnailWidget({
+    Key? key,
+    required this.src,
+    required this.thumbnail,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        decoration: const BoxDecoration(),
+        child: Stack(
+          children: [
+            Image.network(
+              '$src/$thumbnail',
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+              height: 100,
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return _buildShimmerLoading();
+              },
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                return const Center(child: Icon(Icons.error));
+              },
+            ),
+            ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return const LinearGradient(
+                  colors: [Colors.black54, Colors.transparent],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ).createShader(bounds);
+              },
+              blendMode: BlendMode.darken,
+              child: Container(color: Colors.transparent),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        color: Colors.white,
+        width: double.infinity,
+        height: 100,
       ),
     );
   }
