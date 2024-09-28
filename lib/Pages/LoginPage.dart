@@ -29,7 +29,6 @@ class _LoginPageState extends State<LoginPage> {
       'password': password,
       'act': 'login',
     });
-    bool status = response['status'];
 
     await Provider.of<AuthProvider>(context, listen: false).login(phone, password);
     return response;
