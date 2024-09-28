@@ -77,10 +77,10 @@ class _PopUpState extends State<PopUp> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        padding: EdgeInsets.all(5.0),
         child: Column(
           children: [
             Container(
+              padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
               height: MediaQuery.of(context).size.height * 0.05,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,9 +99,45 @@ class _PopUpState extends State<PopUp> {
               ),
             ),
             Container(
+              padding: EdgeInsets.all(5.0),
               height: MediaQuery.of(context).size.height * 0.55,
-              width: MediaQuery.of(context).size.height * 1,
               child: generateMenu(),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1.0,
+                  color: Colors.black
+                ),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                color: Colors.pink
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: generateBtn(Image.asset('assets/images/icons/wallet.png'), Colors.pink[100]),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: generateBtn(Text(''), Colors.white),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             )
           ],
         ),
@@ -110,47 +146,65 @@ class _PopUpState extends State<PopUp> {
   }
 
   Widget generateMenu() {
-  int item_per_row = 4;
+    int item_per_row = 4;
 
-  return GridView.builder(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: item_per_row,
-      childAspectRatio: 1,
-      mainAxisSpacing: 1,
-      crossAxisSpacing: 1,
-    ),
-    itemCount: options.length,
-    itemBuilder: (context, int index) {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            active = index; // อัพเดท active เมื่อมีการกด
-          });
-          print(index);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 1.0,
-              color: (active == index) ? Colors.pink : Colors.transparent,
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-            color: active == index ? Colors.pink.withOpacity(0.3) : Colors.transparent,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              options[index]['menuIcon'], // แสดงไอคอน
-              Text(
-                options[index]['menuTextTH'],
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10.0),
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: item_per_row,
+        childAspectRatio: 1,
+        mainAxisSpacing: 1,
+        crossAxisSpacing: 1,
+      ),
+      itemCount: options.length,
+      itemBuilder: (context, int index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              active = index; // อัพเดท active เมื่อมีการกด
+            });
+            print(index);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1.0,
+                color: (active == index) ? Colors.pink : Colors.transparent,
               ),
-            ],
+              borderRadius: BorderRadius.circular(10.0),
+              color: active == index ? Colors.pink.withOpacity(0.3) : Colors.transparent,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                options[index]['menuIcon'], // แสดงไอคอน
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Text(
+                    options[index]['menuTextTH'],
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold), 
+                  ),
+                ),
+              ],
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget generateBtn (text, background_color) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 1.0,
+          color: background_color
         ),
-      );
-    },
-  );
-}
+        borderRadius: BorderRadius.circular(7.0),
+        color: background_color
+      ),
+      child: text,
+      height: 25.0,
+    );
+  }
 }
