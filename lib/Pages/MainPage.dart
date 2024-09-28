@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
@@ -33,8 +34,14 @@ class _MainpageState extends State<Mainpage> {
     // logoutUser();
   }
 
-  void logoutUser() async {
-    await Provider.of<AuthProvider>(context, listen: false).logout();
+  void logoutUser() {
+    print("object");
+    Provider.of<AuthProvider>(context, listen: false).logout();
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false,
+    );
   }
 
   void _loadUserData() async {
@@ -78,6 +85,83 @@ class _MainpageState extends State<Mainpage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        spreadRadius: 1,
+                        blurRadius: 17,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 40,
+                        width: 70,
+                        child: Stack(
+                          children: [
+                            Image.asset('assets/images/icons/family-symbol.png'),
+                            Positioned(
+                              top: 5,
+                              right: 10,
+                              child: Container(
+                                width: 17,
+                                height: 17,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.red,
+                                ),
+                                child: const Center(
+                                  child: AutoSizeText(
+                                    '0',
+                                    maxLines: 1,
+                                    minFontSize: 12,
+                                    maxFontSize: 14,
+                                    style: TextStyle(color: Colors.white, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const AutoSizeText.rich(
+                          TextSpan(
+                            text: "รู้ก่อน",
+                            style: TextStyle(fontFamily: 'thaifont', color: Colors.indigo, fontWeight: FontWeight.bold),
+                            children: [
+                              TextSpan(
+                                text: " ดีกว่า",
+                                style: TextStyle(color: Colors.orange, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          maxLines: 1,
+                          minFontSize: 20,
+                          maxFontSize: 46,
+                          overflow: TextOverflow.ellipsis),
+                      GestureDetector(
+                        onTap: () => logoutUser(),
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: const Icon(FontAwesomeIcons.user),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Row(
                   children: [
                     AutoSizeText(
@@ -128,9 +212,11 @@ class _MainpageState extends State<Mainpage> {
                         ),
                         Expanded(
                           flex: 3,
-                          child: Image.asset(
-                            'assets/images/icons/lern.png',
-                            fit: BoxFit.contain,
+                          child: GestureDetector(
+                            child: Image.asset(
+                              'assets/images/icons/lern.png',
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ],
@@ -240,6 +326,37 @@ class _MainpageState extends State<Mainpage> {
                   height: MediaQuery.of(context).size.height * 1,
                   child: Column(
                     children: [
+                      if (expenses.isEmpty)
+                        Container(
+                          width: MediaQuery.of(context).size.width * 1,
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            color: Colors.grey[200],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/icons/empty-folder.png',
+                                height: 100,
+                              ),
+                              const AutoSizeText(
+                                "ไม่พบรายการ รายรัยรายจ่าย",
+                                maxLines: 1,
+                                minFontSize: 20,
+                                maxFontSize: 30,
+                                style: TextStyle(
+                                  fontFamily: 'thaifont',
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ...List.generate(
                           expenses.length,
                           (index) => _ExpenseContainer(
