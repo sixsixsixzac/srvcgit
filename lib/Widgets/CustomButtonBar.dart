@@ -35,6 +35,16 @@ class _CustomButtonBarState extends State<CustomButtonBar> with SingleTickerProv
   }
 
   @override
+  void didUpdateWidget(CustomButtonBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.defaultIndex != widget.defaultIndex) {
+      setState(() {
+        selectedIndex = widget.defaultIndex;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();

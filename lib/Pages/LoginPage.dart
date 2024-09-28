@@ -20,7 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final ApiService apiService = ApiService(ServerURL);
+  final ApiService apiService = ApiService(serverURL);
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   Future<Map<String, dynamic>> loginUser(String phone, String password) async {

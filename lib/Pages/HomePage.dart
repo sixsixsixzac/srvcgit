@@ -27,55 +27,47 @@ class _HomePageState extends State<HomePage> {
     const StudyPage(),
     const SettingPage(),
   ];
-  void logoutUser() {
-    Provider.of<AuthProvider>(context, listen: false).logout();
-
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final indexProvider = Provider.of<IndexProvider>(context);
     return Scaffold(
         backgroundColor: HexColor("#f5f5f7"),
-        appBar: AppBar(
-          leading: const Icon(
-            Icons.menu,
-            color: Colors.grey,
-          ),
-          title: const AutoSizeText.rich(
-              TextSpan(
-                text: "รู้ก่อน",
-                style: TextStyle(fontFamily: 'thaifont', color: Colors.indigo, fontWeight: FontWeight.bold),
-                children: [
-                  TextSpan(
-                    text: " ดีกว่า",
-                    style: TextStyle(color: Colors.orange, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              maxLines: 1,
-              minFontSize: 16,
-              maxFontSize: 46,
-              overflow: TextOverflow.ellipsis),
-          centerTitle: true,
-          actions: [
-            GestureDetector(
-              onTap: () {},
-              child: IconButton(
-                icon: const Icon(
-                  Icons.account_circle,
-                  size: 36,
-                  color: Colors.indigo,
-                ),
-                onPressed: () => logoutUser(),
-              ),
-            ),
-          ],
-        ),
+        // appBar: AppBar(
+        //   leading: const Icon(
+        //     Icons.menu,
+        //     color: Colors.grey,
+        //   ),
+        //   title: const AutoSizeText.rich(
+        //       TextSpan(
+        //         text: "รู้ก่อน",
+        //         style: TextStyle(fontFamily: 'thaifont', color: Colors.indigo, fontWeight: FontWeight.bold),
+        //         children: [
+        //           TextSpan(
+        //             text: " ดีกว่า",
+        //             style: TextStyle(color: Colors.orange, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+        //           ),
+        //         ],
+        //       ),
+        //       maxLines: 1,
+        //       minFontSize: 16,
+        //       maxFontSize: 46,
+        //       overflow: TextOverflow.ellipsis),
+        //   centerTitle: true,
+        //   actions: [
+        //     GestureDetector(
+        //       onTap: () {},
+        //       child: IconButton(
+        //         icon: const Icon(
+        //           Icons.account_circle,
+        //           size: 36,
+        //           color: Colors.indigo,
+        //         ),
+        //         onPressed: () => logoutUser(),
+        //       ),
+        //     ),
+        //   ],
+        // ),
         body: widgetPages[indexProvider.currentIndex],
         bottomNavigationBar: CustomButtonBar(
           defaultIndex: indexProvider.currentIndex,

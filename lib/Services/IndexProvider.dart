@@ -6,7 +6,9 @@ class IndexProvider with ChangeNotifier {
   int get currentIndex => _currentIndex;
 
   void updateIndex(int index) {
-    _currentIndex = index;
-    notifyListeners();
+    if (_currentIndex != index) {
+      _currentIndex = index;
+      notifyListeners();
+    }
   }
 }
