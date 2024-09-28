@@ -19,7 +19,7 @@ class Mainpage extends StatefulWidget {
 class _MainpageState extends State<Mainpage> {
   @override
   bool mounted = false;
-  final ApiService apiService = ApiService(ServerURL);
+  final ApiService apiService = ApiService(serverURL);
   List<Map<String, dynamic>> plans = [];
   List<Map<String, dynamic>> expenses = [];
   int currentMonth = DateTime.now().month;
