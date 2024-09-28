@@ -12,19 +12,28 @@ class Authcontroller extends StatefulWidget {
 }
 
 class _AuthcontrollerState extends State<Authcontroller> {
+  late Future<void> _checkLoginStatus;
+
   @override
   void initState() {
     super.initState();
-    Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
+    _checkLoginStatus = Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
-    if (isLoggedIn) {
-      return const HomePage();
-    } else {
-      return const LoginPage();
-    }
+    return FutureBuilder<void>(
+      future: _checkLoginStatus,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error checking login status'));
+        } else {
+          bool isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
+          return isLoggedIn ? const HomePage() : const LoginPage();
+        }
+      },
+    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/HexColor.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Pages/RegisterPage.dart';
 import 'package:srvc/Services/APIService.dart';
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       'act': 'login',
     });
 
-    await Provider.of<AuthProvider>(context, listen: false).login(phone, password);
+    Provider.of<AuthProvider>(context, listen: false).login(phone, password);
     return response;
   }
 
@@ -124,6 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                             onTap: () async {
                               final response = await loginUser(_phoneController.text, _passwordController.text);
                               bool status = response['status'];
+
+                              if (!mounted) return;
+
                               if (status) {
                                 Navigator.pushReplacement(
                                   context,

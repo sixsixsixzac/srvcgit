@@ -44,22 +44,3 @@ class _BounceInPageState extends State<BounceInPage> with SingleTickerProviderSt
     );
   }
 }
-
-// Usage example
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BounceInPage(
-      child: Container(
-        width: 100,
-        height: 100,
-        color: Colors.blue,
-        child: const Center(
-          child: Text('Bounce In'),
-        ),
-      ),
-    );
-  }
-}

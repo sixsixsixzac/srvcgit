@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/HexColor.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/IndexProvider.dart';
@@ -231,12 +231,6 @@ class _MainpageState extends State<Mainpage> {
                             }).toList(),
                           ),
                         ),
-
-                        // const StaticLoadingBar(
-                        //   progress: 0.11,
-                        //   styleColor: Color.fromARGB(255, 19, 209, 117),
-                        //   label: "ออม",
-                        // ),
                       ],
                     ),
                   ),

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/HexColor.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 

@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:srvc/HexColor.dart';
+import 'package:srvc/Pages/LoginPage.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/MainPage.dart';
 import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
@@ -26,9 +27,13 @@ class _HomePageState extends State<HomePage> {
     const StudyPage(),
     const SettingPage(),
   ];
-  void logoutUser() async {
-    print("asdsd");
-    await Provider.of<AuthProvider>(context, listen: false).logout();
+  void logoutUser() {
+    Provider.of<AuthProvider>(context, listen: false).logout();
+
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override
