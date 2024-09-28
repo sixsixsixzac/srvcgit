@@ -69,6 +69,7 @@ flutter:
   assets:
     - assets/images/icons/
     - assets/images/types/
+    - assets/images/test/
     - assets/images/member_types/
 
   #   - family: Schyler
