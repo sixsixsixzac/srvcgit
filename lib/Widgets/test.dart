@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SlideFromBottomPage extends StatefulWidget {
   final Widget child;
 
-  SlideFromBottomPage({required this.child});
+  const SlideFromBottomPage({super.key, required this.child});
 
   @override
   _SlideFromBottomPageState createState() => _SlideFromBottomPageState();

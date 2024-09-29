@@ -10,14 +10,14 @@ class CustomSweetAlert extends StatelessWidget {
   final IconData icon;
 
   const CustomSweetAlert({
-    Key? key,
+    super.key,
     required this.title,
     this.confirmButtonText = "",
     this.cancelButtonText = "",
     required this.onConfirm,
     required this.onCancel,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CustomSweetAlert extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (cancelButtonText.length > 0)
+                  if (cancelButtonText.isNotEmpty)
                     Container(
                       height: 35,
                       decoration: BoxDecoration(
@@ -61,12 +61,12 @@ class CustomSweetAlert extends StatelessWidget {
                         child: Text(cancelButtonText, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
                       ),
                     ),
-                  if (confirmButtonText.length > 0 && cancelButtonText.length > 0)
+                  if (confirmButtonText.isNotEmpty && cancelButtonText.isNotEmpty)
                     const SizedBox(
                       width: 20,
                       height: 30,
                     ),
-                  if (confirmButtonText.length > 0)
+                  if (confirmButtonText.isNotEmpty)
                     Container(
                       height: 35,
                       decoration: BoxDecoration(

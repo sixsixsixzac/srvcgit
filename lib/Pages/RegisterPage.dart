@@ -145,9 +145,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       showConfirmBtn: false,
                                     ).then((_) async {
                                       if (response['status'] == true) {
-                                        String userName = _userNameController.text;
-                                        String userPhone = _phoneController.text;
-                                        await Provider.of<AuthProvider>(context, listen: false).login(userName, userPhone);
+                                        String name = _userNameController.text;
+                                        String phone = _phoneController.text;
+                                        String userId = response['status']['id'].toString();
+                                        await Provider.of<AuthProvider>(context, listen: false).login(userId, name, phone);
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(builder: (context) => const HomePage()),

@@ -12,6 +12,7 @@ class Tag {
       status: json['status'],
     );
   }
+  @override
   String toString() {
     return 'Tag{id: $id, name: $name, status: $status}';
   }

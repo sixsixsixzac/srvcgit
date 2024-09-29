@@ -28,9 +28,10 @@ class _AuthcontrollerState extends State<Authcontroller> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error checking login status'));
+          return Center(child: Text('Error checking login status: ${snapshot.error}'));
         } else {
-          bool isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          final isLoggedIn = authProvider.isLoggedIn;
           return isLoggedIn ? const HomePage() : const LoginPage();
         }
       },
