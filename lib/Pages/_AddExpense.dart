@@ -192,6 +192,7 @@ class _PopUpState extends State<PopUp> {
           ),
           Container(
             height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.height * 1,
             decoration: BoxDecoration(
               border: Border.all(width: 1.0, color: Colors.black),
               borderRadius: const BorderRadius.only(
