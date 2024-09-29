@@ -4,10 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/tag.dart';
 import 'package:srvc/Models/video.dart';
-import 'package:srvc/Pages/_VideoDetail.dart';
+
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StudyPage extends StatefulWidget {
   const StudyPage({super.key});
@@ -333,11 +334,13 @@ class SetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const VideoDetail()),
-        );
+      onTap: () async {
+        final url = video.src.toString();
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(8),

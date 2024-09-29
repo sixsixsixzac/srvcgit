@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final indexProvider = Provider.of<IndexProvider>(context);
     return Scaffold(
         backgroundColor: HexColor("#f5f5f7"),
-        body: widgetPages[indexProvider.currentIndex],
+        body: SafeArea(child: widgetPages[indexProvider.currentIndex]),
         bottomNavigationBar: CustomButtonBar(
           defaultIndex: indexProvider.currentIndex,
           imagePaths: const [
