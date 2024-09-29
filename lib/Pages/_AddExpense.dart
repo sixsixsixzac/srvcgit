@@ -157,6 +157,200 @@ class _PopUpState extends State<PopUp> {
     },
   ];
 
+  List<Map<String, dynamic>> input_btn = [
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : Image.asset(
+        "assets/images/icons/wallet.png",
+        width: 20.0,
+        height: 20.0,
+      ),
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 3,
+      'type' : 'input',
+      'message' : Null,
+      'background_color' : Colors.white,
+      'ontap' : Null
+    },
+    {
+      'flex' : 2,
+      'type' : 'button',
+      'message' : Image.asset(
+        'assets/images/member_types/me.png',
+        width: 20.0,
+        height: 20.0,
+        ),
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 2,
+      'type' : 'button',
+      'message' : 'save',
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : 'x',
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '1',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '2',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '3',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '/',
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '4',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '5',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '6',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '-',
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '7',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '8',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '9',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '+',
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '.',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : '0',
+      'background_color' : Colors.white,
+      'ontap' : () {
+
+      }
+    },
+    {
+      'flex' : 1,
+      'type' : 'button',
+      'message' : Icon(
+        FontAwesomeIcons.times,
+        size: 20.0,
+        color: Colors.red,
+      ),
+      'background_color' : Colors.pink[100],
+      'ontap' : () {
+
+      }
+    },
+
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,11 +381,11 @@ class _PopUpState extends State<PopUp> {
           ),
           Container(
             padding: const EdgeInsets.all(5.0),
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.40,
             child: generateMenu(),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.55,
             width: MediaQuery.of(context).size.height * 1,
             decoration: BoxDecoration(
               border: Border.all(width: 1.0, color: Colors.black),
@@ -201,11 +395,9 @@ class _PopUpState extends State<PopUp> {
               ),
               color: Colors.pink,
             ),
-            child: const Padding(
+            child:  Padding(
               padding: EdgeInsets.all(5.0),
-              child: Column(
-                children: [],
-              ),
+              child: generateBtn(),
             ),
           )
         ],
@@ -260,11 +452,67 @@ class _PopUpState extends State<PopUp> {
     );
   }
 
-  Widget generateBtn(text, background_color) {
-    return Container(
-      decoration: BoxDecoration(border: Border.all(width: 1.0, color: background_color), borderRadius: BorderRadius.circular(10.0), color: background_color),
-      child: text,
-      height: 20.0,
+  Widget generateBtn () {
+    List<Widget> rows = [];
+    List<Widget> current_row = [];
+    int current_flex = 0;
+
+    for (var btn in input_btn) {
+      if (current_flex + btn['flex'] > 4) {
+        rows.add(Row(
+          children: current_row,
+        ));
+        current_row = [];
+        current_flex = 0;
+      }
+
+      if (btn['type'] == 'button') {
+        current_row.add(
+          Expanded(
+            flex: btn['flex'],
+            child: GestureDetector(
+              onTap: btn['ontap'],
+              child: Container(
+                padding: EdgeInsets.all(5.0),
+                color: btn['background_color'],
+                child: Center(
+                  child: (btn['message'] is String) ? Text(btn['message']) : btn['message']
+
+                  ,
+                ),
+              ),
+            ),
+
+          )
+        );
+      } else {
+        current_row.add(
+          Expanded(
+            flex: btn['flex'],
+            child: Container(
+              height: 20.0,
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder()
+                ),
+              ),
+            ),
+          )
+        );
+      }
+
+      current_flex += btn['flex'] as int;
+    }
+
+    // จัดแถวสุดท้าย
+    if (current_row.isNotEmpty) {
+      rows.add(Row(
+        children: current_row,
+      ));
+    }
+
+    return Column(
+      children: rows,
     );
   }
 }
