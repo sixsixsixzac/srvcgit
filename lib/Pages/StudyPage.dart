@@ -435,10 +435,10 @@ class ThumbnailWidget extends StatelessWidget {
   final String thumbnail;
 
   const ThumbnailWidget({
-    Key? key,
+    super.key,
     required this.src,
     required this.thumbnail,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
