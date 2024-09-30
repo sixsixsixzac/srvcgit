@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:srvc/Auth/AuthController.dart';
 import 'package:provider/provider.dart';
+import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
@@ -10,6 +11,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => IndexProvider()),
+        ChangeNotifierProvider(create: (_) => FamilyModel()),
       ],
       child: const MyApp(),
     ),

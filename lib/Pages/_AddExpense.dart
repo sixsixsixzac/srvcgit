@@ -159,196 +159,157 @@ class _PopUpState extends State<PopUp> {
 
   List<Map<String, dynamic>> input_btn = [
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : Image.asset(
+      'flex': 1,
+      'type': 'button',
+      'message': Image.asset(
         "assets/images/icons/wallet.png",
         width: 20.0,
         height: 20.0,
       ),
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 3,
-      'type' : 'input',
-      'message' : Null,
-      'background_color' : Colors.white,
-      'ontap' : Null
+      'flex': 3,
+      'type': 'input',
+      'message': Null,
+      'background_color': Colors.white,
+      'ontap': Null
     },
     {
-      'flex' : 2,
-      'type' : 'button',
-      'message' : Image.asset(
+      'flex': 2,
+      'type': 'button',
+      'message': Image.asset(
         'assets/images/member_types/me.png',
         width: 20.0,
         height: 20.0,
-        ),
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      ),
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 2,
-      'type' : 'button',
-      'message' : 'save',
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'flex': 2,
+      'type': 'button',
+      'message': 'save',
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : 'x',
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': 'x',
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '1',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '1',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '2',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '2',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '3',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '3',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '/',
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '/',
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '4',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '4',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '5',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '5',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '6',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '6',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '-',
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '-',
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '7',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '7',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '8',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '8',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '9',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '9',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '+',
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '+',
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '.',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '.',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : '0',
-      'background_color' : Colors.white,
-      'ontap' : () {
-
-      }
+      'flex': 1,
+      'type': 'button',
+      'message': '0',
+      'background_color': Colors.white,
+      'ontap': () {}
     },
     {
-      'flex' : 1,
-      'type' : 'button',
-      'message' : Icon(
+      'flex': 1,
+      'type': 'button',
+      'message': const Icon(
         FontAwesomeIcons.times,
         size: 20.0,
         color: Colors.red,
       ),
-      'background_color' : Colors.pink[100],
-      'ontap' : () {
-
-      }
+      'background_color': Colors.pink[100],
+      'ontap': () {}
     },
-
   ];
 
   @override
@@ -395,8 +356,8 @@ class _PopUpState extends State<PopUp> {
               ),
               color: Colors.pink,
             ),
-            child:  Padding(
-              padding: EdgeInsets.all(5.0),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
               child: generateBtn(),
             ),
           )
@@ -430,7 +391,9 @@ class _PopUpState extends State<PopUp> {
                 color: (active == index) ? Colors.pink : Colors.transparent,
               ),
               borderRadius: BorderRadius.circular(10.0),
-              color: active == index ? Colors.pink.withOpacity(0.3) : Colors.transparent,
+              color: active == index
+                  ? Colors.pink.withOpacity(0.3)
+                  : Colors.transparent,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -441,7 +404,10 @@ class _PopUpState extends State<PopUp> {
                   child: Text(
                     options[index]['menuTextTH'],
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 10.0,
+                        fontFamily: 'thaifont',
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -452,7 +418,7 @@ class _PopUpState extends State<PopUp> {
     );
   }
 
-  Widget generateBtn () {
+  Widget generateBtn() {
     List<Widget> rows = [];
     List<Widget> current_row = [];
     int current_flex = 0;
@@ -467,38 +433,31 @@ class _PopUpState extends State<PopUp> {
       }
 
       if (btn['type'] == 'button') {
-        current_row.add(
-          Expanded(
-            flex: btn['flex'],
-            child: GestureDetector(
-              onTap: btn['ontap'],
-              child: Container(
-                padding: EdgeInsets.all(5.0),
-                color: btn['background_color'],
-                child: Center(
-                  child: (btn['message'] is String) ? Text(btn['message']) : btn['message']
-
-                  ,
-                ),
-              ),
-            ),
-
-          )
-        );
-      } else {
-        current_row.add(
-          Expanded(
-            flex: btn['flex'],
+        current_row.add(Expanded(
+          flex: btn['flex'],
+          child: GestureDetector(
+            onTap: btn['ontap'],
             child: Container(
-              height: 20.0,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder()
-                ),
+              padding: const EdgeInsets.all(5.0),
+              color: btn['background_color'],
+              child: Center(
+                child: (btn['message'] is String)
+                    ? Text(btn['message'])
+                    : btn['message'],
               ),
             ),
-          )
-        );
+          ),
+        ));
+      } else {
+        current_row.add(Expanded(
+          flex: btn['flex'],
+          child: const SizedBox(
+            height: 20.0,
+            child: TextField(
+              decoration: InputDecoration(border: OutlineInputBorder()),
+            ),
+          ),
+        ));
       }
 
       current_flex += btn['flex'] as int;

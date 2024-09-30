@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Pages/FamilyPage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/HexColor.dart';
@@ -45,8 +46,8 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void _loadUserData() async {
+    final FamState = Provider.of<FamilyModel>(context, listen: false);
     final authProvider = context.read<AuthProvider>();
-
     userName = authProvider.name;
     userPhone = authProvider.phone;
 
