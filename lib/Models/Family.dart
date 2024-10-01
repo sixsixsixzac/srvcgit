@@ -5,6 +5,7 @@ class FamilyModel with ChangeNotifier {
   List<GroupMembersModel> _members = [];
   String _groupCode = '';
   String _title = '';
+  String _level = '';
   bool _hasGroup = false;
   bool _isJoining = false;
   String _currentState = "";
@@ -14,6 +15,7 @@ class FamilyModel with ChangeNotifier {
   String get title => _title;
   List<GroupMembersModel> get members => _members;
   String get groupCode => _groupCode;
+  String get level => _level;
   String get currentState => _currentState;
   bool get hasGroup => _hasGroup;
   bool get isJoining => _isJoining;
@@ -29,6 +31,11 @@ class FamilyModel with ChangeNotifier {
 
   void setCode(String text) {
     _groupCode = text;
+    notifyListeners();
+  }
+
+  void setLevel(String text) {
+    _level = text;
     notifyListeners();
   }
 
@@ -51,6 +58,7 @@ class FamilyModel with ChangeNotifier {
     _isJoining = state;
     notifyListeners();
   }
+
   void setMember(List<GroupMembersModel> list) {
     _members = list;
     notifyListeners();

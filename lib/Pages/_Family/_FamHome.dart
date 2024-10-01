@@ -50,7 +50,7 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
                     minFontSize: 20,
                     textAlign: TextAlign.center,
                     maxFontSize: 26,
-                    'รหัสกลุ่ม: ${widget.groupCode.toString()}',
+                    'รหัสกลุ่ม: ${FamState.groupCode}',
                     style: const TextStyle(
                       fontFamily: 'thaifont',
                       color: Colors.white,

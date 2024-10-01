@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Pages/FamilyPage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
@@ -46,7 +46,7 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void _loadUserData() async {
-    final FamState = Provider.of<FamilyModel>(context, listen: false);
+    // final FamState = Provider.of<FamilyModel>(context, listen: false);
     final authProvider = context.read<AuthProvider>();
     userName = authProvider.name;
     userPhone = authProvider.phone;
@@ -91,7 +91,7 @@ class _MainpageState extends State<Mainpage> {
                   margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
+                    color: AppPallete.white,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),

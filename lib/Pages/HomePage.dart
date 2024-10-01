@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Widget> widgetPages = <Widget>[
     const WalletPage(),
-    const PlanPage(),
+    const ReportPage(),
     const Mainpage(),
     const StudyPage(),
     const SettingPage(),

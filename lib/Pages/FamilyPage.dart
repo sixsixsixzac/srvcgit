@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/group_members.dart';
@@ -10,6 +8,7 @@ import 'package:srvc/Pages/_Family/_FamHome.dart';
 import 'package:srvc/Pages/_Family/_FamJoin.dart';
 import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Services/auth_provider.dart';
 import 'dart:async';
 
@@ -39,52 +38,6 @@ class _FamilyPageState extends State<FamilyPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final FamState = Provider.of<FamilyModel>(context, listen: true);
-
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(FontAwesomeIcons.ellipsisV, color: Colors.white),
-            onSelected: (value) {
-              // Handle the selected value here
-              print('Selected: $value');
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem<String>(
-                  onTap: () => _leaveGroup(context),
-                  value: 'ออกจากกลุ่ม ',
-                  child: const Text(
-                    'ออกจากกลุ่ม',
-                    style: TextStyle(fontFamily: 'thaifont'),
-                  ),
-                ),
-              ];
-            },
-          ),
-        ],
-        backgroundColor: Colors.indigo,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
-          onPressed: () => FamState.isJoining == true ? FamState.setJoin(false) : Navigator.pop(context),
-        ),
-        title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
-      ),
-      body: Stack(
-        children: [
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
-          if (!FamState.hasGroup && !FamState.isJoining) const FamilyWelcomePage(),
-          if (FamState.hasGroup) FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members),
-          if (FamState.isJoining) const FamilyJoinGroupPage(),
-        ],
-      ),
-    );
-  }
-
   Future<void> _checkGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final familyState = Provider.of<FamilyModel>(context, listen: false);
@@ -93,7 +46,8 @@ class _FamilyPageState extends State<FamilyPage> {
 
     try {
       final response = await _fetch_check_group(auth.id);
-      _updateStateWithResponse(response, familyState);
+
+      _updateStateWithResponse(response);
     } catch (e) {
       _handleError(e);
     } finally {
@@ -108,19 +62,32 @@ class _FamilyPageState extends State<FamilyPage> {
     });
   }
 
-  void _updateStateWithResponse(Map<String, dynamic> response, FamilyModel familyState) {
-    final groupData = response['data'] ?? {};
-    final hasGroup = response['status'] as bool;
+  void _updateStateWithResponse(Map<String, dynamic> response) {
+    try {
+      final groupData = response['data'] ?? {};
+      final hasGroup = response['status'] as bool;
+      final FamState = Provider.of<FamilyModel>(context, listen: false);
 
-    setState(() {
-      familyState.setHas(hasGroup);
-      familyState.setTitle(hasGroup ? "กลุ่มของฉัน" : "สร้างกลุ่ม");
-      groupCode = groupData.isNotEmpty ? groupData['group_code'].toString() : "";
+      setState(() {
+        FamState.setHas(hasGroup);
+        FamState.setTitle(hasGroup ? "กลุ่มของฉัน" : "สร้างกลุ่ม");
 
-      if (hasGroup) {
-        _updateGroupMembers(response['data']['members']);
-      }
-    });
+        groupCode = groupData.isNotEmpty ? groupData['group_code'].toString() : "";
+
+        if (hasGroup == true) {
+          FamState.setCode(groupCode.toString());
+          FamState.setLevel(groupData['level'] ?? "");
+          _updateGroupMembers(response['data']['members'] ?? []);
+        }
+      });
+    } catch (e, stackTrace) {
+      // Print or log the error and stack trace
+      print('Error occurred: $e');
+      print('Stack trace: $stackTrace');
+
+      // Optionally, you can also show an error message to the user
+      // or handle the error in a specific way.
+    }
   }
 
   void _updateGroupMembers(List<dynamic> membersData) {
@@ -130,13 +97,6 @@ class _FamilyPageState extends State<FamilyPage> {
 
   void _handleError(dynamic error) {
     print("An error occurred: $error");
-    // Consider adding more robust error handling here
-  }
-
-  void __leaveGroup(BuildContext context) {
-    // final familyModel = Provider.of<FamilyModel>(context, listen: false);
-    // familyModel.setCode("asdๅๅ/-asd");
-    // Add your logic to handle leaving the group here
   }
 
   void _leaveGroup(BuildContext context) {
@@ -144,24 +104,105 @@ class _FamilyPageState extends State<FamilyPage> {
     // setState(() {
 
     // });
-    // Show confirmation dialog using QuickAlert
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.confirm,
-      title: 'ยืนยัน',
-      text: 'คุณต้องการออกจากกลุ่มใช่หรือไม่?',
-      confirmBtnText: 'ใช่',
-      cancelBtnText: 'ไม่',
-      confirmBtnColor: Colors.red,
-      onConfirmBtnTap: () {
-        print('User confirmed to leave the group');
-        Navigator.pop(context);
-      },
-      onCancelBtnTap: () {
-        // Handle the action when user cancels
-        print('User canceled leaving the group');
-        Navigator.pop(context);
-      },
+    // QuickAlert.show(
+    //   context: context,
+    //   type: QuickAlertType.confirm,
+    //   title: 'ยืนยัน',
+    //   text: 'คุณต้องการออกจากกลุ่มใช่หรือไม่?',
+    //   confirmBtnText: 'ใช่',
+    //   cancelBtnText: 'ไม่',
+    //   confirmBtnColor: Colors.red,
+    //   onConfirmBtnTap: () {
+    //     print('User confirmed to leave the group');
+    //     Navigator.pop(context);
+    //   },
+    //   onCancelBtnTap: () {
+    //     print('User canceled leaving the group');
+    //     Navigator.pop(context);
+    //   },
+    // );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final FamState = Provider.of<FamilyModel>(context, listen: true);
+
+    return Scaffold(
+      appBar: AppBar(
+        actions: const [
+          CustomPopupMenuButton(),
+        ],
+        backgroundColor: AppPallete.purple,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
+          onPressed: () {
+            if (FamState.isJoining) {
+              FamState.setJoin(false);
+              FamState.setTitle("สร้างกลุ่ม");
+            } else {
+              Navigator.pop(context);
+            }
+          },
+        ),
+        title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
+      ),
+      body: Stack(
+        children: [
+          if (_isLoading) const Center(child: CircularProgressIndicator()),
+          if (!FamState.hasGroup && !FamState.isJoining) FamilyWelcomePage(onCreated: () => _checkGroup),
+          if (FamState.hasGroup) FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members),
+          if (FamState.isJoining) const FamilyJoinGroupPage(),
+        ],
+      ),
     );
   }
+}
+
+class CustomPopupMenuButton extends StatelessWidget {
+  const CustomPopupMenuButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: PopupMenuButton<String>(
+        icon: const Icon(FontAwesomeIcons.ellipsisV, color: Colors.white),
+        onSelected: (action) {
+          _groupAction(action);
+        },
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem<String>(
+              value: 'levelGroup',
+              child: Text(
+                'ออกจากกลุ่ม',
+                style: TextStyle(fontFamily: 'thaifont'),
+              ),
+            ),
+            const PopupMenuItem<String>(
+              value: 'delGroup',
+              child: Text(
+                'ลบกลุ่ม',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'thaifont'),
+              ),
+            ),
+          ];
+        },
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  void _groupAction(String action) {
+    print('Selected action: $action');
+  }
+}
+
+class FamState {
+  static String level = "M";
 }

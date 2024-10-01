@@ -1,10 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/auth_provider.dart';
 
 class FamilyJoinGroupPage extends StatefulWidget {
   const FamilyJoinGroupPage({super.key});
@@ -24,23 +21,22 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
   }
 
   Future<void> _confirmJoin(context) async {
-    final familyModel = Provider.of<FamilyModel>(context, listen: false);
+    // final familyModel = Provider.of<FamilyModel>(context, listen: false);
 
     // if (_isValid == false || getPinCode().length == 5) return;
 
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    final data = await apiService.post("/SRVC/FamilyController.php", {
-      'act': 'joinGroup',
-      'userID': auth.id,
-      'group_code': getPinCode().toString(),
-    });
+    // final auth = Provider.of<AuthProvider>(context, listen: false);
+    // final data = await apiService.post("/SRVC/FamilyController.php", {
+    //   'act': 'joinGroup',
+    //   'userID': auth.id,
+    //   'group_code': getPinCode().toString(),
+    // });
 
-    if (data['status'] == true) {
-      familyModel.setCode(data['data']['group_code']);
-      familyModel.setHas(true);
-      
+    // if (data['status'] == true) {
+    //   familyModel.setCode(data['data']['group_code']);
+    //   familyModel.setHas(true);
 
-    } else {}
+    // } else {}
   }
 
   @override

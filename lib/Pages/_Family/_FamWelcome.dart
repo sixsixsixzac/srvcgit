@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
 class FamilyWelcomePage extends StatefulWidget {
-  const FamilyWelcomePage({super.key});
+  final VoidCallback onCreated;
+  const FamilyWelcomePage({super.key, required this.onCreated});
 
   @override
   State<FamilyWelcomePage> createState() => _FamilyWelcomePageState();
@@ -16,6 +15,10 @@ class FamilyWelcomePage extends StatefulWidget {
 
 class _FamilyWelcomePageState extends State<FamilyWelcomePage> {
   final ApiService apiService = ApiService(serverURL);
+  void initState() {
+    super.initState();
+  }
+
   Future<void> _createGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final FamState = Provider.of<FamilyModel>(context, listen: false);
@@ -26,23 +29,31 @@ class _FamilyWelcomePageState extends State<FamilyWelcomePage> {
       });
 
       if (data['status']) {
-        // FamState.setCode(data['data']['group_code'].toString());
-        // FamState.setHas(true);
-
-        QuickAlert.show(
-          context: context,
-          type: QuickAlertType.success,
-          title: data['title'],
-          text: data['msg'],
-          autoCloseDuration: const Duration(seconds: 2),
-          showConfirmBtn: false,
-        );
+        FamState.setCode(data['data']['group_code'].toString());
+        FamState.setTitle('กลุ่มของฉัน');
+        FamState.setHas(true);
+        // print(data);
+        // QuickAlert.show(
+        //   context: context,
+        //   type: QuickAlertType.success,
+        //   title: data['title'],
+        //   text: data['msg'],
+        //   autoCloseDuration: const Duration(seconds: 2),
+        //   showConfirmBtn: false,
+        // );
       } else {
-        print("Error: ${data['message']}");
+        print("Error: ${data['title']}");
       }
     } catch (e) {
       print("An error occurred: $e");
     }
+  }
+
+  Future<Map<String, dynamic>> _fetch_check_group(String userId) async {
+    return await apiService.post("/SRVC/FamilyController.php", {
+      'act': 'checkGroup',
+      'userID': userId,
+    });
   }
 
   @override

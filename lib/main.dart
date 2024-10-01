@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:srvc/Auth/AuthController.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Models/Family.dart';
+import 'package:srvc/Pages/HomePage.dart';
+import 'package:srvc/Pages/LoginPage.dart';
+import 'package:srvc/Pages/PlanPage.dart';
+import 'package:srvc/Pages/SettingPage.dart';
+import 'package:srvc/Pages/StudyPage.dart';
+import 'package:srvc/Pages/WalletPage.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
@@ -18,134 +24,87 @@ void main() {
   );
 }
 
-// test add new line
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
+    const baseTextStyle = TextStyle(
+      color: Colors.black,
+      fontFamily: 'thaifont',
+    );
     return MaterialApp(
+      routes: {
+        '/Home': (context) => const HomePage(),
+        '/Login': (context) => const LoginPage(),
+        '/Study': (context) => const StudyPage(),
+        '/Setting': (context) => const SettingPage(),
+        '/Report': (context) => const ReportPage(),
+        '/Wallet': (context) => const WalletPage(),
+      },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          primary: Colors.deepPurple,
+          secondary: Colors.amber,
+          surface: Colors.white,
+          background: Colors.grey[100]!,
+          error: Colors.red,
+          onPrimary: Colors.white,
+          onSecondary: Colors.black,
+          onSurface: Colors.black,
+          onBackground: Colors.black,
+          onError: Colors.white,
+        ),
         useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.deepPurple,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Colors.deepPurple,
+          textTheme: ButtonTextTheme.primary,
+        ),
+        textTheme: const TextTheme(
+          titleSmall: baseTextStyle,
+          titleMedium: baseTextStyle,
+          titleLarge: baseTextStyle,
+          bodyMedium: baseTextStyle,
+          bodySmall: baseTextStyle,
+          bodyLarge: baseTextStyle,
+          displaySmall: baseTextStyle,
+          displayMedium: baseTextStyle,
+          displayLarge: baseTextStyle,
+          headlineSmall: baseTextStyle,
+          headlineMedium: baseTextStyle,
+          headlineLarge: baseTextStyle,
+          labelSmall: baseTextStyle,
+          labelMedium: baseTextStyle,
+          labelLarge: baseTextStyle,
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey[200],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+        ),
       ),
       home: const Authcontroller(),
     );
   }
 }
-
-// class KeyboardPage extends StatefulWidget {
-//   @override
-//   _KeyboardPageState createState() => _KeyboardPageState();
-// }
-
-// class _KeyboardPageState extends State<KeyboardPage> {
-//   final TextEditingController _controller = TextEditingController();
-
-//   void _onKeyPress(String key) {
-//     _controller.text += key;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text('Custom Keyboard')),
-//       body: Column(
-//         children: [
-//           TextField(
-//             controller: _controller,
-//             decoration: InputDecoration(
-//               border: OutlineInputBorder(),
-//               hintText: 'Type here...',
-//             ),
-//           ),
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Row(
-//                   children: [
-//                     _buildKey("ฉัน", buttonStyle: _cardStyle),
-//                     _buildKey("input", width: 3),
-//                   ],
-//                 ),
-//                 Row(
-//                   children: [
-//                     _buildKey("1"),
-//                     _buildKey("2"),
-//                     _buildKey("3"),
-//                   ],
-//                 ),
-//                 Row(
-//                   children: [
-//                     _buildKey("4"),
-//                     _buildKey("5"),
-//                     _buildKey("6"),
-//                   ],
-//                 ),
-//                 Row(
-//                   children: [
-//                     _buildKey("7"),
-//                     _buildKey("8"),
-//                     _buildKey("9"),
-//                   ],
-//                 ),
-//                 Row(
-//                   children: [
-//                     _buildKey("."),
-//                     _buildKey("0"),
-//                     _buildKey("X"),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildKey(String key, {double width = 1, ButtonStyle? buttonStyle}) {
-//     return Expanded(
-//       flex: width.toInt(),
-//       child: GestureDetector(
-//         onTap: () => _onKeyPress(key),
-//         child: Container(
-//           margin: EdgeInsets.all(4),
-//           child: ElevatedButton(
-//             style: buttonStyle ?? _defaultButtonStyle, // Use provided style or default
-//             onPressed: () => _onKeyPress(key),
-//             child: Text(
-//               key,
-//               style: TextStyle(fontSize: 24),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   final ButtonStyle _cardStyle = ElevatedButton.styleFrom(
-//     foregroundColor: Colors.white,
-//     backgroundColor: Colors.indigo,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(5),
-//     ),
-//     elevation: 5,
-//   );
-
-//   final ButtonStyle _inputStyle = ElevatedButton.styleFrom(
-//     foregroundColor: Colors.white, backgroundColor: Colors.orange,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(8),
-//     ),
-//     elevation: 5, // Elevation
-//   );
-//   final ButtonStyle _defaultButtonStyle = ElevatedButton.styleFrom(
-//     foregroundColor: Colors.white,
-//     backgroundColor: Colors.blueAccent,
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(8),
-//     ),
-//     elevation: 5,
-//   );
-// }
