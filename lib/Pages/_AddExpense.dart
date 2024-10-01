@@ -12,37 +12,6 @@ class __AddExpenseState extends State<AddExpense> {
   @override
   Widget build(BuildContext context) {
     return const PopUp();
-    // return Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: Center(
-    //     child: InkWell(
-    //       onTap: () => Navigator.pop(context),
-    //       child: Container(
-    //         color: Colors.grey[50],
-    //         padding: const EdgeInsets.all(8.0),
-    //         child: BounceInPage(
-    //           child: Container(
-    //             height: 100,
-    //             width: 100,
-    //             color: Colors.blue,
-    //             child: const Center(
-    //               child: AutoSizeText(
-    //                 "Click Me!",
-    //                 maxLines: 1,
-    //                 minFontSize: 18,
-    //                 maxFontSize: 36,
-    //                 style: TextStyle(
-    //                   color: Colors.white,
-    //                   fontFamily: 'thaifont',
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
@@ -169,13 +138,7 @@ class _PopUpState extends State<PopUp> {
       'background_color': Colors.pink[100],
       'ontap': () {}
     },
-    {
-      'flex': 3,
-      'type': 'input',
-      'message': Null,
-      'background_color': Colors.white,
-      'ontap': Null
-    },
+    {'flex': 3, 'type': 'input', 'message': Null, 'background_color': Colors.white, 'ontap': Null},
     {
       'flex': 2,
       'type': 'button',
@@ -187,118 +150,22 @@ class _PopUpState extends State<PopUp> {
       'background_color': Colors.pink[100],
       'ontap': () {}
     },
-    {
-      'flex': 2,
-      'type': 'button',
-      'message': 'save',
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': 'x',
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '1',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '2',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '3',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '/',
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '4',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '5',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '6',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '-',
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '7',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '8',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '9',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '+',
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '.',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': '0',
-      'background_color': Colors.white,
-      'ontap': () {}
-    },
+    {'flex': 2, 'type': 'button', 'message': 'save', 'background_color': Colors.pink[100], 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': 'x', 'background_color': Colors.pink[100], 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '1', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '2', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '3', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '/', 'background_color': Colors.pink[100], 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '4', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '5', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '6', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '-', 'background_color': Colors.pink[100], 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '7', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '8', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '9', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '+', 'background_color': Colors.pink[100], 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '.', 'background_color': Colors.white, 'ontap': () {}},
+    {'flex': 1, 'type': 'button', 'message': '0', 'background_color': Colors.white, 'ontap': () {}},
     {
       'flex': 1,
       'type': 'button',
@@ -391,9 +258,7 @@ class _PopUpState extends State<PopUp> {
                 color: (active == index) ? Colors.pink : Colors.transparent,
               ),
               borderRadius: BorderRadius.circular(10.0),
-              color: active == index
-                  ? Colors.pink.withOpacity(0.3)
-                  : Colors.transparent,
+              color: active == index ? Colors.pink.withOpacity(0.3) : Colors.transparent,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -404,10 +269,7 @@ class _PopUpState extends State<PopUp> {
                   child: Text(
                     options[index]['menuTextTH'],
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 10.0,
-                        fontFamily: 'thaifont',
-                        fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -441,9 +303,7 @@ class _PopUpState extends State<PopUp> {
               padding: const EdgeInsets.all(5.0),
               color: btn['background_color'],
               child: Center(
-                child: (btn['message'] is String)
-                    ? Text(btn['message'])
-                    : btn['message'],
+                child: (btn['message'] is String) ? Text(btn['message']) : btn['message'],
               ),
             ),
           ),
