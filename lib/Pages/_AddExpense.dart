@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:srvc/Services/Shortcut.dart';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({super.key});
@@ -12,37 +13,6 @@ class __AddExpenseState extends State<AddExpense> {
   @override
   Widget build(BuildContext context) {
     return const PopUp();
-    // return Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: Center(
-    //     child: InkWell(
-    //       onTap: () => Navigator.pop(context),
-    //       child: Container(
-    //         color: Colors.grey[50],
-    //         padding: const EdgeInsets.all(8.0),
-    //         child: BounceInPage(
-    //           child: Container(
-    //             height: 100,
-    //             width: 100,
-    //             color: Colors.blue,
-    //             child: const Center(
-    //               child: AutoSizeText(
-    //                 "Click Me!",
-    //                 maxLines: 1,
-    //                 minFontSize: 18,
-    //                 maxFontSize: 36,
-    //                 style: TextStyle(
-    //                   color: Colors.white,
-    //                   fontFamily: 'thaifont',
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 }
 
@@ -290,7 +260,9 @@ class _PopUpState extends State<PopUp> {
       'type': 'button',
       'message': '.',
       'background_color': Colors.white,
-      'ontap': () {}
+      'ontap': () {
+        
+      }
     },
     {
       'flex': 1,

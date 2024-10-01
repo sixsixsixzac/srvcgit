@@ -1,0 +1,112 @@
+[
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/food.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "อาหาร",
+            "EN" : "Foods"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/apartments.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "ค่าที่พัก",
+            "EN" : "Rent"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/baby.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "ครอบครัว",
+            "EN" : "Family"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/car.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "บริการขนส่ง",
+            "EN" : "Transportation"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/heal.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "บริการสุขภาพ",
+            "EN" : "Health"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/internet.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "บริการอินเทอร์เน็ต",
+            "EN" : "Internet"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/pet.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "สัตว์เลี้ยง",
+            "EN" : "Pets"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/food.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "อาหาร",
+            "EN" : "Foods"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/food.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "อาหาร",
+            "EN" : "Foods"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/food.png",
+            "height" : 20,
+            "width" : 20
+        },
+        "text" : {
+            "TH" : "อาหาร",
+            "EN" : "Foods"
+        }
+    }
+]
