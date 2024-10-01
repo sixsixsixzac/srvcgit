@@ -40,10 +40,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Future<void> _checkGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    final familyState = Provider.of<FamilyModel>(context, listen: false);
-
     setState(() => _isLoading = true);
-
     try {
       final response = await _fetch_check_group(auth.id);
 
@@ -129,8 +126,8 @@ class _FamilyPageState extends State<FamilyPage> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          CustomPopupMenuButton(),
+        actions: [
+          if (FamState.hasGroup) const CustomPopupMenuButton(),
         ],
         backgroundColor: AppPallete.purple,
         centerTitle: true,

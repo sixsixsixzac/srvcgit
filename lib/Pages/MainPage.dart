@@ -11,6 +11,7 @@ import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Services/dateformat.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -466,6 +467,7 @@ class __ExpenseContainerState extends State<_ExpenseContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final exp = widget.data;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -506,7 +508,7 @@ class __ExpenseContainerState extends State<_ExpenseContainer> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(widget.data['date'], style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
+                    Text(formatThaiDate(exp['date']), style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
                     Text("฿${widget.data['total']}", style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
                   ],
                 ),

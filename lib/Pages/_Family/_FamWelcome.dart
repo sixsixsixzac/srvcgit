@@ -15,9 +15,6 @@ class FamilyWelcomePage extends StatefulWidget {
 
 class _FamilyWelcomePageState extends State<FamilyWelcomePage> {
   final ApiService apiService = ApiService(serverURL);
-  void initState() {
-    super.initState();
-  }
 
   Future<void> _createGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);

@@ -11,7 +11,10 @@ import 'package:srvc/Pages/WalletPage.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+
+
   runApp(
     MultiProvider(
       providers: [
