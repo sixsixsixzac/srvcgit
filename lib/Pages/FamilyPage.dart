@@ -78,12 +78,8 @@ class _FamilyPageState extends State<FamilyPage> {
         }
       });
     } catch (e, stackTrace) {
-      // Print or log the error and stack trace
       print('Error occurred: $e');
       print('Stack trace: $stackTrace');
-
-      // Optionally, you can also show an error message to the user
-      // or handle the error in a specific way.
     }
   }
 
@@ -96,54 +92,39 @@ class _FamilyPageState extends State<FamilyPage> {
     print("An error occurred: $error");
   }
 
-  void _leaveGroup(BuildContext context) {
-    // final familyModel = Provider.of<FamilyModel>(context);
-    // setState(() {
-
-    // });
-    // QuickAlert.show(
-    //   context: context,
-    //   type: QuickAlertType.confirm,
-    //   title: 'ยืนยัน',
-    //   text: 'คุณต้องการออกจากกลุ่มใช่หรือไม่?',
-    //   confirmBtnText: 'ใช่',
-    //   cancelBtnText: 'ไม่',
-    //   confirmBtnColor: Colors.red,
-    //   onConfirmBtnTap: () {
-    //     print('User confirmed to leave the group');
-    //     Navigator.pop(context);
-    //   },
-    //   onCancelBtnTap: () {
-    //     print('User canceled leaving the group');
-    //     Navigator.pop(context);
-    //   },
-    // );
+  void refreshGroupStatus() {
+    _checkGroup();
   }
 
   @override
   Widget build(BuildContext context) {
     final FamState = Provider.of<FamilyModel>(context, listen: true);
-
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          if (FamState.hasGroup) const CustomPopupMenuButton(),
-        ],
-        backgroundColor: AppPallete.purple,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
-          onPressed: () {
-            if (FamState.isJoining) {
-              FamState.setJoin(false);
-              FamState.setTitle("สร้างกลุ่ม");
-            } else {
-              Navigator.pop(context);
-            }
-          },
-        ),
-        title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
-      ),
+      appBar: FamState.isModalVisible
+          ? null
+          : AppBar(
+              actions: [
+                if (FamState.hasGroup)
+                  CustomPopupMenuButton(
+                    FamState: FamState,
+                    onFetchSuccess: refreshGroupStatus,
+                  ),
+              ],
+              backgroundColor: AppPallete.purple,
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
+                onPressed: () {
+                  if (FamState.isJoining) {
+                    FamState.setJoin(false);
+                    FamState.setTitle("สร้างกลุ่ม");
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+              title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
+            ),
       body: Stack(
         children: [
           if (_isLoading) const Center(child: CircularProgressIndicator()),
@@ -157,26 +138,53 @@ class _FamilyPageState extends State<FamilyPage> {
 }
 
 class CustomPopupMenuButton extends StatelessWidget {
-  const CustomPopupMenuButton({super.key});
+  final FamilyModel FamState;
+  final Function onFetchSuccess;
+  CustomPopupMenuButton({super.key, required this.FamState, required this.onFetchSuccess});
+  final ApiService apiService = ApiService(serverURL);
+  Future<void> _groupAction(BuildContext context, String action, String groupCode) async {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+
+    try {
+      final response = await apiService.post("/SRVC/FamilyController.php", {
+        'act': action,
+        'groupCode': groupCode,
+        'userID': auth.id,
+      });
+
+      bool fetchStatus = response['status'];
+      if (fetchStatus == true) {
+        onFetchSuccess();
+      } else {}
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: PopupMenuButton<String>(
-        icon: const Icon(FontAwesomeIcons.ellipsisV, color: Colors.white),
+        icon: const Icon(
+          FontAwesomeIcons.ellipsisV,
+          color: Colors.white,
+        ),
         onSelected: (action) {
-          _groupAction(action);
+          _groupAction(context, action, FamState.groupCode);
         },
         itemBuilder: (BuildContext context) {
           return [
-            const PopupMenuItem<String>(
-              value: 'levelGroup',
-              child: Text(
-                'ออกจากกลุ่ม',
-                style: TextStyle(fontFamily: 'thaifont'),
+            if (FamState.level != "A")
+              const PopupMenuItem<String>(
+                value: 'levelGroup',
+                child: Text(
+                  'ออกจากกลุ่ม',
+                  style: TextStyle(fontFamily: 'thaifont'),
+                ),
               ),
-            ),
             const PopupMenuItem<String>(
               value: 'delGroup',
               child: Text(
@@ -193,10 +201,6 @@ class CustomPopupMenuButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _groupAction(String action) {
-    print('Selected action: $action');
   }
 }
 
