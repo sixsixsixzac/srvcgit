@@ -11,3 +11,4 @@ double resize({required BuildContext context, required String type, required dou
     throw ArgumentError('Invalid type: $type. Use "h" for height or "w" for width.');
   }
 }
+

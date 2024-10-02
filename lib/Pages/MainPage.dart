@@ -22,8 +22,9 @@ class Mainpage extends StatefulWidget {
 
 class _MainpageState extends State<Mainpage> {
   @override
-  bool mounted = false;
   final ApiService apiService = ApiService(serverURL);
+
+  bool mounted = false;
   List<Map<String, dynamic>> plans = [];
   List<Map<String, dynamic>> expenses = [];
   int currentMonth = DateTime.now().month;
@@ -450,7 +451,7 @@ class _ExpenseContainer extends StatefulWidget {
 class __ExpenseContainerState extends State<_ExpenseContainer> {
   bool state = false;
   List<Widget> expense_list = [];
-
+  final formatter = ThaiDateFormatter();
   @override
   void initState() {
     super.initState();
@@ -508,7 +509,7 @@ class __ExpenseContainerState extends State<_ExpenseContainer> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(formatThaiDate(exp['date']), style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
+                    Text(formatter.format(exp['date'], type: ""), style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
                     Text("฿${widget.data['total']}", style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
                   ],
                 ),
