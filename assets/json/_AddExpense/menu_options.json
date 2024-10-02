@@ -2,8 +2,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/food.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "อาหาร",
@@ -13,8 +13,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/apartments.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "ค่าที่พัก",
@@ -24,8 +24,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/baby.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "ครอบครัว",
@@ -35,8 +35,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/car.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "บริการขนส่ง",
@@ -46,8 +46,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/heal.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "บริการสุขภาพ",
@@ -57,8 +57,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/internet.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "บริการอินเทอร์เน็ต",
@@ -68,8 +68,8 @@
     {
         "menuIcons" : {
             "path" : "assets/images/types/pet.png",
-            "height" : 20,
-            "width" : 20
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
             "TH" : "สัตว์เลี้ยง",
@@ -78,35 +78,46 @@
     },
     {
         "menuIcons" : {
-            "path" : "assets/images/types/food.png",
-            "height" : 20,
-            "width" : 20
+            "path" : "assets/images/types/shirt.png",
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
-            "TH" : "อาหาร",
-            "EN" : "Foods"
+            "TH" : "เสื้อผ้า",
+            "EN" : "shirt"
         }
     },
     {
         "menuIcons" : {
-            "path" : "assets/images/types/food.png",
-            "height" : 20,
-            "width" : 20
+            "path" : "assets/images/types/study.png",
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
-            "TH" : "อาหาร",
-            "EN" : "Foods"
+            "TH" : "การศึกษา",
+            "EN" : "study"
         }
     },
     {
         "menuIcons" : {
-            "path" : "assets/images/types/food.png",
-            "height" : 20,
-            "width" : 20
+            "path" : "assets/images/types/tax.png",
+            "height" : 20.0,
+            "width" : 20.0
         },
         "text" : {
-            "TH" : "อาหาร",
-            "EN" : "Foods"
+            "TH" : "ภาษี",
+            "EN" : "tax"
+        }
+    },
+    {
+        "menuIcons" : {
+            "path" : "assets/images/types/teeth.png",
+            "height" : 20.0,
+            "width" : 20.0
+        },
+        "text" : {
+            "TH" : "ทำฟัน",
+            "EN" : "teeth"
         }
     }
 ]
