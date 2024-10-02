@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:srvc/Models/_AddExpense/menu_options.dart';
+import 'package:srvc/Services/AppPallete.dart';
+import 'dart:convert';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:math';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({super.key});
@@ -11,173 +17,34 @@ class AddExpense extends StatefulWidget {
 class __AddExpenseState extends State<AddExpense> {
   @override
   Widget build(BuildContext context) {
-    return const PopUp();
+    return const IncomeExpenseForm();
   }
 }
 
-class PopUp extends StatefulWidget {
-  const PopUp({super.key});
+class IncomeExpenseForm extends StatefulWidget {
+  const IncomeExpenseForm({super.key});
 
   @override
-  State<PopUp> createState() => _PopUpState();
+  State<IncomeExpenseForm> createState() => _IncomeExpenseFormState();
 }
 
-class _PopUpState extends State<PopUp> {
-  int active = 0;
-  List<Map<String, dynamic>> options = [
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/food.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'อาหาร',
-      'menuTextEN': 'food'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/apartments.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'ค่าเช่า',
-      'menuTextEN': 'apartments'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/baby.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'ลูก',
-      'menuTextEN': 'baby'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/car.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'การเดินทาง',
-      'menuTextEN': 'car'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/heal.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'พยาบาล',
-      'menuTextEN': 'heal'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/internet.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'อินเทอร์เน็ต',
-      'menuTextEN': 'internet'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/pet.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'สัตว์เลี้ยง',
-      'menuTextEN': 'pet'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/shirt.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'เสื้อผ้า',
-      'menuTextEN': 'shirt'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/study.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'การศึกษา',
-      'menuTextEN': 'study'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/tax.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'ภาษี',
-      'menuTextEN': 'tax'
-    },
-    {
-      'menuIcon': Image.asset(
-        'assets/images/types/teeth.png',
-        width: 25.0,
-        height: 25.0,
-      ),
-      'menuTextTH': 'ทำฟัน',
-      'menuTextEN': 'teeth'
-    },
-  ];
+class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 
-  List<Map<String, dynamic>> input_btn = [
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': Image.asset(
-        "assets/images/icons/wallet.png",
-        width: 20.0,
-        height: 20.0,
-      ),
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {'flex': 3, 'type': 'input', 'message': Null, 'background_color': Colors.white, 'ontap': Null},
-    {
-      'flex': 2,
-      'type': 'button',
-      'message': Image.asset(
-        'assets/images/member_types/me.png',
-        width: 20.0,
-        height: 20.0,
-      ),
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-    {'flex': 2, 'type': 'button', 'message': 'save', 'background_color': Colors.pink[100], 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': 'x', 'background_color': Colors.pink[100], 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '1', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '2', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '3', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '/', 'background_color': Colors.pink[100], 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '4', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '5', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '6', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '-', 'background_color': Colors.pink[100], 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '7', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '8', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '9', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '+', 'background_color': Colors.pink[100], 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '.', 'background_color': Colors.white, 'ontap': () {}},
-    {'flex': 1, 'type': 'button', 'message': '0', 'background_color': Colors.white, 'ontap': () {}},
-    {
-      'flex': 1,
-      'type': 'button',
-      'message': const Icon(
-        FontAwesomeIcons.times,
-        size: 20.0,
-        color: Colors.red,
-      ),
-      'background_color': Colors.pink[100],
-      'ontap': () {}
-    },
-  ];
+  List<MenuItems>? menuItems;
+
+  @override
+  void initState() {
+    super.initState();
+    loadMenuItems();
+  }
+
+  Future<void> loadMenuItems() async{
+    String jsonString = await rootBundle.loadString('assets/json/_AddExpense/menu_options.json');
+    List<dynamic> jsonList = jsonDecode(jsonString);
+    setState(() {
+      menuItems = jsonList.map((json) => MenuItems.fromJson(json)).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,153 +52,18 @@ class _PopUpState extends State<PopUp> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-            height: MediaQuery.of(context).size.height * 0.05,
+          Padding(
+            padding: EdgeInsets.only(left: 8.0, right: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Icon(
-                    FontAwesomeIcons.times,
-                    size: 20.0,
-                    color: Colors.pink[400],
-                  ),
-                ),
-                Icon(
-                  FontAwesomeIcons.check,
-                  size: 20.0,
-                  color: Colors.pink[400],
-                ),
+                Icon(FontAwesomeIcons.check, size: 20.0, color: AppPallete.gradient1,),
+                Icon(FontAwesomeIcons.times, size: 20.0, color: AppPallete.gradient1,),
               ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(5.0),
-            height: MediaQuery.of(context).size.height * 0.40,
-            child: generateMenu(),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            width: MediaQuery.of(context).size.height * 1,
-            decoration: BoxDecoration(
-              border: Border.all(width: 1.0, color: Colors.black),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(15.0),
-                topRight: Radius.circular(15.0),
-              ),
-              color: Colors.pink,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: generateBtn(),
             ),
           )
         ],
       ),
     );
   }
-
-  Widget generateMenu() {
-    int item_per_row = 4;
-
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: item_per_row,
-        childAspectRatio: 1,
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
-      ),
-      itemCount: options.length,
-      itemBuilder: (context, int index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              active = index;
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: 1.0,
-                color: (active == index) ? Colors.pink : Colors.transparent,
-              ),
-              borderRadius: BorderRadius.circular(10.0),
-              color: active == index ? Colors.pink.withOpacity(0.3) : Colors.transparent,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                options[index]['menuIcon'], // แสดงไอคอน
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Text(
-                    options[index]['menuTextTH'],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 10.0, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget generateBtn() {
-    List<Widget> rows = [];
-    List<Widget> current_row = [];
-    int current_flex = 0;
-
-    for (var btn in input_btn) {
-      if (current_flex + btn['flex'] > 4) {
-        rows.add(Row(
-          children: current_row,
-        ));
-        current_row = [];
-        current_flex = 0;
-      }
-
-      if (btn['type'] == 'button') {
-        current_row.add(Expanded(
-          flex: btn['flex'],
-          child: GestureDetector(
-            onTap: btn['ontap'],
-            child: Container(
-              padding: const EdgeInsets.all(5.0),
-              color: btn['background_color'],
-              child: Center(
-                child: (btn['message'] is String) ? Text(btn['message']) : btn['message'],
-              ),
-            ),
-          ),
-        ));
-      } else {
-        current_row.add(Expanded(
-          flex: btn['flex'],
-          child: const SizedBox(
-            height: 20.0,
-            child: TextField(
-              decoration: InputDecoration(border: OutlineInputBorder()),
-            ),
-          ),
-        ));
-      }
-
-      current_flex += btn['flex'] as int;
-    }
-
-    // จัดแถวสุดท้าย
-    if (current_row.isNotEmpty) {
-      rows.add(Row(
-        children: current_row,
-      ));
-    }
-
-    return Column(
-      children: rows,
-    );
-  }
 }
+

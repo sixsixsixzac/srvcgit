@@ -75,6 +75,7 @@ flutter:
     - assets/images/types/
     - assets/images/test/
     - assets/images/member_types/
+    - assets/json/_AddExpense/
 
   #   - family: Schyler
   #     fonts:
