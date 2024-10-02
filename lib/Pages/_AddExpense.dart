@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:srvc/Models/_AddExpense/menu_options.dart';
 import 'package:srvc/Services/AppPallete.dart';
+import 'package:srvc/Services/Shortcut.dart';
 import 'dart:convert';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,6 +32,7 @@ class IncomeExpenseForm extends StatefulWidget {
 class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 
   List<MenuItems>? menuItems;
+  int activeOption = 0;
 
   @override
   void initState() {
@@ -54,11 +56,41 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Row(
-              children: [
-                Icon(FontAwesomeIcons.check, size: 20.0, color: AppPallete.gradient1,),
-                Icon(FontAwesomeIcons.times, size: 20.0, color: AppPallete.gradient1,),
-              ],
+            child: SizedBox(
+              height: resize(context: context, type: 'h', value: 0.05),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(FontAwesomeIcons.check, size: 20.0, color: AppPallete.gradient1,),
+                  Icon(FontAwesomeIcons.times, size: 20.0, color: AppPallete.gradient1,),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 25.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppPallete.gradient2,
+                  width: 2
+                ),
+                color: AppPallete.gradient2,
+                borderRadius: BorderRadius.circular(1000),
+              ),
+              width: resize(context: context, type: 'w', value: 0.30),
+              height: resize(context: context, type: 'w', value: 0.30),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(menuItems![activeOption].menuIcons.path, height: 50, width: 50,),
+                    Text(menuItems![activeOption].text.th, style: TextStyle(fontFamily: 'thaifont', fontWeight: FontWeight.bold, color: Colors.white),)
+                  ],
+                ),
+              ),
             ),
           )
         ],
