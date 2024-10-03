@@ -34,6 +34,7 @@ class _UserModalState extends State<UserModal> {
   int CurrentYear = DateTime.now().year;
   int CurrentIndex = 1;
   double ExpenseGrandTotal = 0.00;
+  int PerMonth = 10000;
 
   @override
   void initState() {
@@ -53,14 +54,12 @@ class _UserModalState extends State<UserModal> {
     Map<String, dynamic> data = response;
     await Future.delayed(const Duration(milliseconds: 300));
     setState(() {
-      expenseData = (data['data'] as List).map((item) {
-        double totalExpense = double.tryParse(item['total_expense']) ?? 0.0;
-        ExpenseGrandTotal += totalExpense;
-        return Topexpense.fromJson(item);
-      }).toList();
-
+      expenseData = (data['data'] as List).map((item) => Topexpense.fromJson(item)).toList();
+      if (expenseData.isNotEmpty) ExpenseGrandTotal = expenseData[0].grand_total;
+      if (expenseData.isEmpty) ExpenseGrandTotal = 0;
       _isLoading = false;
     });
+
     return expenseData;
   }
 
@@ -75,7 +74,7 @@ class _UserModalState extends State<UserModal> {
 
   void _updateVariable(type, index) {
     setState(() {
-      ExpenseGrandTotal = 0;
+      ExpenseGrandTotal = 0.00;
       CurrentType = type;
       CurrentIndex = index;
       CurrentDate = getCurrentDate();
@@ -254,9 +253,7 @@ class _UserModalState extends State<UserModal> {
                                         itemCount: expenseData.length,
                                         itemBuilder: (context, index) {
                                           final expen = expenseData[index];
-                                          String totalExpenseString = expen.total_expense.toString();
-                                          double totalExpense = double.tryParse(totalExpenseString) ?? 0.0;
-                                          ExpenseGrandTotal += totalExpense;
+
                                           return Container(
                                             margin: const EdgeInsets.only(bottom: 2),
                                             height: 60,
@@ -394,7 +391,18 @@ class _UserModalState extends State<UserModal> {
                         Expanded(
                           flex: 3,
                           child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
                             color: AppPallete.backgroundColor,
+                            child: SingleChildScrollView(
+                              child: _ExpenseInfo(
+                                CurrentType: CurrentType,
+                                CurrentDate: CurrentDate!,
+                                GrandTotal: ExpenseGrandTotal,
+                                PerMonth: 10000,
+                                formatter: formatter,
+                                isLoading: _isLoading,
+                              ),
+                            ),
                           ),
                         )
                       ],
@@ -428,6 +436,116 @@ class _UserModalState extends State<UserModal> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ExpenseInfo extends StatefulWidget {
+  final String CurrentType;
+  final double GrandTotal;
+  final int PerMonth;
+  final String CurrentDate;
+  final ThaiDateFormatter formatter;
+  final bool isLoading;
+
+  const _ExpenseInfo({required this.isLoading, required this.GrandTotal, required this.PerMonth, required this.CurrentDate, required this.formatter, required this.CurrentType});
+
+  @override
+  State<_ExpenseInfo> createState() => __ExpenseInfoState();
+}
+
+class __ExpenseInfoState extends State<_ExpenseInfo> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.CurrentType == "day") {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildRow(
+            label: 'ใช้ไปทั้งหมด',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.red[600]),
+            value: '฿${formatNumber(widget.GrandTotal.toString(), removeDecimal: true, withCommas: true)}',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.red[600]),
+          ),
+          _buildRow(
+            label: 'ใช้ได้ต่อวัน',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '฿${formatNumber((widget.PerMonth / widget.formatter.getDaysInMonth(widget.CurrentDate.toString())).toString(), removeDecimal: true, withCommas: true)}',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'คงเหลือเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '฿${formatNumber(30.toString(), removeDecimal: true, withCommas: true)}',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'วันเหลือในเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+        ],
+      );
+    }
+    if (widget.CurrentType == "month") {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildRow(
+            label: 'วันเหลือในเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+        ],
+      );
+    }
+    if (widget.CurrentType == "year") {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildRow(
+            label: 'asdasd',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+        ],
+      );
+    }
+    return Text('');
+  }
+
+  Widget _buildRow({
+    String label = "...",
+    String value = "0.00",
+    TextStyle valueStyle = const TextStyle(),
+    TextStyle labelStyle = const TextStyle(),
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          AutoSizeText(
+            label,
+            maxLines: 1,
+            minFontSize: 18,
+            maxFontSize: 20,
+            overflow: TextOverflow.ellipsis,
+            style: labelStyle,
+          ),
+          AutoSizeText(
+            widget.isLoading ? "Calculating..." : value,
+            maxLines: 1,
+            minFontSize: 18,
+            maxFontSize: 20,
+            overflow: TextOverflow.ellipsis,
+            style: valueStyle,
+          ),
+        ],
+      ),
     );
   }
 }

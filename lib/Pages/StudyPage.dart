@@ -360,6 +360,7 @@ class SetCard extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
+              flex: 4,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
@@ -372,6 +373,7 @@ class SetCard extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 6,
               child: Container(
                 padding: const EdgeInsets.only(left: 10),
                 height: 100,

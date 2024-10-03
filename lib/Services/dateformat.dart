@@ -114,4 +114,10 @@ class ThaiDateFormatter {
     String formattedDate = '${newDate.day.toString().padLeft(2, '0')}-${newDate.month.toString().padLeft(2, '0')}-${newDate.year}';
     return formattedDate;
   }
+
+  int getDaysInMonth(String inputDate) {
+    final DateTime date = _parseDate(inputDate);
+    int daysInMonth = DateTime(date.year, date.month + 1, 0).day; 
+    return daysInMonth;
+  }
 }

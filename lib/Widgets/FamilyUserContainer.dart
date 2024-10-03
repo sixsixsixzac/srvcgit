@@ -102,15 +102,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
                             });
                           },
                         ),
-                      IconButton(
-                        icon: const Icon(Icons.info, color: Colors.orange),
-                        onPressed: () {
-                          _toolbarTimer?.cancel();
-                          setState(() {
-                            _showToolbar = false;
-                          });
-                        },
-                      ),
+           
                     ],
                   ),
                 ),
