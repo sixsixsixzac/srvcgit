@@ -21,9 +21,9 @@ class Mainpage extends StatefulWidget {
 }
 
 class _MainpageState extends State<Mainpage> {
-  @override
   final ApiService apiService = ApiService(serverURL);
 
+  @override
   bool mounted = false;
   List<Map<String, dynamic>> plans = [];
   List<Map<String, dynamic>> expenses = [];

@@ -21,41 +21,45 @@ class UserModal extends StatefulWidget {
 
 class _UserModalState extends State<UserModal> {
   final ApiService apiService = ApiService(serverURL);
+  final formatter = ThaiDateFormatter();
+
   List<Topexpense> expenseData = [];
+
+  bool _isLoading = true;
+
   String? CurrentDate;
   String CurrentType = "day";
   String ModalLabel = '';
 
   int CurrentYear = DateTime.now().year;
-  int CurrentIndex = 0;
+  int CurrentIndex = 1;
   double ExpenseGrandTotal = 0.00;
-  final formatter = ThaiDateFormatter();
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      CurrentDate = getCurrentDate();
-      ModalLabel = formatter.format(CurrentDate!, type: 'day');
-    });
-    _fetch();
-  }
-
-  Future<void> _fetch() async {
-    await _getTopExpense();
+    _updateVariable('month', 1);
+    _getTopExpense();
   }
 
   Future<List<Topexpense>> _getTopExpense() async {
+    setState(() => _isLoading = true);
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'getTopExpense',
+      'userID': widget.userData!.id.toString(),
+      'date': CurrentDate,
+      'type': CurrentType,
     });
     Map<String, dynamic> data = response;
+    await Future.delayed(const Duration(milliseconds: 300));
     setState(() {
       expenseData = (data['data'] as List).map((item) {
         double totalExpense = double.tryParse(item['total_expense']) ?? 0.0;
         ExpenseGrandTotal += totalExpense;
         return Topexpense.fromJson(item);
       }).toList();
+
+      _isLoading = false;
     });
     return expenseData;
   }
@@ -111,19 +115,28 @@ class _UserModalState extends State<UserModal> {
                         label: "รายวัน",
                         index: 0,
                         currentIndex: CurrentIndex,
-                        onTab: (index) => setState(() => _updateVariable('day', index)),
+                        onTab: (index) async {
+                          setState(() => _updateVariable('day', index));
+                          await _getTopExpense();
+                        },
                       ),
                       NavTab(
                         label: "รายเดือน",
                         index: 1,
                         currentIndex: CurrentIndex,
-                        onTab: (index) => setState(() => _updateVariable('month', index)),
+                        onTab: (index) async {
+                          setState(() => _updateVariable('month', index));
+                          await _getTopExpense();
+                        },
                       ),
                       NavTab(
                         label: "รายปี",
                         index: 2,
                         currentIndex: CurrentIndex,
-                        onTab: (index) => setState(() => _updateVariable('year', index)),
+                        onTab: (index) async {
+                          setState(() => _updateVariable('year', index));
+                          await _getTopExpense();
+                        },
                       ),
                     ],
                   ),
@@ -137,7 +150,7 @@ class _UserModalState extends State<UserModal> {
                     child: Column(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           height: 35,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,6 +160,7 @@ class _UserModalState extends State<UserModal> {
                                   setState(() {
                                     CurrentDate = formatter.back(CurrentDate!, CurrentType);
                                     ModalLabel = formatter.format(CurrentDate!, type: CurrentType);
+                                    _getTopExpense();
                                   });
                                 },
                                 child: Container(
@@ -178,6 +192,7 @@ class _UserModalState extends State<UserModal> {
                                   setState(() {
                                     CurrentDate = formatter.forward(CurrentDate!, CurrentType);
                                     ModalLabel = formatter.format(CurrentDate!, type: CurrentType);
+                                    _getTopExpense();
                                   });
                                 },
                                 child: Container(
@@ -200,117 +215,151 @@ class _UserModalState extends State<UserModal> {
                           flex: 6,
                           child: Container(
                             padding: const EdgeInsets.all(10),
-                            child: ListView.builder(
-                                itemCount: expenseData.length,
-                                itemBuilder: (context, index) {
-                                  final expen = expenseData[index];
-                                  String totalExpenseString = expen.total_expense.toString();
-                                  double totalExpense = double.tryParse(totalExpenseString) ?? 0.0;
-                                  ExpenseGrandTotal += totalExpense;
-                          
-                                  return Container(
-                                    margin: const EdgeInsets.only(bottom: 2),
-                                    height: 60,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                    borderRadius: BorderRadius.all(
-                                                      Radius.circular(8.00),
-                                                    ),
-                                                    color: Colors.indigo,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        blurRadius: 1,
-                                                        color: Colors.grey,
-                                                        offset: Offset(0, 0),
-                                                      ),
-                                                    ]),
-                                                margin: const EdgeInsets.all(5),
-                                                width: double.infinity,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: Center(
-                                                        child: Container(
-                                                          decoration: const BoxDecoration(
-                                                            color: Colors.white,
+                            child: _isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : (expenseData.isEmpty)
+                                    ? Container(
+                                        width: MediaQuery.of(context).size.width * 1,
+                                        height: MediaQuery.of(context).size.height * 0.30,
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(10),
+                                          ),
+                                          color: Colors.grey[200],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/icons/empty-folder.png',
+                                              height: 100,
+                                            ),
+                                            const AutoSizeText(
+                                              "ไม่พบรายการ",
+                                              maxLines: 1,
+                                              minFontSize: 20,
+                                              maxFontSize: 30,
+                                              style: TextStyle(
+                                                fontFamily: 'thaifont',
+                                                color: Colors.blueAccent,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: expenseData.length,
+                                        itemBuilder: (context, index) {
+                                          final expen = expenseData[index];
+                                          String totalExpenseString = expen.total_expense.toString();
+                                          double totalExpense = double.tryParse(totalExpenseString) ?? 0.0;
+                                          ExpenseGrandTotal += totalExpense;
+                                          return Container(
+                                            margin: const EdgeInsets.only(bottom: 2),
+                                            height: 60,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Stack(
+                                                    children: [
+                                                      Container(
+                                                        decoration: const BoxDecoration(
                                                             borderRadius: BorderRadius.all(
                                                               Radius.circular(8.00),
                                                             ),
-                                                          ),
-                                                          height: 40,
-                                                          width: 40,
-                                                          child: Center(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(3.0),
-                                                              child: Image.asset('assets/images/types/${expen.type_name == "อื่นๆ" ? 'other.png' : expen.type_img}'),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 8,
-                                                      child: Container(
-                                                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                                                            color: Colors.indigo,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                blurRadius: 1,
+                                                                color: Colors.grey,
+                                                                offset: Offset(0, 0),
+                                                              ),
+                                                            ]),
+                                                        margin: const EdgeInsets.all(5),
+                                                        width: double.infinity,
                                                         child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            AutoSizeText(
-                                                              expen.type_name,
-                                                              maxLines: 1,
-                                                              minFontSize: 16,
-                                                              maxFontSize: 20,
-                                                              overflow: TextOverflow.ellipsis,
-                                                              style: const TextStyle(color: Colors.white, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                                                            Expanded(
+                                                              flex: 2,
+                                                              child: Center(
+                                                                child: Container(
+                                                                  decoration: const BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    borderRadius: BorderRadius.all(
+                                                                      Radius.circular(8.00),
+                                                                    ),
+                                                                  ),
+                                                                  height: 40,
+                                                                  width: 40,
+                                                                  child: Center(
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.all(3.0),
+                                                                      child: Image.asset('assets/images/types/${expen.type_name == "อื่นๆ" ? 'other.png' : expen.type_img}'),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            AutoSizeText(
-                                                              '฿${formatNumber(expen.total_expense, withCommas: true)}',
-                                                              maxLines: 1,
-                                                              minFontSize: 16,
-                                                              maxFontSize: 20,
-                                                              overflow: TextOverflow.ellipsis,
-                                                              style: TextStyle(color: HexColor('#FABC3F'), fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                                                            Expanded(
+                                                              flex: 8,
+                                                              child: Container(
+                                                                margin: const EdgeInsets.symmetric(horizontal: 5),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    AutoSizeText(
+                                                                      expen.type_name,
+                                                                      maxLines: 1,
+                                                                      minFontSize: 16,
+                                                                      maxFontSize: 20,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: const TextStyle(color: Colors.white, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                                                                    ),
+                                                                    AutoSizeText(
+                                                                      '฿${formatNumber(expen.total_expense, withCommas: true)}',
+                                                                      maxLines: 1,
+                                                                      minFontSize: 16,
+                                                                      maxFontSize: 20,
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      style: TextStyle(color: HexColor('#FABC3F'), fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Positioned(
-                                                top: 5,
-                                                left: 0,
-                                                right: 0,
-                                                child: Align(
-                                                  alignment: Alignment.topCenter,
-                                                  child: AutoSizeText(
-                                                    maxLines: 1,
-                                                    minFontSize: 6,
-                                                    maxFontSize: 20,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    '${formatNumber(expen.percentage, removeDecimal: false)}%',
-                                                    style: TextStyle(
-                                                      fontFamily: 'thaifont',
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.grey[200]?.withOpacity(0.4),
-                                                    ),
+                                                      Positioned(
+                                                        top: 5,
+                                                        left: 0,
+                                                        right: 0,
+                                                        child: Align(
+                                                          alignment: Alignment.topCenter,
+                                                          child: AutoSizeText(
+                                                            maxLines: 1,
+                                                            minFontSize: 6,
+                                                            maxFontSize: 20,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            '${formatNumber(expen.percentage, removeDecimal: false)}%',
+                                                            style: TextStyle(
+                                                              fontFamily: 'thaifont',
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.grey[200]?.withOpacity(0.4),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                              ],
+                                            ),
+                                          );
+                                        }),
                           ),
                         ),
                         Container(

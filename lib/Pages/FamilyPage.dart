@@ -9,6 +9,7 @@ import 'package:srvc/Pages/_Family/_FamJoin.dart';
 import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/AppPallete.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Services/auth_provider.dart';
 import 'dart:async';
 
@@ -40,7 +41,9 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Future<void> _checkGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final response = await _fetch_check_group(auth.id);
 
@@ -100,6 +103,7 @@ class _FamilyPageState extends State<FamilyPage> {
   Widget build(BuildContext context) {
     final FamState = Provider.of<FamilyModel>(context, listen: true);
     return Scaffold(
+      backgroundColor: (_isLoading == true) ? Colors.indigo : HexColor('#ffffff'),
       appBar: FamState.isModalVisible
           ? null
           : AppBar(
@@ -127,10 +131,20 @@ class _FamilyPageState extends State<FamilyPage> {
             ),
       body: Stack(
         children: [
-          if (_isLoading) const Center(child: CircularProgressIndicator()),
-          if (!FamState.hasGroup && !FamState.isJoining) FamilyWelcomePage(onCreated: () => _checkGroup),
-          if (FamState.hasGroup) FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members),
-          if (FamState.isJoining) const FamilyJoinGroupPage(),
+          if (_isLoading)
+            Container(
+                color: Colors.indigo,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ))
+          else if (!FamState.hasGroup && !FamState.isJoining)
+            FamilyWelcomePage(onCreated: () => _checkGroup())
+          else if (FamState.hasGroup)
+            FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members)
+          else if (FamState.isJoining)
+            const FamilyJoinGroupPage(),
         ],
       ),
     );
@@ -202,8 +216,4 @@ class CustomPopupMenuButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class FamState {
-  static String level = "M";
 }

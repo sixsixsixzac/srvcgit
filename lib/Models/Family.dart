@@ -72,6 +72,6 @@ class FamilyModel with ChangeNotifier {
   }
 
   void displayWidget() {
-    if (this.hasGroup == true) ;
+    if (hasGroup == true) {}
   }
 }
