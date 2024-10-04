@@ -5,7 +5,7 @@ import 'package:srvc/Models/_AddExpense/menu_options.dart';
 import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Services/Shortcut.dart';
 import 'dart:convert';
-
+import 'package:srvc/Services/_Expense/numpad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddExpense extends StatefulWidget {
@@ -67,10 +67,13 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                       size: 20.0,
                       color: AppPallete.white,
                     ),
-                    Icon(
-                      FontAwesomeIcons.times,
-                      size: 20.0,
-                      color: AppPallete.white,
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(
+                        FontAwesomeIcons.times,
+                        size: 20.0,
+                        color: AppPallete.white,
+                      ),
                     ),
                   ],
                 ),
@@ -118,7 +121,57 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                   color: AppPallete.backgroundColor,
                 ),
                 width: double.infinity,
-                child: Text('test'),
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 5, left: 1, bottom: 5),
+                              child: Container(
+                                height: 40,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    labelText: "จำนวนเงิน",
+                                    border: OutlineInputBorder(),
+                                    
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 2.5,
+                                      color: Colors.transparent
+                                    ),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: AppPallete.green
+                                  ),
+                                  height: 40,
+                                  child: Center(child: Text("Save", style: TextStyle(color: Colors.white),)),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      _Mynumpad()
+                    ],
+                  ),
+                ),
               ),
             )
           ],
@@ -246,6 +299,87 @@ class ___ListOptionStateState extends State<__ListOptionState> {
           );
         }),
       ),
+    );
+  }
+}
+
+class _Mynumpad extends StatefulWidget {
+  const _Mynumpad({super.key});
+
+  @override
+  State<_Mynumpad> createState() => __MynumpadState();
+}
+
+class __MynumpadState extends State<_Mynumpad> {
+  List<Map<String, dynamic>> numkeys = Numpad.numpadKeys;
+  @override
+  Widget build(BuildContext context) {
+    
+    return createNumpad();
+  }
+
+  Widget createNumpad(){
+    int maxKeysPerRow = 3;
+    List<Widget> currentRowItems = [];
+    List<Widget> rows = [];
+
+    for (var item in numkeys) {
+      Widget key = Placeholder();
+      if (item['type'] == 'functional') {
+        key = Expanded(
+          child: GestureDetector(
+            onTap: item['ontap'],
+            child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 2,
+                    color: Colors.grey
+                  ),
+                  borderRadius: BorderRadius.circular(5)
+                ),
+                child: Center(child: Text(item['key'])),
+                height: 40,
+              ),
+            ),
+          ),
+        );
+      } else if (item['type'] == 'number') {
+        key = Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 2,
+                  color: Colors.grey
+                ),
+                borderRadius: BorderRadius.circular(5)
+              ),
+              child: Center(child: Text(item['key'])),
+              height: 40,
+            ),
+          ),
+        );
+      }
+
+      currentRowItems.add(key);
+
+      if (currentRowItems.length >= maxKeysPerRow) {
+        rows.add(Row(children: currentRowItems,));
+        currentRowItems = [];
+      }
+    }
+
+    if (currentRowItems.isNotEmpty) {
+      rows.add(Row(
+        children: currentRowItems,
+      ));
+    }
+
+    return Column(
+      children: rows,
     );
   }
 }
