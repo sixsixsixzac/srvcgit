@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Services/APIService.dart';
 
@@ -70,4 +73,33 @@ class UserModel {
       throw Exception("Failed to load user with id: $userId");
     }
   }
+}
+
+Future<void> storeUserData(Map<String, dynamic> userData) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String jsonString = jsonEncode({
+    'id': userData['id'],
+    'name': userData['name'],
+    'phone': userData['phone'],
+    'password': userData['password'],
+    'income': userData['income'],
+    'update_at': userData['update_at'],
+    'created_at': userData['created_at']
+  });
+
+  await prefs.setString('user_data', jsonString);
+}
+
+Future<Map<String, dynamic>> getUserData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String? jsonString = prefs.getString('user_data');
+
+  if (jsonString != null) {
+    return jsonDecode(jsonString) as Map<String, dynamic>;
+  }
+
+
+  return {};
 }

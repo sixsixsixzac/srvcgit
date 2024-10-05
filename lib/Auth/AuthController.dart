@@ -1,12 +1,13 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/AppPallete.dart';
+
 import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Widgets/Fetching.dart';
 import 'package:srvc/Widgets/Loading.dart';
 
 class Authcontroller extends StatefulWidget {
@@ -44,7 +45,7 @@ class _AuthcontrollerState extends State<Authcontroller> {
             } else {
               final isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
 
-              return isLoggedIn ? const HomePage() : const LoginPage();
+              return isLoggedIn ? const FetchingContainer(userID: 25,) : const LoginPage();
             }
           },
         ),

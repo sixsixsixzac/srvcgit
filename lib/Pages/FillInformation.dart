@@ -1,10 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Services/AppPallete.dart';
-import 'package:http/http.dart' as http; // Make sure to add http package to your pubspec.yaml
-import 'dart:convert'; // For jsonEncode
+import 'package:srvc/Pages/AppPallete.dart';
+import 'package:http/http.dart' as http;
+import 'package:srvc/Providers/FetchingHome.dart';
+import 'dart:convert';
+import 'package:srvc/Services/auth_provider.dart';
 
 class FillinformationPage extends StatefulWidget {
   const FillinformationPage({super.key});
@@ -18,21 +22,42 @@ class _FillinformationPageState extends State<FillinformationPage> {
   final _incomeController = TextEditingController();
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      final response = await http.post(
-        Uri.parse('$serverURL/SRVC/AuthController.php/updateIncome'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'income': _incomeController.text,
-          'act': 'updateIncome',
-        }),
-      );
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
 
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Submission successful!')));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Submission failed.')));
+    if (_formKey.currentState!.validate()) {
+      try {
+        final response = await http.post(
+          Uri.parse('$serverURL/SRVC/AuthController.php/updateIncome'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'income': _incomeController.text,
+            'act': 'updateIncome',
+            'userID': auth.id,
+          }),
+        );
+
+        if (!mounted) return;
+
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        bool status = data['status'];
+
+        if (status) {
+          userDataProvider.updateIncome(_incomeController.text);
+          Navigator.pushReplacementNamed(context, '/Home');
+        } else {
+          _showSnackBar('Submission failed.');
+        }
+      } catch (e) {
+        // Handle exceptions here
+        _showSnackBar('An error occurred: $e');
       }
+    }
+  }
+
+  void _showSnackBar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -78,6 +103,9 @@ class _FillinformationPageState extends State<FillinformationPage> {
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'กรุณากรอกข้อมูล';
@@ -89,16 +117,16 @@ class _FillinformationPageState extends State<FillinformationPage> {
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppPallete.white,
+                    backgroundColor: AppPallete.green,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
                     minimumSize: Size(200, 50),
                   ),
-                  child: const Text(
+                  child: Text(
                     'ยืนยัน',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18, color: AppPallete.white),
                   ),
                 ),
               ],

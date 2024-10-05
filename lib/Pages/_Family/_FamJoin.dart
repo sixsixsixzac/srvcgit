@@ -1,10 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Models/Family.dart';
+import 'package:srvc/Models/user.dart';
 import 'package:srvc/Services/APIService.dart';
 
 class FamilyJoinGroupPage extends StatefulWidget {
-  const FamilyJoinGroupPage({super.key});
+  final VoidCallback joined;
+  const FamilyJoinGroupPage({super.key, required this.joined});
 
   @override
   State<FamilyJoinGroupPage> createState() => _FamilyJoinGroupPageState();
@@ -21,22 +25,23 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
   }
 
   Future<void> _confirmJoin(context) async {
-    // final familyModel = Provider.of<FamilyModel>(context, listen: false);
+    final familyModel = Provider.of<FamilyModel>(context, listen: false);
+    final userData = await getUserData();
 
-    // if (_isValid == false || getPinCode().length == 5) return;
+    if (_isValid == false || getPinCode().length == 5) return;
 
     // final auth = Provider.of<AuthProvider>(context, listen: false);
-    // final data = await apiService.post("/SRVC/FamilyController.php", {
-    //   'act': 'joinGroup',
-    //   'userID': auth.id,
-    //   'group_code': getPinCode().toString(),
-    // });
-
-    // if (data['status'] == true) {
-    //   familyModel.setCode(data['data']['group_code']);
-    //   familyModel.setHas(true);
-
-    // } else {}
+    final data = await apiService.post("/SRVC/FamilyController.php", {
+      'act': 'joinGroup',
+      'userID': userData['id'],
+      'group_code': getPinCode().toString(),
+    });
+    // print(data);
+    if (data['status'] == true) {
+      familyModel.setCode(data['data']['group_code']);
+      familyModel.setHas(true);
+      widget.joined();
+    } else {}
   }
 
   @override
@@ -107,7 +112,6 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
           GestureDetector(
             onTap: () {
               _confirmJoin(context);
-              print("asd");
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),

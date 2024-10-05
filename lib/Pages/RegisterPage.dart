@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       if (response['status'] == true) {
                                         String name = _userNameController.text;
                                         String phone = _phoneController.text;
-                                        String userId = response['status']['id'].toString();
+                                        String userId = response['data']['id'].toString();
                                         await Provider.of<AuthProvider>(context, listen: false).login(userId, name, phone);
                                         Navigator.pushReplacement(
                                           context,

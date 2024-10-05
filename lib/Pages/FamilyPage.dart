@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/group_members.dart';
+import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/_Family/_FamHome.dart';
 import 'package:srvc/Pages/_Family/_FamJoin.dart';
 import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Services/auth_provider.dart';
 import 'dart:async';
@@ -119,7 +119,7 @@ class _FamilyPageState extends State<FamilyPage> {
               leading: IconButton(
                 icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
                 onPressed: () {
-                  if (FamState.isJoining) {
+                  if (FamState.isJoining && FamState.hasGroup == false) {
                     FamState.setJoin(false);
                     FamState.setTitle("สร้างกลุ่ม");
                   } else {
@@ -144,7 +144,7 @@ class _FamilyPageState extends State<FamilyPage> {
           else if (FamState.hasGroup)
             FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members)
           else if (FamState.isJoining)
-            const FamilyJoinGroupPage(),
+            FamilyJoinGroupPage(joined: () => _checkGroup()),
         ],
       ),
     );
@@ -199,14 +199,15 @@ class CustomPopupMenuButton extends StatelessWidget {
                   style: TextStyle(fontFamily: 'thaifont'),
                 ),
               ),
-            const PopupMenuItem<String>(
-              value: 'delGroup',
-              child: Text(
-                'ลบกลุ่ม',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'thaifont'),
+            if (FamState.level == "A")
+              const PopupMenuItem<String>(
+                value: 'delGroup',
+                child: Text(
+                  'ลบกลุ่ม',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: 'thaifont'),
+                ),
               ),
-            ),
           ];
         },
         padding: EdgeInsets.zero,

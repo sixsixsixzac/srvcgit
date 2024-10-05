@@ -8,12 +8,12 @@ import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
+import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
-
+  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
     MultiProvider(
@@ -21,6 +21,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => IndexProvider()),
         ChangeNotifierProvider(create: (_) => FamilyModel()),
+        ChangeNotifierProvider(create: (_) => UserDataProvider()),
       ],
       child: const MyApp(),
     ),

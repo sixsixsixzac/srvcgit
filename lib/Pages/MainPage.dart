@@ -1,17 +1,24 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Models/user.dart';
+import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/FamilyPage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
-import 'package:srvc/Services/AppPallete.dart';
+import 'package:srvc/Providers/FetchingHome.dart';
+
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 import 'package:srvc/Services/dateformat.dart';
+import 'package:srvc/Services/numberFormat.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -22,7 +29,7 @@ class Mainpage extends StatefulWidget {
 
 class _MainpageState extends State<Mainpage> {
   final ApiService apiService = ApiService(serverURL);
-
+  Map<String, dynamic>? userData;
   @override
   bool mounted = false;
   List<Map<String, dynamic>> plans = [];
@@ -35,12 +42,10 @@ class _MainpageState extends State<Mainpage> {
   void initState() {
     super.initState();
     _loadUserData();
-    // logoutUser();
   }
 
   void logoutUser() {
     Provider.of<AuthProvider>(context, listen: false).logout();
-
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginPage()),
       (Route<dynamic> route) => false,
@@ -48,16 +53,19 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void _loadUserData() async {
-    // final FamState = Provider.of<FamilyModel>(context, listen: false);
-    final authProvider = context.read<AuthProvider>();
-    userName = authProvider.name;
-    userPhone = authProvider.phone;
+    final DataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('ข้อมูลผู้ใช้');
+    final Data = jsonDecode(DataString!);
+
+    userName = Data['data']['name'];
+    userPhone = Data['data']['phone'];
 
     final responses = await Future.wait([_loadPlan(), _loadExpense()]);
     final planData = responses[0]['data'] ?? [];
     final expenseData = responses[1]['data'] ?? [];
 
     setState(() {
+      userData = Data['data'];
+
       plans = List<Map<String, dynamic>>.from(planData);
       expenses = List<Map<String, dynamic>>.from(expenseData);
     });
@@ -178,7 +186,7 @@ class _MainpageState extends State<Mainpage> {
                 Row(
                   children: [
                     AutoSizeText(
-                      "สวัสดีคุณ $userName",
+                      "สวัสดีคุณ ${userName ?? ""}",
                       maxLines: 1,
                       minFontSize: 16,
                       maxFontSize: 18,
@@ -311,7 +319,9 @@ class _MainpageState extends State<Mainpage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _buildColumn("-฿0.00", "ทั้งหมด", Colors.red, bold: true),
-                            _buildColumn("฿0.00", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true),
+                            if (userData != null) ...[
+                              _buildColumn("฿${formatNumber(userData!['income'].toString(), withCommas: true)}", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true)
+                            ],
                             _buildColumn("฿0.00", "ค่าใช้จ่าย", Colors.red, bold: true),
                           ],
                         ),

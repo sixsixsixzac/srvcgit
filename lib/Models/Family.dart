@@ -6,21 +6,25 @@ class FamilyModel with ChangeNotifier {
   String _groupCode = '';
   String _title = '';
   String _level = '';
+  String _currentState = "";
+
   bool _hasGroup = false;
   bool _isModalVisible = false;
   bool _isJoining = false;
-  String _currentState = "";
 
   FamilyModel();
 
-  String get title => _title;
   List<GroupMembersModel> get members => _members;
+
+  String get title => _title;
   String get groupCode => _groupCode;
   String get level => _level;
   String get currentState => _currentState;
+
   bool get hasGroup => _hasGroup;
   bool get isModalVisible => _isModalVisible;
   bool get isJoining => _isJoining;
+
   void reset() {
     _groupCode = '';
     _title = '';
