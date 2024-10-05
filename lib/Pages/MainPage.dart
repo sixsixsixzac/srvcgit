@@ -14,13 +14,15 @@ import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/IndexProvider.dart';
+
 import 'package:srvc/Services/auth_provider.dart';
 import 'package:srvc/Services/dateformat.dart';
 import 'package:srvc/Services/numberFormat.dart';
 
 class Mainpage extends StatefulWidget {
-  const Mainpage({super.key});
+  final Function(int) ontab;
+  final int currentIndex;
+  const Mainpage({super.key, required this.ontab, required this.currentIndex});
 
   @override
   State<Mainpage> createState() => _MainpageState();
@@ -164,11 +166,7 @@ class _MainpageState extends State<Mainpage> {
                           maxFontSize: 46,
                           overflow: TextOverflow.ellipsis),
                       GestureDetector(
-                        onTap: () {
-                          final indexProvider = Provider.of<IndexProvider>(context, listen: false);
-                          indexProvider.updateIndex(4);
-                          //  Navigator.pushReplacementNamed(context, '/Setting')
-                        },
+                        onTap: () => widget.ontab(4),
                         child: Container(
                           height: 40,
                           width: 40,
@@ -195,9 +193,7 @@ class _MainpageState extends State<Mainpage> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Provider.of<IndexProvider>(context, listen: false).updateIndex(3);
-                  },
+                  onTap: () => widget.ontab(3),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.1,
                     decoration: BoxDecoration(

@@ -11,7 +11,6 @@ import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
-import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Widgets/CustomButtonBar.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,37 +22,50 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final ApiService _apiService;
+  int currentIndex = 2;
   bool _fillIncome = false;
 
-  final List<Widget> _widgetPages = const [
-    WalletPage(),
-    ReportPage(),
-    Mainpage(),
-    StudyPage(),
-    SettingPage(),
-  ];
+  late final List<Widget> _widgetPages;
 
   @override
   void initState() {
     super.initState();
     _apiService = ApiService(serverURL);
 
+    // Initialize the _widgetPages list in initState
+    _widgetPages = [
+      WalletPage(),
+      ReportPage(),
+      Mainpage(
+        ontab: (index) => updateIndex(index),
+        currentIndex: currentIndex,
+      ),
+      StudyPage(),
+      SettingPage(),
+    ];
+
     _fetchUserData();
+  }
+
+  void updateIndex(int index) {
+    setState(() {
+      currentIndex = index;
+    });
   }
 
   Future<void> _fetchUserData() async {
     try {
-      final DataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('ข้อมูลผู้ใช้');
-      if (DataString == null) return;
+      final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('ข้อมูลผู้ใช้');
+      if (dataString == null) return;
 
-      final data = jsonDecode(DataString);
+      final data = jsonDecode(dataString);
       final userData = data['data'] as Map<String, dynamic>;
 
       if (userData.isNotEmpty && mounted) {
-        final NothasIncomeData = userData['income'] == null;
+        final notHasIncomeData = userData['income'] == null;
 
         setState(() => _fillIncome = userData['income'] != null);
-        if (NothasIncomeData) {
+        if (notHasIncomeData) {
           if (mounted) {
             Navigator.pushReplacement(
               context,
@@ -69,14 +81,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final indexProvider = Provider.of<IndexProvider>(context);
-
     return Scaffold(
       backgroundColor: HexColor("#f5f5f7"),
-      body: _fillIncome ? SafeArea(child: _widgetPages[indexProvider.currentIndex]) : FillinformationPage(),
+      body: _fillIncome ? SafeArea(child: _widgetPages[currentIndex]) : FillinformationPage(),
       bottomNavigationBar: _fillIncome
           ? CustomButtonBar(
-              defaultIndex: indexProvider.currentIndex,
+              defaultIndex: currentIndex,
               imagePaths: const [
                 'assets/images/icons/wallet.png',
                 'assets/images/icons/analysis.png',
@@ -91,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 'ศึกษา',
                 'ตั้งค่า',
               ],
-              onTap: (index) => indexProvider.updateIndex(index),
+              onTap: (index) => updateIndex(index), // Updated to use the method
             )
           : null,
     );
