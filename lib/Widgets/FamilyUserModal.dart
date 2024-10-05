@@ -499,6 +499,24 @@ class __ExpenseInfoState extends State<_ExpenseInfo> {
             value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
             valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
           ),
+          _buildRow(
+            label: 'วันเหลือในเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'วันเหลือในเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'วันเหลือในเดือนนี้',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
         ],
       );
     }
@@ -506,6 +524,24 @@ class __ExpenseInfoState extends State<_ExpenseInfo> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          _buildRow(
+            label: 'asdasd',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'asdasd',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '${widget.formatter.getDaysInMonth(widget.CurrentDate.toString()) - DateTime.now().day} วัน',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
+          _buildRow(
+            label: 'asdasd',
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
+            value: '',
+            valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
+          ),
           _buildRow(
             label: 'asdasd',
             labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
