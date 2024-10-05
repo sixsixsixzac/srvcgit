@@ -157,12 +157,16 @@ class _MainpageState extends State<Mainpage> {
                           maxFontSize: 46,
                           overflow: TextOverflow.ellipsis),
                       GestureDetector(
-                        onTap: () => logoutUser(),
+                        onTap: () {
+                          final indexProvider = Provider.of<IndexProvider>(context, listen: false);
+                          indexProvider.updateIndex(4);
+                          //  Navigator.pushReplacementNamed(context, '/Setting')
+                        },
                         child: Container(
                           height: 40,
                           width: 40,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: const Icon(FontAwesomeIcons.user),

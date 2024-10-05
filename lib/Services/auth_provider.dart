@@ -36,6 +36,7 @@ class AuthProvider with ChangeNotifier {
     _id = prefs.getString('id') ?? ''; // Load ID
     _name = prefs.getString('name') ?? '';
     _phone = prefs.getString('phone') ?? '';
+
     notifyListeners();
   }
 

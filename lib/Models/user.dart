@@ -8,6 +8,7 @@ class UserModel {
   final String name;
   final String phone;
   final String password;
+  final int income;
   final DateTime updateAt;
   final DateTime createdAt;
 
@@ -18,6 +19,7 @@ class UserModel {
     required this.password,
     required this.updateAt,
     required this.createdAt,
+    required this.income,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class UserModel {
       name: json['name'],
       phone: json['phone'],
       password: json['password'],
+      income: json['income'],
       updateAt: DateTime.parse(json['update_at']),
       createdAt: DateTime.parse(json['created_at']),
     );
