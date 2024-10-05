@@ -7,6 +7,7 @@ class UserDataProvider with ChangeNotifier {
   final Map<String, Map<String, dynamic>> _data = {};
   bool _isLoading = false;
   final List<String> _fetchStatusMessages = [];
+  final Map<String, bool> _loadingStates = {};
 
   Map<String, Map<String, dynamic>> get data => _data;
   bool get isLoading => _isLoading;
@@ -24,6 +25,9 @@ class UserDataProvider with ChangeNotifier {
     };
 
     for (var entry in dataMap.entries) {
+      _loadingStates[entry.key] = true;
+      notifyListeners();
+
       _fetchStatusMessages.add('กำลังโหลด ${entry.key}...');
       notifyListeners();
 
@@ -37,11 +41,10 @@ class UserDataProvider with ChangeNotifier {
           'success': true,
         };
 
-        // Save result to Shared Preferences
         await _save(entry.key, result);
 
         _fetchStatusMessages.removeLast();
-        _fetchStatusMessages.add('${entry.key} loaded successfully.');
+        // _fetchStatusMessages.add('${entry.key} loaded successfully.');
       } catch (e) {
         _data[entry.key] = {
           'text': 'Error loading ${entry.key}',
@@ -51,6 +54,9 @@ class UserDataProvider with ChangeNotifier {
         };
         _fetchStatusMessages.removeLast();
         _fetchStatusMessages.add('Error loading ${entry.key}');
+      } finally {
+        _loadingStates[entry.key] = false;
+        notifyListeners();
       }
     }
 
@@ -58,6 +64,8 @@ class UserDataProvider with ChangeNotifier {
     Navigator.pushReplacementNamed(context, '/Home');
     notifyListeners();
   }
+
+  bool isEntryLoading(String key) => _loadingStates[key] ?? false;
 
   Future<void> _save(String key, dynamic result) async {
     final prefs = await SharedPreferences.getInstance();
@@ -70,7 +78,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getUserData(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 300));
+    // await Future.delayed(Duration(milliseconds: 350));
     final response = await apiService.post("/SRVC/AuthController.php", {
       'act': 'getAuthUser',
       'userID': userID,
@@ -79,7 +87,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getUserGroup(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 300));
+    // await Future.delayed(Duration(milliseconds: 350));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'getGroup',
       'userID': userID,
@@ -88,7 +96,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getGroupData(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 300));
+    // await Future.delayed(Duration(milliseconds: 350));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'checkGroup',
       'userID': userID,

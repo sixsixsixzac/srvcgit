@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
-import 'package:srvc/Services/APIService.dart'; // Make sure to add the provider package
+import 'package:srvc/Services/APIService.dart';
 
 class FetchingContainer extends StatefulWidget {
   final int userID;
@@ -31,42 +31,67 @@ class _FetchingContainerState extends State<FetchingContainer> {
         builder: (context, dataProvider, child) {
           return Scaffold(
             backgroundColor: AppPallete.purple,
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      'กำลังโหลดข้อมูล...',
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'กำลังโหลดข้อมูล...',
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: AppPallete.white,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'thaifont',
+                    ),
+                  ),
+                ),
+                ...dataProvider.data.entries.map((entry) {
+                  IconData statusIcon;
+                  Color iconColor;
+            
+                  if (dataProvider.isEntryLoading(entry.key)) {
+                    statusIcon = Icons.sync;
+                    iconColor = AppPallete.white;
+                  } else {
+                    statusIcon = entry.value['success'] ? Icons.check : Icons.error;
+                    iconColor = entry.value['success'] ? AppPallete.green : AppPallete.error;
+                  }
+            
+                  return ListTile(
+                    title: Text(
+                      entry.value['text'],
                       style: TextStyle(
-                        fontSize: 24,
                         color: AppPallete.white,
-                        fontWeight: FontWeight.bold,
                         fontFamily: 'thaifont',
                       ),
                     ),
-                  ),
-                  ...dataProvider.data.entries.map((entry) {
-                    final status = entry.value['success'] ? Icons.check : Icons.error;
-                    final color = entry.value['success'] ? AppPallete.green : AppPallete.error;
-
-                    return ListTile(
-                      title: Text(
-                        entry.value['text'],
-                        style: TextStyle(
-                          color: AppPallete.white,
-                          fontFamily: 'thaifont',
-                        ),
+                    leading: Icon(
+                      statusIcon,
+                      color: iconColor,
+                    ),
+                  );
+                }),
+                ...dataProvider.fetchStatusMessages.map((message) {
+                  return ListTile(
+                    title: Text(
+                      message,
+                      style: TextStyle(
+                        color: AppPallete.white,
+                        fontFamily: 'thaifont',
                       ),
-                      leading: Icon(
-                        status,
-                        color: color,
+                    ),
+                    leading: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppPallete.white,
                       ),
-                    );
-                  }).toList(),
-                ],
-              ),
+                    ),
+                  );
+                }),
+              ],
             ),
           );
         },
