@@ -78,7 +78,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getUserData(int userID, ApiService apiService) async {
-    // await Future.delayed(Duration(milliseconds: 350));
+    await Future.delayed(Duration(milliseconds: 1500));
     final response = await apiService.post("/SRVC/AuthController.php", {
       'act': 'getAuthUser',
       'userID': userID,
@@ -87,7 +87,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getUserGroup(int userID, ApiService apiService) async {
-    // await Future.delayed(Duration(milliseconds: 350));
+    await Future.delayed(Duration(milliseconds: 2000));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'getGroup',
       'userID': userID,
@@ -96,7 +96,7 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getGroupData(int userID, ApiService apiService) async {
-    // await Future.delayed(Duration(milliseconds: 350));
+    await Future.delayed(Duration(milliseconds: 1000));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'checkGroup',
       'userID': userID,
