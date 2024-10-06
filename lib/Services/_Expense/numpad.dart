@@ -24,9 +24,21 @@ class Numpad {
   }
 
   void keyPress(String key) {
-    if(key == '0' && value.isEmpty) return;
+    if(value.length == 1 && value[0] == '0' && key == '0') return;
     if(key == '.' && value.isEmpty) return;
     if(key == '.' && value[value.length-1] == '.') return;
-    value += key;
+
+    int maximum = 12;
+    int demical = value.indexOf('.');
+    if(demical != -1) {
+      maximum = 15;
+      if(value.length >= demical + 1 + 2) return;
+      if(value.length >= maximum) return;
+      value += key;
+    } else {
+      if(value.length >= maximum && key != '.') return;
+      value += key;
+    }
+    
   }
 }
