@@ -7,6 +7,8 @@ import 'package:srvc/Services/Shortcut.dart';
 import 'dart:convert';
 import 'package:srvc/Services/_Expense/numpad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Services/APIService.dart';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({super.key});
@@ -16,6 +18,7 @@ class AddExpense extends StatefulWidget {
 }
 
 class __AddExpenseState extends State<AddExpense> {
+  final ApiService apiService = ApiService(serverURL);
   @override
   Widget build(BuildContext context) {
     return const IncomeExpenseForm();
@@ -30,6 +33,7 @@ class IncomeExpenseForm extends StatefulWidget {
 }
 
 class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
+
   List<MenuItems>? menuItems;
   int activeOption = 0;
 
