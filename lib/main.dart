@@ -9,7 +9,6 @@ import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
-import 'package:srvc/Services/IndexProvider.dart';
 import 'package:srvc/Services/auth_provider.dart';
 
 void main() async {
@@ -19,7 +18,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => IndexProvider()),
         ChangeNotifierProvider(create: (_) => FamilyModel()),
         ChangeNotifierProvider(create: (_) => UserDataProvider()),
       ],
@@ -37,6 +35,7 @@ class MyApp extends StatelessWidget {
       color: Colors.black,
       fontFamily: 'thaifont',
     );
+
     return MaterialApp(
       routes: {
         '/Home': (context) => const HomePage(),
