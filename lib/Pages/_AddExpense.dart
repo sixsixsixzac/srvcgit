@@ -54,10 +54,9 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
         backgroundColor: Colors.indigo,
         body: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 8.0, right: 8.0),
-              child: SizedBox(
-                height: resize(context: context, type: 'h', value: 0.05),
+            SizedBox(
+              child: Padding(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,97 +80,111 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
             ),
             
             if (menuItems != null) ...[
-              _PreviewOptions(
-                menuItems: menuItems!,
-                activeOption: activeOption,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.arrowLeftLong,
-                    color: Colors.grey.withOpacity(0.35),
-                    size: 15,
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _PreviewOptions(
+                          menuItems: menuItems!,
+                          activeOption: activeOption,
+                        ),
+                        SizedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.arrowLeftLong,
+                                color: Colors.grey.withOpacity(0.35),
+                                size: 15,
+                              ),
+                              Icon(
+                                FontAwesomeIcons.arrowRightLong,
+                                color: Colors.grey.withOpacity(0.35),
+                                size: 15,
+                              ),
+                            ],
+                                        ),
+                          ),
+                        ),
+                        __ListOptionState(
+                          menuItems: menuItems!,
+                          ontap: (index) {
+                            setState(() => activeOption = index);
+                          },
+                          activeOption: activeOption,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    FontAwesomeIcons.arrowRightLong,
-                    color: Colors.grey.withOpacity(0.35),
-                    size: 15,
-                  ),
-                ],
-                            ),
-              ),
-              __ListOptionState(
-                menuItems: menuItems!,
-                ontap: (index) {
-                  setState(() => activeOption = index);
-                },
-                activeOption: activeOption,
+                ),
               ),
             ],
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.only(top: 15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25)),
-                  color: AppPallete.backgroundColor,
-                ),
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Column(
+            Container(
+              padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                color: AppPallete.backgroundColor,
+              ),
+              width: double.infinity,
+              height: resize(context: context, type: 'h', value: 0.475),
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 5, left: 1, bottom: 5),
-                              child: SizedBox(
-                                height: 40,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    labelText: "จำนวนเงิน",
-                                    border: OutlineInputBorder(),
-                                    
-                                  ),
-                                ),
+                      Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 4, left: 1, bottom: 4),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: Colors.grey
                               ),
+                              borderRadius: BorderRadius.circular(4)
+                            ),
+                            height: resize(context: context, type: 'h', value: 0.075),
+                            child: Center(child: Text(Numpad.value)),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2.5,
+                                  color: Colors.transparent
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppPallete.green
+                              ),
+                              height: resize(context: context, type: 'h', value: 0.075),
+                              child: Center(child: Text("Save", style: TextStyle(color: Colors.white),)),
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: GestureDetector(
-                              onTap: () {
-                                
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 2.5,
-                                      color: Colors.transparent
-                                    ),
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: AppPallete.green
-                                  ),
-                                  height: 40,
-                                  child: Center(child: Text("Save", style: TextStyle(color: Colors.white),)),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      _Mynumpad()
+                        ),
+                      )
                     ],
                   ),
-                ),
+                  _Mynumpad(ontap: (item){
+                    setState(() {
+                      item['ontap']();
+                    });
+                  })
+                ],
               ),
             )
           ],
@@ -191,16 +204,16 @@ class _PreviewOptions extends StatefulWidget {
 class __PreviewOptionsState extends State<_PreviewOptions> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: AppPallete.gradient3, width: 5),
-          color: AppPallete.backgroundColor,
-          borderRadius: BorderRadius.circular(1000),
-        ),
-        width: resize(context: context, type: 'w', value: 0.45),
-        height: resize(context: context, type: 'w', value: 0.45),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppPallete.gradient3, width: 5),
+        color: AppPallete.backgroundColor,
+        borderRadius: BorderRadius.circular(1000),
+      ),
+      width: 150,
+      height: 150,
+      child: Padding(
+        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -249,62 +262,68 @@ class __ListOptionState extends StatefulWidget {
 class ___ListOptionStateState extends State<__ListOptionState> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(widget.menuItems.length, (index) {
-          return Padding(
-            padding: EdgeInsets.fromLTRB(10, 12, 10, 0),
-            child: GestureDetector(
-              onTap: () {
-                widget.ontap(index);
-              },
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.transparent),
-                      shape: BoxShape.circle,
-                      color: Colors.white
-                    ),
-                    width: 50,
-                    height: 50,
-                    child: Center(
-                      child: Image.asset(
-                        widget.menuItems[index].menuIcons.path,
+    return SizedBox(
+      height: 90,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(widget.menuItems.length, (index) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(10, 12, 10, 0),
+              child: GestureDetector(
+                onTap: () {
+                  widget.ontap(index);
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.transparent),
+                        shape: BoxShape.circle,
+                        color: Colors.white
+                      ),
+                      width: 50,
+                      height: 50,
+                      child: Center(
+                        child: Image.asset(
+                          widget.menuItems[index].menuIcons.path,
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 8, bottom: 8),
-                      child: AutoSizeText(
-                        minFontSize: 8.0,
-                        maxFontSize: 14.0,
-                        maxLines: 1,
-                        widget.menuItems[index].text.th,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'thaifont',
-                            fontWeight: FontWeight.bold,
-                            color: widget.activeOption == index ? AppPallete.gradient3 : Colors.white,
-                            fontSize: 10),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    )
-                ],
+                    SizedBox(
+                      height: 25,
+                        child: Center(
+                          child: AutoSizeText(
+                            minFontSize: 8.0,
+                            maxFontSize: 14.0,
+                            maxLines: 1,
+                            widget.menuItems[index].text.th,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontFamily: 'thaifont',
+                                fontWeight: FontWeight.bold,
+                                color: widget.activeOption == index ? AppPallete.gradient3 : Colors.white,
+                                fontSize: 10),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
 }
 
 class _Mynumpad extends StatefulWidget {
-  const _Mynumpad({super.key});
+  final Function(dynamic) ontap;
+  const _Mynumpad({super.key, required this.ontap(item)});
 
   @override
   State<_Mynumpad> createState() => __MynumpadState();
@@ -325,10 +344,9 @@ class __MynumpadState extends State<_Mynumpad> {
 
     for (var item in numkeys) {
       Widget key = Placeholder();
-      if (item['type'] == 'functional') {
         key = Expanded(
           child: GestureDetector(
-            onTap: item['ontap'],
+            onTap: ()=> widget.ontap(item),
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: Container(
@@ -339,30 +357,12 @@ class __MynumpadState extends State<_Mynumpad> {
                   ),
                   borderRadius: BorderRadius.circular(5)
                 ),
-                height: 40,
-                child: Center(child: Text(item['key'])),
+                height: resize(context: context, type: 'h', value: 0.075),
+                child: Center(child: item['key']),
               ),
             ),
           ),
         );
-      } else if (item['type'] == 'number') {
-        key = Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: Colors.grey
-                ),
-                borderRadius: BorderRadius.circular(5)
-              ),
-              height: 40,
-              child: Center(child: Text(item['key'])),
-            ),
-          ),
-        );
-      }
 
       currentRowItems.add(key);
 
