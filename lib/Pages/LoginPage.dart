@@ -6,11 +6,11 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Services/HexColor.dart';
-import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Pages/RegisterPage.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/auth_provider.dart';
 import 'package:srvc/Widgets/CustomInput.dart';
+import 'package:srvc/Widgets/Fetching.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final ApiService apiService = ApiService(serverURL);
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   Future<Map<String, dynamic>> loginUser(String phone, String password) async {
     final response = await apiService.post("/SRVC/AuthController.php", {
       'phone': phone,
@@ -136,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                 if (status) {
                                   Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(builder: (context) => const HomePage()),
+                                    MaterialPageRoute(builder: (context) => FetchingContainer(userID: response['data']['id'])),
                                     (Route<dynamic> route) => false,
                                   );
                                 } else {

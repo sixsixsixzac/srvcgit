@@ -43,8 +43,9 @@ class _AuthcontrollerState extends State<Authcontroller> {
               return Center(child: Text('Error checking login status: ${snapshot.error}'));
             } else {
               final isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
+              final id = Provider.of<AuthProvider>(context).id;
 
-              return isLoggedIn ? const FetchingContainer(userID: 25,) : const LoginPage();
+              return isLoggedIn ? FetchingContainer(userID: int.parse(id)) : const LoginPage();
             }
           },
         ),

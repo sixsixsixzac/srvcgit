@@ -131,7 +131,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                             flex: 3,
                             child: Padding(
                               padding: EdgeInsets.only(right: 5, left: 1, bottom: 5),
-                              child: Container(
+                              child: SizedBox(
                                 height: 40,
                                 child: TextField(
                                   decoration: InputDecoration(
@@ -339,8 +339,8 @@ class __MynumpadState extends State<_Mynumpad> {
                   ),
                   borderRadius: BorderRadius.circular(5)
                 ),
-                child: Center(child: Text(item['key'])),
                 height: 40,
+                child: Center(child: Text(item['key'])),
               ),
             ),
           ),
@@ -357,8 +357,8 @@ class __MynumpadState extends State<_Mynumpad> {
                 ),
                 borderRadius: BorderRadius.circular(5)
               ),
-              child: Center(child: Text(item['key'])),
               height: 40,
+              child: Center(child: Text(item['key'])),
             ),
           ),
         );

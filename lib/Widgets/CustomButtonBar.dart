@@ -99,7 +99,7 @@ class _CustomButtonBarState extends State<CustomButtonBar> with SingleTickerProv
                   widget.labels[index],
                   style: TextStyle(
                     fontFamily: 'thaifont',
-                    color: selectedIndex == index ? Colors.indigo : Colors.grey,
+                    color: selectedIndex == index ? Colors.orange : Colors.grey,
                     fontWeight: selectedIndex == index ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
