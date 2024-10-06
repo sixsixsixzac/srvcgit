@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _apiService = ApiService(serverURL);
 
-    // Initialize the _widgetPages list in initState
+
     _widgetPages = [
       WalletPage(),
       ReportPage(),
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchUserData() async {
     try {
-      final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('ข้อมูลผู้ใช้');
+      final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
       if (dataString == null) return;
 
       final data = jsonDecode(dataString);
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 'ศึกษา',
                 'ตั้งค่า',
               ],
-              onTap: (index) => updateIndex(index), // Updated to use the method
+              onTap: (index) => updateIndex(index),
             )
           : null,
     );

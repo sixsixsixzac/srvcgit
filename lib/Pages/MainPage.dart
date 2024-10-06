@@ -54,7 +54,7 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void _loadUserData() async {
-    final DataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('ข้อมูลผู้ใช้');
+    final DataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
     final Data = jsonDecode(DataString!);
 
     userName = Data['data']['name'];

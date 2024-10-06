@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Services/APIService.dart';
 
 class UserDataProvider with ChangeNotifier {
@@ -19,9 +20,10 @@ class UserDataProvider with ChangeNotifier {
     _fetchStatusMessages.clear();
 
     final dataMap = {
-      'ข้อมูลผู้ใช้': () => _getUserData(userID, apiService),
-      'ข้อมูลกลุ่มสมาชิก': () => _getUserGroup(userID, apiService),
-      'ข้อมูลสมาชิก': () => _getGroupData(userID, apiService),
+      'UserData': () => _getUserData(userID, apiService),
+      'ExpenseData': () => _getUserExpense(userID, apiService),
+      'GroupMemberData': () => _getUserGroup(userID, apiService),
+      'MemberData': () => _getGroupData(userID, apiService),
     };
 
     for (var entry in dataMap.entries) {
@@ -44,16 +46,14 @@ class UserDataProvider with ChangeNotifier {
         await _save(entry.key, result);
 
         _fetchStatusMessages.removeLast();
-        // _fetchStatusMessages.add('${entry.key} loaded successfully.');
       } catch (e) {
         _data[entry.key] = {
-          'text': 'Error loading ${entry.key}',
+          'text': "ไม่พบข้อมูล ${entry.key}",
           'data': null,
           'status': false,
           'success': false,
         };
         _fetchStatusMessages.removeLast();
-        _fetchStatusMessages.add('Error loading ${entry.key}');
       } finally {
         _loadingStates[entry.key] = false;
         notifyListeners();
@@ -61,7 +61,25 @@ class UserDataProvider with ChangeNotifier {
     }
 
     _isLoading = false;
-    Navigator.pushReplacementNamed(context, '/Home');
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = 0.0;
+          const end = 1.0;
+          const curve = Curves.easeIn;
+
+          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          final opacityAnimation = animation.drive(tween);
+
+          return FadeTransition(
+            opacity: opacityAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
     notifyListeners();
   }
 
@@ -78,30 +96,43 @@ class UserDataProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _getUserData(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 1500));
+    await Future.delayed(Duration(milliseconds: 0));
+
     final response = await apiService.post("/SRVC/AuthController.php", {
       'act': 'getAuthUser',
       'userID': userID,
     });
-    return {'text': 'ข้อมูลผู้ใช้', 'status': response['status'], 'data': response['data']};
+    return {'text': 'UserData', 'status': response['status'], 'data': response['data']};
+  }
+
+  Future<Map<String, dynamic>> _getUserExpense(int userID, ApiService apiService) async {
+    await Future.delayed(Duration(milliseconds: 0));
+    String formattedDate = DateTime.now().toIso8601String().split('T').first;
+    final response = await apiService.post("/SRVC/AuthController.php", {
+      'act': 'getUserExpense',
+      'userID': userID,
+      'type': 'month',
+      'date': formattedDate,
+    });
+    return {'text': 'ExpenseData', 'status': response['status'], 'data': response['data']};
   }
 
   Future<Map<String, dynamic>> _getUserGroup(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 2000));
+    await Future.delayed(Duration(milliseconds: 0));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'getGroup',
       'userID': userID,
     });
-    return {'text': 'ข้อมูลกลุ่มสมาชิก', 'status': response['status'], 'data': response['data']};
+    return {'text': 'GroupMemberData', 'status': response['status'], 'data': response['data']};
   }
 
   Future<Map<String, dynamic>> _getGroupData(int userID, ApiService apiService) async {
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(Duration(milliseconds: 0));
     final response = await apiService.post("/SRVC/FamilyController.php", {
       'act': 'checkGroup',
       'userID': userID,
     });
-    return {'text': 'ข้อมูลสมาชิก', 'status': response['status'], 'data': response['data']};
+    return {'text': 'MemberData', 'status': response['status'], 'data': response['data']};
   }
 
   void updateUserData(String key, Map<String, dynamic> newData) {
@@ -121,7 +152,7 @@ class UserDataProvider with ChangeNotifier {
   void updateIncome(String newIncome) async {
     final prefs = await SharedPreferences.getInstance();
 
-    String? userDataString = prefs.getString('ข้อมูลผู้ใช้');
+    String? userDataString = prefs.getString('UserData');
 
     if (userDataString != null) {
       Map<String, dynamic> userData = jsonDecode(userDataString);
@@ -129,7 +160,7 @@ class UserDataProvider with ChangeNotifier {
       if (userData['data'] != null) {
         userData['data']['income'] = newIncome;
 
-        await prefs.setString('ข้อมูลผู้ใช้', jsonEncode(userData));
+        await prefs.setString('UserData', jsonEncode(userData));
 
         notifyListeners();
       } else {
