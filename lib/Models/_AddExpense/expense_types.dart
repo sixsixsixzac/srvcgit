@@ -2,13 +2,11 @@ import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Services/APIService.dart';
 
 class ExpenseTypesModel {
-  ApiService apiService = ApiService(serverURL);
-
   final int id;
   final String name;
   final String status;
   final String img;
-  final DateTime created_at;
+  final String created_at;
 
   ExpenseTypesModel({required this.id, required this.name, required this.status, required this.img, required this.created_at});
 
@@ -28,10 +26,13 @@ class ExpenseTypesModel {
       'name': name,
       'status': status,
       'img': img,
-      'created_at': created_at.toIso8601String()
+      'created_at': created_at
     };
   }
-  
+}
+
+class ExpenseTypes {
+  ApiService apiService = ApiService(serverURL);
   Future<List<ExpenseTypesModel>> getExpenseTypes() async{
     final expense_types = await apiService.post("/SRVC/ExpenseController.php", {
       "act": "getExpenseTypes"
