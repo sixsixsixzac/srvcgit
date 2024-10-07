@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:srvc/Models/_AddExpense/expense_types.dart';
 import 'package:srvc/Models/_AddExpense/menu_options.dart';
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Services/Shortcut.dart';
@@ -35,12 +36,14 @@ class IncomeExpenseForm extends StatefulWidget {
 class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 
   List<MenuItems>? menuItems;
+  List<ExpenseTypesModel>? expenseTypesModel;
   int activeOption = 0;
 
   @override
   void initState() {
     super.initState();
     loadMenuItems();
+    loadExpenseTypes();
   }
 
   Future<void> loadMenuItems() async {
@@ -49,6 +52,13 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
     List<dynamic> jsonList = jsonDecode(jsonString);
     setState(() {
       menuItems = jsonList.map((json) => MenuItems.fromJson(json)).toList();
+    });
+  }
+
+  void loadExpenseTypes() async {
+    expenseTypesModel = await ExpenseTypes().getExpenseTypes();
+    setState(() {
+      
     });
   }
 
@@ -82,16 +92,16 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                 ),
               ),
             ),
-            
-            if (menuItems != null) ...[
-              Expanded(
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: Center(
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _PreviewOptions(
-                          menuItems: menuItems!,
+                          expenseTypesModel: expenseTypesModel,
                           activeOption: activeOption,
                         ),
                         SizedBox(
@@ -115,7 +125,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                           ),
                         ),
                         __ListOptionState(
-                          menuItems: menuItems!,
+                          expenseTypesModel: expenseTypesModel,
                           ontap: (index) {
                             setState(() => activeOption = index);
                           },
@@ -126,7 +136,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                   ),
                 ),
               ),
-            ],
+            ),
             Container(
               padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
               decoration: BoxDecoration(
@@ -197,17 +207,20 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 }
 
 class _PreviewOptions extends StatefulWidget {
-  final List<MenuItems> menuItems;
+  final List<ExpenseTypesModel>? expenseTypesModel;
   final int activeOption;
   const _PreviewOptions(
-      {super.key, required this.menuItems, this.activeOption = 0});
+      {super.key, required this.expenseTypesModel, this.activeOption = 0});
   @override
   State<_PreviewOptions> createState() => __PreviewOptionsState();
 }
 
 class __PreviewOptionsState extends State<_PreviewOptions> {
+  
   @override
   Widget build(BuildContext context) {
+    String image_path =  widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![widget.activeOption].img}":"assets/loader/loading1.gif";
+    String menu_text = widget.expenseTypesModel != null ? widget.expenseTypesModel![widget.activeOption].name : "Loading...";
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: AppPallete.gradient3, width: 5),
@@ -224,7 +237,7 @@ class __PreviewOptionsState extends State<_PreviewOptions> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                widget.menuItems[widget.activeOption].menuIcons.path,
+                image_path,
                 height: 50,
                 width: 50,
               ),
@@ -232,7 +245,7 @@ class __PreviewOptionsState extends State<_PreviewOptions> {
                 minFontSize: 12.0,
                 maxFontSize: 16.0,
                 maxLines: 2,
-                widget.menuItems[widget.activeOption].text.th,
+                menu_text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'thaifont',
@@ -250,14 +263,16 @@ class __PreviewOptionsState extends State<_PreviewOptions> {
 }
 
 class __ListOptionState extends StatefulWidget {
-  final List<MenuItems> menuItems;
+  final List<ExpenseTypesModel>? expenseTypesModel;
   final Function(int) ontap;
   final int activeOption;
   const __ListOptionState(
-      {super.key,
-      required this.menuItems,
-      required this.ontap(index),
-      this.activeOption = 0});
+      {
+        super.key,
+        required this.expenseTypesModel,
+        required this.ontap(index),
+        this.activeOption = 0
+      });
 
   @override
   State<__ListOptionState> createState() => ___ListOptionStateState();
@@ -266,13 +281,16 @@ class __ListOptionState extends StatefulWidget {
 class ___ListOptionStateState extends State<__ListOptionState> {
   @override
   Widget build(BuildContext context) {
+    int max_loop = widget.expenseTypesModel != null ? widget.expenseTypesModel!.length : 1;
     return SizedBox(
       height: 90,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(widget.menuItems.length, (index) {
+          children: List.generate(max_loop, (index) {
+            String image_path = widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![index].img}" : "assets/loader/loading1.gif";
+            String menu_text = widget.expenseTypesModel != null ? widget.expenseTypesModel![index].name : "Loading...";
             return Padding(
               padding: EdgeInsets.fromLTRB(10, 12, 10, 0),
               child: GestureDetector(
@@ -292,7 +310,7 @@ class ___ListOptionStateState extends State<__ListOptionState> {
                       height: 50,
                       child: Center(
                         child: Image.asset(
-                          widget.menuItems[index].menuIcons.path,
+                          image_path,
                         ),
                       ),
                     ),
@@ -303,7 +321,7 @@ class ___ListOptionStateState extends State<__ListOptionState> {
                             minFontSize: 8.0,
                             maxFontSize: 14.0,
                             maxLines: 1,
-                            widget.menuItems[index].text.th,
+                            menu_text,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontFamily: 'thaifont',
