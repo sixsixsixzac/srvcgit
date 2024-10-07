@@ -66,7 +66,6 @@ class _MainpageState extends State<Mainpage> {
 
     setState(() {
       userData = Data['data'];
-
       plans = List<Map<String, dynamic>>.from(planData);
       expenses = List<Map<String, dynamic>>.from(expenseData);
     });
