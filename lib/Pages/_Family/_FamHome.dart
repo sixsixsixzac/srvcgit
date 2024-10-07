@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/group_members.dart';
 import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Providers/FetchingHome.dart';
+import 'package:srvc/Services/APIService.dart';
 
 import 'package:srvc/Widgets/FamilyUserContainer.dart';
 import 'package:srvc/Widgets/FamilyUserModal.dart';
@@ -25,9 +30,23 @@ class FamilyHomePage extends StatefulWidget {
 
 class _FamilyHomePageState extends State<FamilyHomePage> {
   int? selectedIndex;
+  final ApiService apiService = ApiService(serverURL);
   void _toggleModal() {
     final FamState = Provider.of<FamilyModel>(context, listen: false);
     FamState.setModal(!FamState.isModalVisible);
+  }
+
+  Future<void> _leaveGroup(int index) async {
+    final user = widget.groupMembers[index];
+
+    final response = await apiService.post("/SRVC/FamilyController.php", {
+      'act': 'delMember',
+      'userID': user.id,
+    });
+    bool status = response['status'];
+    setState(() {
+      widget.groupMembers.removeAt(index);
+    });
   }
 
   @override
@@ -103,6 +122,8 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
                     ),
                     itemCount: widget.groupMembers.length,
                     itemBuilder: (context, index) {
+                      final user = widget.groupMembers[index];
+
                       return MyImageContainer(
                         data: widget.groupMembers[index],
                         onTabView: () {
@@ -110,6 +131,35 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
                           setState(() {
                             selectedIndex = index;
                           });
+                        },
+                        onTabDel: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('ยืนยันการลบสมาชิก ${user.name}'),
+                                content: Text('คุณต้องการลบใช่หรือไม่?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('ยกเลิก'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      setState(() {
+                                        selectedIndex = index;
+                                      });
+                                      _leaveGroup(index);
+                                    },
+                                    child: Text('ลบ'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       );
                     },

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/group_members.dart';
 import 'package:srvc/Models/topExpense.dart';
-import 'package:srvc/Models/user.dart';
+
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
@@ -195,7 +194,26 @@ class _UserModalState extends State<UserModal> {
             'value': "$daysLeft วัน",
           }
         ];
-      } else if (type == 'year') {}
+      } else if (type == 'year') {
+        return [
+          {
+            'label': "รายจ่ายทั้งหมด",
+            'value': "฿${formatNumber(expenseData.first.grand_total.toString(), withCommas: true)}",
+          },
+          {
+            'label': "รายจ่ายเฉลี่ยต่อเดือน",
+            'value': "฿${formatNumber((expenseData.first.grand_total / 12).toString(), withCommas: true)}",
+          },
+          {
+            'label': "งบเฉลี่ยต่อเดือน",
+            'value': "",
+          },
+          {
+            'label': "จำนวนวันที่บันทึก",
+            'value': formatNumber((userData['countDays']).toString(), withCommas: true),
+          },
+        ];
+      }
       return [];
     }
 
@@ -581,39 +599,6 @@ class _UserModalState extends State<UserModal> {
         });
   }
 }
-
-// if (widget.CurrentType == "year") {
-//   return Column(
-//     mainAxisAlignment: MainAxisAlignment.spaceAround,
-//     children: [
-//       _buildRow(
-//         label: 'รายจ่ายทั้งหมด',
-//         labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
-//         value: '',
-//         valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
-//       ),
-//       _buildRow(
-//         label: 'รายจ่ายเฉลี่ยต่อเดือน',
-//         labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
-//         value: '',
-//         valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
-//       ),
-//       _buildRow(
-//         label: 'งบเฉลี่ยต่อเดือน',
-//         labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
-//         value: '',
-//         valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
-//       ),
-//       _buildRow(
-//         label: 'จำนวนวันที่บันทึก',
-//         labelStyle: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'thaifont', color: Colors.black),
-//         value: '',
-//         valueStyle: TextStyle(fontFamily: 'thaifont', color: widget.isLoading ? Colors.orange : Colors.black),
-//       ),
-//     ],
-//   );
-// }
-// ;
 
 class NavTab extends StatelessWidget {
   final Function(int) onTab;

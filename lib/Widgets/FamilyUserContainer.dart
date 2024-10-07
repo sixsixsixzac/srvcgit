@@ -1,24 +1,42 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Models/group_members.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/FetchingHome.dart';
 
 class MyImageContainer extends StatefulWidget {
   final VoidCallback onTabView;
+  final VoidCallback onTabDel;
   final GroupMembersModel data;
 
-  const MyImageContainer({super.key, required this.data, required this.onTabView});
+  const MyImageContainer({super.key, required this.data, required this.onTabView, required this.onTabDel});
 
   @override
   _MyImageContainerState createState() => _MyImageContainerState();
 }
 
 class _MyImageContainerState extends State<MyImageContainer> {
+  Map<String, dynamic> UserData = {};
   bool _showToolbar = false;
   Timer? _toolbarTimer;
+  @override
+  void initState() {
+    super.initState();
+    _getUserData();
+  }
+
+  Future _getUserData() async {
+    final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
+    if (dataString != null) {
+      final data0 = jsonDecode(dataString!);
+      setState(() {
+        UserData = data0['data'] as Map<String, dynamic>;
+      });
+    }
+  }
 
   void _onLongPress() {
     setState(() {
@@ -41,8 +59,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final Auth = Provider.of<AuthProvider>(context, listen: false);
-    bool itMe = (Auth.phone == widget.data.phone);
+    bool itMe = (widget.data.id == UserData['id']);
     return GestureDetector(
       onTap: _onLongPress,
       child: Container(
@@ -92,7 +109,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
                           widget.onTabView();
                         },
                       ),
-                      if (!itMe)
+                      if (widget.data.level == "M")
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {
@@ -100,9 +117,9 @@ class _MyImageContainerState extends State<MyImageContainer> {
                             setState(() {
                               _showToolbar = false;
                             });
+                            widget.onTabDel();
                           },
                         ),
-           
                     ],
                   ),
                 ),

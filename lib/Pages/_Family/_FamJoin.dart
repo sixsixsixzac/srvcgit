@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/user.dart';
+import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
 
 class FamilyJoinGroupPage extends StatefulWidget {
@@ -25,8 +28,12 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
   }
 
   Future<void> _confirmJoin(context) async {
+    final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
+
+    final data0 = jsonDecode(dataString!);
+    final userData = data0['data'] as Map<String, dynamic>;
+
     final familyModel = Provider.of<FamilyModel>(context, listen: false);
-    final userData = await getUserData();
 
     if (_isValid == false || getPinCode().length == 5) return;
 

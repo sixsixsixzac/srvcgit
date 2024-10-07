@@ -158,7 +158,6 @@ class CustomPopupMenuButton extends StatelessWidget {
   final ApiService apiService = ApiService(serverURL);
   Future<void> _groupAction(BuildContext context, String action, String groupCode) async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-
     try {
       final response = await apiService.post("/SRVC/FamilyController.php", {
         'act': action,
