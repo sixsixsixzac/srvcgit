@@ -1,11 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:srvc/Models/_AddExpense/expense_types.dart';
-import 'package:srvc/Models/_AddExpense/menu_options.dart';
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Services/Shortcut.dart';
-import 'dart:convert';
 import 'package:srvc/Services/_Expense/numpad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Configs/URL.dart';
@@ -22,37 +19,27 @@ class __AddExpenseState extends State<AddExpense> {
   final ApiService apiService = ApiService(serverURL);
   @override
   Widget build(BuildContext context) {
-    return const IncomeExpenseForm();
+    return IncomeExpenseForm(apiService: apiService);
   }
 }
 
 class IncomeExpenseForm extends StatefulWidget {
-  const IncomeExpenseForm({super.key});
+  final ApiService apiService;
+  const IncomeExpenseForm({super.key, required this.apiService});
 
   @override
   State<IncomeExpenseForm> createState() => _IncomeExpenseFormState();
 }
 
 class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
-
-  List<MenuItems>? menuItems;
   List<ExpenseTypesModel>? expenseTypesModel;
   int activeOption = 0;
+  int? activeOptionID;
 
   @override
   void initState() {
     super.initState();
-    loadMenuItems();
     loadExpenseTypes();
-  }
-
-  Future<void> loadMenuItems() async {
-    String jsonString = await rootBundle
-        .loadString('assets/json/_AddExpense/menu_options.json');
-    List<dynamic> jsonList = jsonDecode(jsonString);
-    setState(() {
-      menuItems = jsonList.map((json) => MenuItems.fromJson(json)).toList();
-    });
   }
 
   void loadExpenseTypes() async {
@@ -61,6 +48,15 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
       
     });
   }
+
+  // Future<void> _saveExpense() async {
+  //   final response = await widget.apiService.post("/SRVC/ExpenseController.php", {
+  //     "act": "saveExpense",
+  //     "type_id": activeOptionID,
+  //     "amont": Numpad.value,
+      
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -126,8 +122,11 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                         ),
                         __ListOptionState(
                           expenseTypesModel: expenseTypesModel,
-                          ontap: (index) {
-                            setState(() => activeOption = index);
+                          ontap: (index, id) {
+                            setState((){
+                              activeOption = index;
+                              activeOptionID = id;
+                            });
                           },
                           activeOption: activeOption,
                         ),
@@ -264,13 +263,13 @@ class __PreviewOptionsState extends State<_PreviewOptions> {
 
 class __ListOptionState extends StatefulWidget {
   final List<ExpenseTypesModel>? expenseTypesModel;
-  final Function(int) ontap;
+  final Function(int, int) ontap;
   final int activeOption;
   const __ListOptionState(
       {
         super.key,
         required this.expenseTypesModel,
-        required this.ontap(index),
+        required this.ontap(index, id),
         this.activeOption = 0
       });
 
@@ -295,7 +294,7 @@ class ___ListOptionStateState extends State<__ListOptionState> {
               padding: EdgeInsets.fromLTRB(10, 12, 10, 0),
               child: GestureDetector(
                 onTap: () {
-                  widget.ontap(index);
+                  widget.ontap(index, widget.expenseTypesModel![index].id);
                 },
                 child: Column(
                   children: [
