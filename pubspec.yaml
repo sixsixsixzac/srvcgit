@@ -70,6 +70,12 @@ flutter:
     - family: thaifont
       fonts:
         - asset: assets/fonts/Prompt-Regular.ttf
+    - family: khemthit
+      fonts:
+        - asset: assets/fonts/KhemThit.ttf
+    - family: tumtuy
+      fonts:
+        - asset: assets/fonts/TorsilpTumTuy.ttf
   assets:
     - assets/images/icons/
     - assets/images/types/

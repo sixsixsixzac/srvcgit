@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Models/group_members.dart';
+import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 
 class MyImageContainer extends StatefulWidget {
@@ -65,8 +66,12 @@ class _MyImageContainerState extends State<MyImageContainer> {
       child: Container(
         margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.indigoAccent, width: 5),
-          color: Colors.indigo,
+          border: Border.all(color: itMe ? AppPallete.orange : Colors.indigoAccent, width: 5),
+          gradient: LinearGradient(
+            colors: [Colors.indigo, Colors.indigoAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Stack(
@@ -109,7 +114,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
                           widget.onTabView();
                         },
                       ),
-                      if (widget.data.level == "M")
+                      if (widget.data.level == "M" && !itMe)
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () {

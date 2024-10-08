@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,9 +6,7 @@ import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/group_members.dart';
 import 'package:srvc/Pages/AppPallete.dart';
-import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
-
 import 'package:srvc/Widgets/FamilyUserContainer.dart';
 import 'package:srvc/Widgets/FamilyUserModal.dart';
 
@@ -44,9 +40,11 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
       'userID': user.id,
     });
     bool status = response['status'];
-    setState(() {
-      widget.groupMembers.removeAt(index);
-    });
+    if (status) {
+      setState(() {
+        widget.groupMembers.removeAt(index);
+      });
+    }
   }
 
   @override
@@ -122,8 +120,8 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
                     ),
                     itemCount: widget.groupMembers.length,
                     itemBuilder: (context, index) {
+                      print(widget.groupMembers);
                       final user = widget.groupMembers[index];
-
                       return MyImageContainer(
                         data: widget.groupMembers[index],
                         onTabView: () {

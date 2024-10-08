@@ -167,6 +167,9 @@ class CustomPopupMenuButton extends StatelessWidget {
 
       bool fetchStatus = response['status'];
       if (fetchStatus == true) {
+        if (action == "delGroup") {
+          FamState.removeMembersExcept(int.parse(auth.id));
+        }
         onFetchSuccess();
       } else {}
     } catch (error) {

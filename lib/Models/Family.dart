@@ -75,6 +75,11 @@ class FamilyModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeMembersExcept(int idToKeep) {
+    _members = _members.where((member) => member.id == idToKeep).toList();
+    notifyListeners();
+  }
+
   void displayWidget() {
     if (hasGroup == true) {}
   }

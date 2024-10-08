@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:srvc/Animation/Bounce.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/FamilyPage.dart';
@@ -96,87 +97,63 @@ class _MainpageState extends State<Mainpage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  margin: const EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: AppPallete.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        spreadRadius: 1,
-                        blurRadius: 17,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        height: 40,
-                        width: 70,
-                        child: Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const FamilyPage()),
-                              ),
-                              child: Image.asset('assets/images/icons/family-symbol.png'),
-                            ),
-                            Positioned(
-                              top: 5,
-                              right: 10,
-                              child: Container(
-                                width: 17,
-                                height: 17,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.red,
-                                ),
-                                child: const Center(
-                                  child: AutoSizeText(
-                                    '0',
-                                    maxLines: 1,
-                                    minFontSize: 12,
-                                    maxFontSize: 14,
-                                    style: TextStyle(color: Colors.white, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                BounceAnimation(
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: AppPallete.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          spreadRadius: 1,
+                          blurRadius: 17,
                         ),
-                      ),
-                      const AutoSizeText.rich(
-                          TextSpan(
-                            text: "รู้ก่อน",
-                            style: TextStyle(fontFamily: 'thaifont', color: Colors.indigo, fontWeight: FontWeight.bold),
-                            children: [
-                              TextSpan(
-                                text: " ดีกว่า",
-                                style: TextStyle(color: Colors.orange, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          maxLines: 1,
-                          minFontSize: 20,
-                          maxFontSize: 46,
-                          overflow: TextOverflow.ellipsis),
-                      GestureDetector(
-                        onTap: () => widget.ontab(4),
-                        child: Container(
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
                           height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50),
+                          child: GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const FamilyPage()),
+                            ),
+                            child: Image.asset('assets/images/icons/family-symbol.png'),
                           ),
-                          child: const Icon(FontAwesomeIcons.user),
                         ),
-                      ),
-                    ],
+                        const AutoSizeText.rich(
+                            TextSpan(
+                              text: "รู้ก่อน",
+                              style: TextStyle(fontFamily: 'tumtuy', color: Colors.indigo, fontWeight: FontWeight.bold),
+                              children: [
+                                TextSpan(
+                                  text: " ดีกว่า",
+                                  style: TextStyle(color: Colors.orange, fontFamily: 'tumtuy', fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            maxLines: 1,
+                            minFontSize: 25,
+                            maxFontSize: 46,
+                            overflow: TextOverflow.ellipsis),
+                        GestureDetector(
+                          onTap: () => widget.ontab(4),
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const Icon(FontAwesomeIcons.user),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Row(
@@ -193,148 +170,152 @@ class _MainpageState extends State<Mainpage> {
                 ),
                 GestureDetector(
                   onTap: () => widget.ontab(3),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [HexColor("#747dce"), HexColor("#010a86")],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
+                  child: BounceAnimation(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [HexColor("#747dce"), HexColor("#010a86")],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 7,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) {
-                                return AutoSizeText(
-                                  "ฟรีคอรสสำหรับการบริหารจัดการหนี้และการลุงทุน คลิกเลย!",
-                                  maxLines: constraints.maxHeight <= 45 ? 1 : 2,
-                                  minFontSize: 16,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'thaifont',
-                                  ),
-                                );
-                              },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 7,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  return AutoSizeText(
+                                    "ฟรีคอรสสำหรับการบริหารจัดการหนี้และการลุงทุน คลิกเลย!",
+                                    maxLines: constraints.maxHeight <= 45 ? 1 : 2,
+                                    minFontSize: 16,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'thaifont',
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: GestureDetector(
-                            child: Image.asset(
-                              'assets/images/icons/lern.png',
-                              fit: BoxFit.contain,
+                          Expanded(
+                            flex: 3,
+                            child: GestureDetector(
+                              child: Image.asset(
+                                'assets/images/icons/lern.png',
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.15),
-                        spreadRadius: 1,
-                        blurRadius: 1,
-                      ),
-                    ],
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                  margin: const EdgeInsets.only(top: 10),
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentMonth = (currentMonth > 1) ? currentMonth - 1 : 12;
-                                    currentYear -= (currentMonth == 12) ? 1 : 0;
-                                  });
-                                  _loadUserData();
-                                },
-                                child: const Icon(
-                                  FontAwesomeIcons.arrowLeft,
-                                  size: 13,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: AutoSizeText(
-                                "$currentMonth/$currentYear",
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: 'thaifont',
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    currentMonth = (currentMonth < 12) ? currentMonth + 1 : 1;
-                                    currentYear += (currentMonth == 1) ? 1 : 0;
-                                  });
-                                  _loadUserData();
-                                },
-                                child: const Icon(
-                                  FontAwesomeIcons.arrowRight,
-                                  size: 13,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildColumn("-฿0.00", "ทั้งหมด", Colors.red, bold: true),
-                            if (userData != null) ...[
-                              _buildColumn("฿${formatNumber(userData!['income'].toString(), withCommas: true)}", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true)
-                            ],
-                            _buildColumn("฿0.00", "ค่าใช้จ่าย", Colors.red, bold: true),
-                          ],
-                        ),
-                        if (plans.isNotEmpty)
-                          const Divider(
-                            height: 20,
-                          ),
-                        SingleChildScrollView(
-                          child: Column(
-                            children: plans.map((plan) {
-                              return StaticLoadingBar(
-                                progress: (plan['current'] / plan['target']),
-                                styleColor: HexColor(plan['color']),
-                                label: "${plan['title']}",
-                              );
-                            }).toList(),
-                          ),
+                BounceAnimation(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.15),
+                          spreadRadius: 1,
+                          blurRadius: 1,
                         ),
                       ],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    margin: const EdgeInsets.only(top: 10),
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      currentMonth = (currentMonth > 1) ? currentMonth - 1 : 12;
+                                      currentYear -= (currentMonth == 12) ? 1 : 0;
+                                    });
+                                    _loadUserData();
+                                  },
+                                  child: const Icon(
+                                    FontAwesomeIcons.arrowLeft,
+                                    size: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: AutoSizeText(
+                                  "$currentMonth/$currentYear",
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontFamily: 'thaifont',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      currentMonth = (currentMonth < 12) ? currentMonth + 1 : 1;
+                                      currentYear += (currentMonth == 1) ? 1 : 0;
+                                    });
+                                    _loadUserData();
+                                  },
+                                  child: const Icon(
+                                    FontAwesomeIcons.arrowRight,
+                                    size: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildColumn("-฿0.00", "ทั้งหมด", Colors.red, bold: true),
+                              if (userData != null) ...[
+                                _buildColumn("฿${formatNumber(userData!['income'].toString(), withCommas: true)}", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true)
+                              ],
+                              _buildColumn("฿0.00", "ค่าใช้จ่าย", Colors.red, bold: true),
+                            ],
+                          ),
+                          if (plans.isNotEmpty)
+                            const Divider(
+                              height: 20,
+                            ),
+                          SingleChildScrollView(
+                            child: Column(
+                              children: plans.map((plan) {
+                                return AnimatedLoadingBar(
+                                  progress: (plan['current'] / plan['target']),
+                                  styleColor: HexColor(plan['color']),
+                                  label: "${plan['title']}",
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -376,10 +357,12 @@ class _MainpageState extends State<Mainpage> {
                         ),
                       ...List.generate(
                           expenses.length,
-                          (index) => _ExpenseContainer(
-                                context,
-                                expenses[index],
-                                index: index,
+                          (index) => BounceAnimation(
+                                child: _ExpenseContainer(
+                                  context,
+                                  expenses[index],
+                                  index: index,
+                                ),
                               )),
                     ],
                   ),
@@ -525,22 +508,24 @@ class __ExpenseContainerState extends State<_ExpenseContainer> {
             ),
           ),
           if (state)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+            BounceAnimation(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  color: Colors.white,
                 ),
-                color: Colors.white,
-              ),
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: expense_list.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  return innerRow(index);
-                }).toList(),
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: expense_list.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    return innerRow(index);
+                  }).toList(),
+                ),
               ),
             ),
         ],
@@ -680,6 +665,75 @@ class StaticLoadingBar extends StatelessWidget {
               ),
               width: MediaQuery.of(context).size.width * progress,
               height: 10,
+            ),
+            Center(
+              child: Text(
+                '${(progress * 100).toStringAsFixed(0)}%',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontFamily: 'thaifont',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class AnimatedLoadingBar extends StatelessWidget {
+  final double progress;
+  final String label;
+  final Color styleColor;
+
+  const AnimatedLoadingBar({
+    super.key,
+    this.progress = 1,
+    this.label = "Loading...",
+    this.styleColor = Colors.orange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: styleColor,
+            fontFamily: 'thaifont',
+          ),
+        ),
+        Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: HexColor("#d7d7d7"),
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 10,
+            ),
+            TweenAnimationBuilder<double>(curve: Curves.bounceOut,
+              tween: Tween<double>(begin: 0, end: progress),
+              duration: const Duration(milliseconds: 1000),
+              builder: (context, value, child) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: styleColor,
+                  ),
+                  width: MediaQuery.of(context).size.width * value,
+                  height: 10,
+                );
+              },
             ),
             Center(
               child: Text(
