@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Animation/Bounce.dart';
+import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Services/dateformat.dart';
 import 'package:srvc/Services/numberFormat.dart';
 
@@ -39,7 +40,11 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
   @override
   Widget build(BuildContext context) {
     final exp = widget.data;
-    final itsIncome = exp['data'][0]['record_type'] == "i";
+
+    final int etotal = exp['etotal'];
+    final int itotal = exp['itotal'];
+    Color bgColor = etotal > itotal ? Colors.deepOrangeAccent : HexColor("#5bc658");
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -58,7 +63,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
           GestureDetector(
             onTap: () {
               setState(() {
-                state = !state; // Toggle state
+                state = !state;
               });
               if (widget.onTap != null) widget.onTap!();
             },
@@ -72,7 +77,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                     blurRadius: 1,
                   ),
                 ],
-                color: !itsIncome ? Colors.orange[300] : Colors.green,
+                color: bgColor,
               ),
               width: double.infinity,
               child: Padding(
@@ -105,7 +110,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: expense_list.asMap().entries.map((entry) {
                     int index = entry.key;
-                    return innerRow(index, itsIncome);
+                    return innerRow(index);
                   }).toList(),
                 ),
               ),
@@ -115,9 +120,9 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
     );
   }
 
-  Widget innerRow(index, itsIncome) {
+  Widget innerRow(index) {
     final item = widget.data['data'][index];
-
+    final itsIncome = item['record_type'] == "i";
     return Container(
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       child: Row(
@@ -178,7 +183,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     AutoSizeText(
-                      "฿${formatNumber(item['amount'].toString(), withCommas: true)}",
+                      "${itsIncome ? "+" : "-"}฿${formatNumber(item['amount'].toString(), withCommas: true)}",
                       minFontSize: 12,
                       maxFontSize: 12,
                       maxLines: 1,
@@ -201,6 +206,35 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class TotalDisplay extends StatelessWidget {
+  final double etotal;
+  final double itotal;
+
+  const TotalDisplay({super.key, required this.etotal, required this.itotal});
+
+  @override
+  Widget build(BuildContext context) {
+    Color bgColor = etotal > itotal ? Colors.red : Colors.green;
+
+    return Container(
+      color: bgColor,
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Text(
+            'Expenses Total: \$${etotal.toStringAsFixed(2)}',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          Text(
+            'Income Total: \$${itotal.toStringAsFixed(2)}',
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ],
       ),
     );

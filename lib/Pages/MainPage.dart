@@ -165,12 +165,18 @@ class _MainpageState extends State<Mainpage> {
               children: [
                 SizedBox(
                   height: 40,
+                  width: 40,
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const FamilyPage()),
                     ),
-                    child: Image.asset('assets/images/icons/family-symbol.png'),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/icons/family-symbol.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
                 AutoSizeText.rich(
