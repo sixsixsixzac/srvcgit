@@ -11,7 +11,7 @@ import 'package:srvc/Pages/HomePage.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Widgets/CustomInput.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -145,9 +145,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                       showConfirmBtn: false,
                                     ).then((_) async {
                                       if (response['status'] == true) {
-                                        String name = _userNameController.text;
-                                        String phone = _phoneController.text;
-                                        String userId = response['data']['id'].toString();
                                         await Provider.of<AuthProvider>(context, listen: false).login(response['data']);
                                         Navigator.pushReplacement(
                                           context,

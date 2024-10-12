@@ -8,7 +8,7 @@ import 'package:srvc/Pages/AppPallete.dart';
 import 'package:http/http.dart' as http;
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'dart:convert';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 
 class FillinformationPage extends StatefulWidget {
   const FillinformationPage({super.key});

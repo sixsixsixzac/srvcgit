@@ -114,6 +114,7 @@ class UserDataProvider with ChangeNotifier {
       'type': 'month',
       'date': formattedDate,
     });
+
     return {'text': 'ExpenseData', 'status': response['status'], 'data': response['data']};
   }
 

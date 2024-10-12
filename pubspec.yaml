@@ -45,6 +45,9 @@ dependencies:
   url_launcher: ^6.3.0
   flutter_bloc: ^8.1.6
   intl: ^0.19.0
+  flutter_secure_storage: ^9.2.2
+  audioplayers: ^6.1.0
+  just_audio: ^0.9.41
 
 dev_dependencies:
   flutter_test:
@@ -80,9 +83,11 @@ flutter:
     - assets/images/icons/
     - assets/images/types/
     - assets/images/test/
+    - assets/images/profiles/
     - assets/images/member_types/
     - assets/json/_AddExpense/
     - assets/loader/
+    - assets/sounds/select.mp3
 
   #   - family: Schyler
   #     fonts:
