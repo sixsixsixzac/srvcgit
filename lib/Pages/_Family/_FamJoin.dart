@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
-import 'package:srvc/Models/user.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
 

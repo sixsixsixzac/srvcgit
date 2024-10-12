@@ -44,9 +44,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 
   void loadExpenseTypes() async {
     expenseTypesModel = await ExpenseTypes().getExpenseTypes();
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   // Future<void> _saveExpense() async {
@@ -54,7 +52,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
   //     "act": "saveExpense",
   //     "type_id": activeOptionID,
   //     "amont": Numpad.value,
-      
+
   //   });
   // }
 
@@ -104,26 +102,26 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8, right: 8),
                             child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                FontAwesomeIcons.arrowLeftLong,
-                                color: Colors.grey.withOpacity(0.35),
-                                size: 15,
-                              ),
-                              Icon(
-                                FontAwesomeIcons.arrowRightLong,
-                                color: Colors.grey.withOpacity(0.35),
-                                size: 15,
-                              ),
-                            ],
-                                        ),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.arrowLeftLong,
+                                  color: Colors.grey.withOpacity(0.35),
+                                  size: 15,
+                                ),
+                                Icon(
+                                  FontAwesomeIcons.arrowRightLong,
+                                  color: Colors.grey.withOpacity(0.35),
+                                  size: 15,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         __ListOptionState(
                           expenseTypesModel: expenseTypesModel,
                           ontap: (index, id) {
-                            setState((){
+                            setState(() {
                               activeOption = index;
                               activeOptionID = id;
                             });
@@ -139,9 +137,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
             Container(
               padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                 color: AppPallete.backgroundColor,
               ),
               width: double.infinity,
@@ -155,13 +151,7 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                         child: Padding(
                           padding: EdgeInsets.only(right: 4, left: 1, bottom: 4),
                           child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: Colors.grey
-                              ),
-                              borderRadius: BorderRadius.circular(4)
-                            ),
+                            decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
                             height: resize(context: context, type: 'h', value: 0.075),
                             child: Center(child: Text(Numpad.value)),
                           ),
@@ -170,29 +160,24 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                       Expanded(
                         flex: 1,
                         child: GestureDetector(
-                          onTap: () {
-                            
-                          },
+                          onTap: () {},
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 4),
                             child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2.5,
-                                  color: Colors.transparent
-                                ),
-                                borderRadius: BorderRadius.circular(5),
-                                color: AppPallete.green
-                              ),
+                              decoration: BoxDecoration(border: Border.all(width: 2.5, color: Colors.transparent), borderRadius: BorderRadius.circular(5), color: AppPallete.green),
                               height: resize(context: context, type: 'h', value: 0.075),
-                              child: Center(child: Text("Save", style: TextStyle(color: Colors.white),)),
+                              child: Center(
+                                  child: Text(
+                                "Save",
+                                style: TextStyle(color: Colors.white),
+                              )),
                             ),
                           ),
                         ),
                       )
                     ],
                   ),
-                  _Mynumpad(ontap: (item){
+                  _Mynumpad(ontap: (item) {
                     setState(() {
                       item['ontap']();
                     });
@@ -208,17 +193,15 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
 class _PreviewOptions extends StatefulWidget {
   final List<ExpenseTypesModel>? expenseTypesModel;
   final int activeOption;
-  const _PreviewOptions(
-      {super.key, required this.expenseTypesModel, this.activeOption = 0});
+  const _PreviewOptions({super.key, required this.expenseTypesModel, this.activeOption = 0});
   @override
   State<_PreviewOptions> createState() => __PreviewOptionsState();
 }
 
 class __PreviewOptionsState extends State<_PreviewOptions> {
-  
   @override
   Widget build(BuildContext context) {
-    String image_path =  widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![widget.activeOption].img}":"assets/loader/loading1.gif";
+    String image_path = widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![widget.activeOption].img}" : "assets/loader/loading1.gif";
     String menu_text = widget.expenseTypesModel != null ? widget.expenseTypesModel![widget.activeOption].name : "Loading...";
     return Container(
       decoration: BoxDecoration(
@@ -265,13 +248,7 @@ class __ListOptionState extends StatefulWidget {
   final List<ExpenseTypesModel>? expenseTypesModel;
   final Function(int, int) ontap;
   final int activeOption;
-  const __ListOptionState(
-      {
-        super.key,
-        required this.expenseTypesModel,
-        required this.ontap(index, id),
-        this.activeOption = 0
-      });
+  const __ListOptionState({super.key, required this.expenseTypesModel, required this.ontap(index, id), this.activeOption = 0});
 
   @override
   State<__ListOptionState> createState() => ___ListOptionStateState();
@@ -300,11 +277,8 @@ class ___ListOptionStateState extends State<__ListOptionState> {
                   children: [
                     Container(
                       padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.transparent),
-                        shape: BoxShape.circle,
-                        color: Colors.white
-                      ),
+                      decoration:
+                          BoxDecoration(border: Border.all(width: 2, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.transparent), shape: BoxShape.circle, color: Colors.white),
                       width: 50,
                       height: 50,
                       child: Center(
@@ -315,22 +289,18 @@ class ___ListOptionStateState extends State<__ListOptionState> {
                     ),
                     SizedBox(
                       height: 25,
-                        child: Center(
-                          child: AutoSizeText(
-                            minFontSize: 8.0,
-                            maxFontSize: 14.0,
-                            maxLines: 1,
-                            menu_text,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'thaifont',
-                                fontWeight: FontWeight.bold,
-                                color: widget.activeOption == index ? AppPallete.gradient3 : Colors.white,
-                                fontSize: 10),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                      child: Center(
+                        child: AutoSizeText(
+                          minFontSize: 8.0,
+                          maxFontSize: 14.0,
+                          maxLines: 1,
+                          menu_text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontFamily: 'thaifont', fontWeight: FontWeight.bold, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.white, fontSize: 10),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      )
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -352,43 +322,39 @@ class _Mynumpad extends StatefulWidget {
 
 class __MynumpadState extends State<_Mynumpad> {
   List<Map<String, dynamic>> numkeys = Numpad.numpadKeys;
+
   @override
   Widget build(BuildContext context) {
-    
     return createNumpad();
   }
 
-  Widget createNumpad(){
+  Widget createNumpad() {
     int maxKeysPerRow = 3;
     List<Widget> currentRowItems = [];
     List<Widget> rows = [];
 
     for (var item in numkeys) {
       Widget key = Placeholder();
-        key = Expanded(
-          child: GestureDetector(
-            onTap: ()=> widget.ontap(item),
-            child: Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 2,
-                    color: Colors.grey
-                  ),
-                  borderRadius: BorderRadius.circular(5)
-                ),
-                height: resize(context: context, type: 'h', value: 0.075),
-                child: Center(child: item['key']),
-              ),
+      key = Expanded(
+        child: GestureDetector(
+          onTap: () => widget.ontap(item),
+          child: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey), borderRadius: BorderRadius.circular(5)),
+              height: resize(context: context, type: 'h', value: 0.075),
+              child: Center(child: item['key']),
             ),
           ),
-        );
+        ),
+      );
 
       currentRowItems.add(key);
 
       if (currentRowItems.length >= maxKeysPerRow) {
-        rows.add(Row(children: currentRowItems,));
+        rows.add(Row(
+          children: currentRowItems,
+        ));
         currentRowItems = [];
       }
     }

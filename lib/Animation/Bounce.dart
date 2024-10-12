@@ -5,10 +5,10 @@ class BounceAnimation extends StatefulWidget {
   final Duration duration;
 
   const BounceAnimation({
-    Key? key,
+    super.key,
     required this.child,
     this.duration = const Duration(milliseconds: 1000),
-  }) : super(key: key);
+  });
 
   @override
   _BounceAnimationState createState() => _BounceAnimationState();

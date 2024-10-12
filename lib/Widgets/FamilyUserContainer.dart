@@ -32,7 +32,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
   Future _getUserData() async {
     final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
     if (dataString != null) {
-      final data0 = jsonDecode(dataString!);
+      final data0 = jsonDecode(dataString);
       setState(() {
         UserData = data0['data'] as Map<String, dynamic>;
       });

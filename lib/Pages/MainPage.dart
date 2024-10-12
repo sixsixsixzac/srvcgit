@@ -13,7 +13,7 @@ import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 
 import 'package:srvc/Services/HexColor.dart';
-import 'package:srvc/Pages/_AddExpense.dart';
+import 'package:srvc/Pages/_Expense/_AddExpense.dart';
 import 'package:srvc/Services/APIService.dart';
 
 import 'package:srvc/Services/auth_provider.dart';
@@ -536,7 +536,7 @@ class __ExpenseContainerState extends State<_ExpenseContainer> {
   Widget innerRow(index) {
     final item = widget.data['data'][index];
 
-    // print(index);
+    //
     return Container(
       margin: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
       child: Row(
@@ -721,7 +721,8 @@ class AnimatedLoadingBar extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: 10,
             ),
-            TweenAnimationBuilder<double>(curve: Curves.bounceOut,
+            TweenAnimationBuilder<double>(
+              curve: Curves.bounceOut,
               tween: Tween<double>(begin: 0, end: progress),
               duration: const Duration(milliseconds: 1000),
               builder: (context, value, child) {
