@@ -148,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                         String name = _userNameController.text;
                                         String phone = _phoneController.text;
                                         String userId = response['data']['id'].toString();
-                                        await Provider.of<AuthProvider>(context, listen: false).login(userId, name, phone);
+                                        await Provider.of<AuthProvider>(context, listen: false).login(response['data']);
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(builder: (context) => const HomePage()),

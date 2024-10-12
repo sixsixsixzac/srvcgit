@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     if (fetchStatus == true) {
       final userId = response['data']['id'].toString();
       final name = response['data']['name'];
-      Provider.of<AuthProvider>(context, listen: false).login(userId, phone, name);
+      Provider.of<AuthProvider>(context, listen: false).login(response['data']);
     }
     return response;
   }

@@ -90,6 +90,7 @@ class _MainpageState extends State<Mainpage> {
 
   @override
   Widget build(BuildContext context) {
+    final Auth = Provider.of<AuthProvider>(context, listen: false);
     return Stack(
       children: [
         Padding(
@@ -125,21 +126,32 @@ class _MainpageState extends State<Mainpage> {
                             child: Image.asset('assets/images/icons/family-symbol.png'),
                           ),
                         ),
-                        const AutoSizeText.rich(
-                            TextSpan(
-                              text: "รู้ก่อน",
-                              style: TextStyle(fontFamily: 'tumtuy', color: Colors.indigo, fontWeight: FontWeight.bold),
-                              children: [
-                                TextSpan(
-                                  text: " ดีกว่า",
-                                  style: TextStyle(color: Colors.orange, fontFamily: 'tumtuy', fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                        AutoSizeText.rich(
+                          TextSpan(
+                            text: "รู้ก่อน",
+                            style: TextStyle(
+                              fontFamily: 'tumtuy',
+                              color: Colors.indigo,
+                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.width * 0.06,
                             ),
-                            maxLines: 1,
-                            minFontSize: 25,
-                            maxFontSize: 46,
-                            overflow: TextOverflow.ellipsis),
+                            children: [
+                              TextSpan(
+                                text: " ดีกว่า",
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontFamily: 'tumtuy',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: MediaQuery.of(context).size.width * 0.06,
+                                ),
+                              ),
+                            ],
+                          ),
+                          maxLines: 1,
+                          minFontSize: 16,
+                          maxFontSize: (MediaQuery.of(context).size.width * 0.1).roundToDouble(),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         GestureDetector(
                           onTap: () => widget.ontab(4),
                           child: Container(
@@ -159,7 +171,7 @@ class _MainpageState extends State<Mainpage> {
                 Row(
                   children: [
                     AutoSizeText(
-                      "สวัสดีคุณ ${userName ?? ""}",
+                      "สวัสดีคุณ ${(Auth.isLoggedIn == true ? Auth.name : userName) ?? ""}",
                       maxLines: 1,
                       minFontSize: 16,
                       maxFontSize: 18,
@@ -293,10 +305,10 @@ class _MainpageState extends State<Mainpage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildColumn("-฿0.00", "ทั้งหมด", Colors.red, bold: true),
-                              if (userData != null) ...[
-                                _buildColumn("฿${formatNumber(userData!['income'].toString(), withCommas: true)}", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true)
+                              if (Auth.isLoggedIn) ...[
+                                _buildColumn("฿${formatNumber(Auth.data['income'].toString(), withCommas: true)}", "รายได้", const Color.fromARGB(255, 19, 209, 117), bold: true)
                               ],
-                              _buildColumn("฿0.00", "ค่าใช้จ่าย", Colors.red, bold: true),
+                              _buildColumn("฿0.00", "ค่าใช้จ่าย", Colors.red, bold: true)
                             ],
                           ),
                           if (plans.isNotEmpty)
@@ -321,7 +333,6 @@ class _MainpageState extends State<Mainpage> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 10),
-                  height: MediaQuery.of(context).size.height * 1,
                   child: Column(
                     children: [
                       if (expenses.isEmpty)

@@ -90,8 +90,8 @@ class _CustomButtonBarState extends State<CustomButtonBar> with SingleTickerProv
                     scale: Tween<double>(begin: 1, end: selectedIndex == index ? 1.1 : 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
                     child: Image.asset(
                       widget.imagePaths[index],
-                      width: 40,
-                      height: 40,
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.width * 0.1,
                     ),
                   ),
                 ),

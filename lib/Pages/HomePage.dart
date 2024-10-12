@@ -11,6 +11,7 @@ import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
+import 'package:srvc/Services/auth_provider.dart';
 import 'package:srvc/Widgets/CustomButtonBar.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +32,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _apiService = ApiService(serverURL);
-
 
     _widgetPages = [
       WalletPage(),
@@ -56,22 +56,25 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchUserData() async {
     try {
       final dataString = await Provider.of<UserDataProvider>(context, listen: false).getPref('UserData');
-      if (dataString == null) return;
+      final Auth = Provider.of<AuthProvider>(context, listen: false);
+      Auth.checkLoginStatus();
+      if (dataString == null || !mounted) return;
 
       final data = jsonDecode(dataString);
       final userData = data['data'] as Map<String, dynamic>;
 
       if (userData.isNotEmpty && mounted) {
-        final notHasIncomeData = userData['income'] == null;
+        final hasIncomeData = userData['income'] != null;
 
-        setState(() => _fillIncome = userData['income'] != null);
-        if (notHasIncomeData) {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => FillinformationPage()),
-            );
-          }
+        if (mounted) {
+          setState(() => _fillIncome = hasIncomeData);
+        }
+
+        if (!hasIncomeData && mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => FillinformationPage()),
+          );
         }
       }
     } catch (e) {
@@ -83,7 +86,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: HexColor("#f5f5f7"),
-      body: _fillIncome ? SafeArea(child: _widgetPages[currentIndex]) : FillinformationPage(),
+      body: _fillIncome
+          ? SafeArea(
+              child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: _widgetPages[currentIndex],
+            ))
+          : FillinformationPage(),
       bottomNavigationBar: _fillIncome
           ? CustomButtonBar(
               defaultIndex: currentIndex,

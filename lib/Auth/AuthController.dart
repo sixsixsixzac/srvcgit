@@ -45,7 +45,7 @@ class _AuthcontrollerState extends State<Authcontroller> {
               final isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
               final id = Provider.of<AuthProvider>(context).id;
 
-              return isLoggedIn ? FetchingContainer(userID: int.parse(id)) : const LoginPage();
+              return isLoggedIn && id != null && id.isNotEmpty && int.tryParse(id) != null ? FetchingContainer(userID: int.parse(id)) : const LoginPage();
             }
           },
         ),
