@@ -1,16 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Animation/Bounce.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Services/numberFormat.dart';
 import 'package:srvc/Widgets/AnimatedLoadingBar.dart';
 import 'package:srvc/Widgets/CPointer.dart';
+import 'package:srvc/Widgets/CalendarViwer.dart';
 import 'package:srvc/Widgets/TransactionContainer.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -32,6 +31,7 @@ class _TransactionCardState extends State<TransactionCard> {
   int totalIncome = 0;
   late Future<List<Map<String, dynamic>>> plansFuture;
   late Future<List<Map<String, dynamic>>> expensesFuture;
+  List<Map<String, dynamic>> ExpenseData = [];
   bool isLoading = true;
 
   @override
@@ -80,6 +80,9 @@ class _TransactionCardState extends State<TransactionCard> {
 
     final expenseData = responses['data'];
     if (expenseData is List) {
+      setState(() {
+        ExpenseData = expenseData.map((item) => Map<String, dynamic>.from(item)).toList();
+      });
       return expenseData.map((item) => Map<String, dynamic>.from(item)).toList();
     }
 
@@ -231,7 +234,26 @@ class _TransactionCardState extends State<TransactionCard> {
               Positioned(
                 right: 10,
                 top: 15,
-                child: Icon(Icons.search,color: Colors.indigo,),
+                child: CPointer(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalendarViewer(data: ExpenseData),
+                        ));
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * .035,
+                    padding: EdgeInsets.all(1.5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.asset(
+                      'assets/images/icons/calendar.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               )
             ],
           );
@@ -244,7 +266,7 @@ class _TransactionCardState extends State<TransactionCard> {
     var isLoading = (connectionState == ConnectionState.waiting);
     if (isLoading) transactionData = [];
     return Container(
-      margin: const EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10, bottom: 10),
       child: Column(
         children: [
           if (isLoading)
@@ -288,14 +310,12 @@ class _TransactionCardState extends State<TransactionCard> {
             ),
           if (transactionData.isEmpty && !isLoading)
             BounceAnimation(
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
               child: Container(
-                width: MediaQuery.of(context).size.width * 1,
+                width: double.infinity, // full width without MediaQuery
                 height: MediaQuery.of(context).size.height * 0.30,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10),
-                  ),
+                  borderRadius: BorderRadius.circular(10), // no need for const here
                   color: Colors.grey[200],
                 ),
                 child: Column(
@@ -303,9 +323,9 @@ class _TransactionCardState extends State<TransactionCard> {
                   children: [
                     Image.asset(
                       'assets/images/icons/empty-folder.png',
-                      height: 100,
+                      height: MediaQuery.of(context).size.height * 0.17,
                     ),
-                    AutoSizeText(
+                    const AutoSizeText(
                       'ไม่พบรายการ รายรัยรายจ่าย',
                       maxLines: 1,
                       minFontSize: 20,
