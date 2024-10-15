@@ -1,14 +1,19 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/_AddExpense/account_types.dart';
 import 'package:srvc/Models/_AddExpense/expense_types.dart';
 import 'package:srvc/Models/_AddExpense/member_types.dart';
 import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/_Expense/_MemberTypes.dart';
+import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/_Expense/numpad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
+import 'package:srvc/Services/numberFormat.dart';
+import 'package:srvc/Widgets/CPointer.dart';
 import '_AccountTypes.dart';
 
 class AddExpense extends StatefulWidget {
@@ -19,96 +24,128 @@ class AddExpense extends StatefulWidget {
 }
 
 class _AddExpenseState extends State<AddExpense> {
+  ApiService apiService = ApiService(serverURL);
   late final AuthProvider authProvider;
-  String recordType = 'expense';
-  int? accountType;
-  String? accountTypesText;
-
-  int defaultAccountTypesIndex = 1;
   List<AccountTypesModel>? accountTypesModel;
+  AccountTypesModel? currentAccountType;
+  
+  List<ExpenseTypesModel>? expenseTypeModel;
 
-  List<ExpenseTypesModel>? incomeTypes;
-  List<ExpenseTypesModel>? expenseTypes;
+  Map<String, dynamic> transaction = {
+    'id' : null,
+    'type_id' : null,
+    'record_type' : 'e',
+    'for_id' : null,
+    'account_type' : null,
+    'amount' : null,
+    'date' : null,
+    'time' : null,
+    'create_by' : null
+  };
 
   @override
   void initState() {
     super.initState();
     authProvider = Provider.of<AuthProvider>(context, listen: false);
+    transaction['create_by'] = int.parse(authProvider.id);
+
     loadAccountTypes();
     loadExpenseTypes();
+    Numpad().clearValue();
   }
+
 
   void loadAccountTypes() async {
     accountTypesModel = await AccountTypes().getAccountTypes();
     setDefaultAccount();
-    setState(() {});
   }
 
   void setDefaultAccount () {
-    if (accountTypesModel != null && accountTypesModel!.isNotEmpty) {
       setState(() {
-        accountType = accountTypesModel![defaultAccountTypesIndex].id;
-        accountTypesText = accountTypesModel![defaultAccountTypesIndex].name;
+        currentAccountType = accountTypesModel![1];
+        transaction['account_type'] = accountTypesModel![1].id;
       });
-    }
   }
 
-  void setValueAccount (int selectAccountType, String selectAccountTypetext) {
+  void setValueAccount (AccountTypesModel selected) {
     setState(() {
-      accountType = selectAccountType;
-      accountTypesText = selectAccountTypetext;
+        transaction['account_type'] = selected.id;
+        currentAccountType = selected;
     });
   }
 
-  void changeRecordType (newRecordType) {
+  void setValueForId (int selected) {
     setState(() {
-      recordType = newRecordType;
+      transaction['for_id'] = selected;
     });
+  }
+
+  void setValueType (int selected) {
+    setState(() {
+      transaction['type_id'] = selected;
+    });
+  }
+
+  void changeRecordType () {
+    setState(() =>transaction['record_type'] = transaction['record_type'] == 'e' ? 'i' : 'e');
   }
 
   void loadExpenseTypes () async{
-    List<ExpenseTypesModel> expenseTypeModel = await ExpenseTypes().getExpenseTypes();
-    incomeTypes = expenseTypeModel.where((item) => item.type == "income").toList();
-    expenseTypes = expenseTypeModel.where((item) => item.type == "expense").toList();
+    expenseTypeModel = await ExpenseTypes().getExpenseTypes();
+  }
+
+  Future<void> saveRecord() async {
     setState(() {
-      
+      transaction['amount'] = double.parse(Numpad.value);
+      transaction['act'] = "saveRecord";
     });
+    final response = await apiService.post("/SRVC/ExpenseController.php", transaction);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigoAccent,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.check,
-                      size: 20,
-                      color: AppPallete.white,
-                    ),
-                    accountTypesSelection(),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        FontAwesomeIcons.times,
-                        size: 20,
-                        color: AppPallete.white,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.indigoAccent,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CPointer(
+                        onTap: (){
+                          saveRecord();
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.check,
+                          size: 20,
+                          color: AppPallete.white,
+                        ),
                       ),
-                    ),
-                  ],
+                      accountTypesSelection(),
+                      CPointer(
+                        onTap: (){
+                          Navigator.pop(context);
+                        } ,
+                        child: Icon(
+                          FontAwesomeIcons.times,
+                          size: 20,
+                          color: AppPallete.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            waitIncomeExpense(),
-          ],
+              waitIncomeExpense(),
+            ],
+          ),
         ),
       ),
     );
@@ -116,10 +153,10 @@ class _AddExpenseState extends State<AddExpense> {
 
   Widget accountTypesSelection() {
     if (accountTypesModel != null && accountTypesModel!.isNotEmpty){
-      return GestureDetector(
+      return CPointer(
         onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AccountTypesOptions(accountTypesModel: accountTypesModel!, defaultAccountTypesIndex: defaultAccountTypesIndex, setValueAccount: setValueAccount, currentAccountType: accountType,))
+          MaterialPageRoute(builder: (context) => AccountTypesOptions(accountTypesModel: accountTypesModel!, currentAccountType: currentAccountType!, setValueAccount: setValueAccount,))
         ),
         child: Container(
           padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
@@ -133,7 +170,7 @@ class _AddExpenseState extends State<AddExpense> {
           child: Center(
             child: Row(
               children: [
-                Text(accountTypesText!, style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white)),
+                Text(currentAccountType!.name, style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white)),
                 SizedBox(width: 5,),
                 Icon(FontAwesomeIcons.chevronDown, size: 8, color: AppPallete.white,)
               ],
@@ -165,8 +202,8 @@ class _AddExpenseState extends State<AddExpense> {
   }
 
   Widget waitIncomeExpense() {
-    if (incomeTypes != null && expenseTypes != null) {
-      return _Record(changeRecordType: changeRecordType, recordType: recordType, typeList: recordType == "income" ? incomeTypes! : expenseTypes!,);
+    if (expenseTypeModel != null) {
+      return _Record(setValueForId: setValueForId, setValueType: setValueType ,changeRecordType: changeRecordType, expenseTypesmodel: expenseTypeModel!, record_type: transaction['record_type'], );
     } else {
       return Text("กำลังโหลด...", style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white));
 
@@ -175,10 +212,21 @@ class _AddExpenseState extends State<AddExpense> {
 }
 
 class _Record extends StatefulWidget {
-  final Function(String) changeRecordType;
-  final String recordType;
-  final List<ExpenseTypesModel> typeList;
-  const _Record({super.key, required this.changeRecordType, required this.typeList, required this.recordType});
+  final Function(int) setValueForId;
+  final Function(int) setValueType;
+  final Function changeRecordType;
+  final List<ExpenseTypesModel> expenseTypesmodel;
+  final String record_type;
+  const _Record(
+    {
+      super.key, 
+      required this.setValueForId, 
+      required this.setValueType, 
+      required this.changeRecordType, 
+      required this.expenseTypesmodel, 
+      required this.record_type, 
+    }
+  );
 
   @override
   State<_Record> createState() => __RecordState();
@@ -186,50 +234,44 @@ class _Record extends StatefulWidget {
 
 class __RecordState extends State<_Record> {
   List<MemberTypesModel>? memberTypesModel;
-  int defaultMemberTypesIndex = 0;
-  int? memberTypes;
-  String? memberTypesText;
-  String? memberTypesImage;
+  MemberTypesModel? currentMemberType;
 
-  String? image_path;
-  String? menu_text;
-  int activeOption = 0;
+  List<ExpenseTypesModel>? typeList;
+  ExpenseTypesModel? currentType;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadMemberTypes();
-    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      prepareType();
+    });
   }
 
   void loadMemberTypes() async{
     memberTypesModel = await MemberTypes().getMemberTypes();
     setDefaultMember();
-    setState(() {
-      
-    });
   }
 
   void setDefaultMember() {
-    memberTypes = memberTypesModel![defaultMemberTypesIndex].id;
-    memberTypesText = memberTypesModel![defaultMemberTypesIndex].name;
-    memberTypesImage = "assets/images/member_types/${memberTypesModel![defaultMemberTypesIndex].img}";
-  }
-
-  void setValueMember(int selectIndex){
     setState(() {
-      memberTypes = memberTypesModel![selectIndex].id;
-      memberTypesText = memberTypesModel![selectIndex].name;
-      memberTypesImage = "assets/images/member_types/${memberTypesModel![selectIndex].img}";
+      currentMemberType = memberTypesModel![0];
+      widget.setValueForId(memberTypesModel![0].id);
     });
   }
 
-  void returnToZero () {
+  void setValueMember(MemberTypesModel selected){
     setState(() {
-      image_path = null;
-      menu_text = null;
-      activeOption = 0;
+      currentMemberType = selected;
+      widget.setValueForId(selected.id);
+    });
+  }
+
+  void prepareType() {
+    setState(() {
+      typeList = widget.record_type == 'i' ? widget.expenseTypesmodel.where((item) => item.type == "income").toList() : widget.expenseTypesmodel.where((item) => item.type == "expense").toList();
+      currentType = typeList![0];
+      widget.setValueType(typeList![0].id);
     });
   }
 
@@ -242,12 +284,14 @@ class __RecordState extends State<_Record> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(widget.recordType == "income" ? "รายรับ" : "รายจ่าย", style: TextStyle(fontFamily: 'thaifont', fontSize: 14, color: AppPallete.white),),
+              Text(widget.record_type == "i" ? "รายรับ" : "รายจ่าย", style: TextStyle(fontFamily: 'thaifont', fontSize: 14, color: AppPallete.white),),
               SizedBox(width: 10,),
-              InkWell(
+              CPointer(
                 onTap: () => setState(() {
-                   widget.changeRecordType(widget.recordType == "income" ? "expense" : "income");
-                   returnToZero();
+                   widget.changeRecordType();
+                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                    prepareType();
+                  });
                 }),
                 child: Icon(FontAwesomeIcons.sync, size: 20, color: AppPallete.gradient3,)
               )
@@ -290,11 +334,11 @@ class __RecordState extends State<_Record> {
                         child: Container(
                           height: 40,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(16),
                             color: AppPallete.white
                           ),
                           child: Center(
-                            child: Text(Numpad.value),
+                            child: Text(Numpad.value.isEmpty ? Numpad.value : formatNumber(Numpad.value, withCommas: true, removeDecimal: false)),
                           ),
                         ),
                       ),
@@ -317,23 +361,25 @@ class __RecordState extends State<_Record> {
                 flex: 1,
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: GestureDetector(
+                  child: CPointer(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MemberTypesOptions(memberTypesModel: memberTypesModel!, defaultMemberTypesIndex: defaultMemberTypesIndex, setValueMember: setValueMember, currentMemberTypes: memberTypes!))
+                      MaterialPageRoute(builder: (context) => MemberTypesOptions(memberTypesModel: memberTypesModel!, currentMemberType: currentMemberType!, setValueMember: setValueMember,))
                     ),
                     child: Container(
                       width: 65,
                       height: 40,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(1000),
+                        borderRadius: BorderRadius.circular(16),
                         color: AppPallete.white
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(memberTypesImage!, width: 30,),
+                          Consumer<AuthProvider>(builder: (context, auth, child) {
+                            return Image.asset(currentMemberType!.id == 1 ? "assets/images/profiles/${auth.data['profile']}" : "assets/images/member_types/${currentMemberType!.img}", width: 30);
+                          },)
                         ],
                       ),
                     ),
@@ -349,7 +395,7 @@ class __RecordState extends State<_Record> {
                     width: 65,
                     height: 40,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(1000),
+                      borderRadius: BorderRadius.circular(16),
                       color: AppPallete.white
                     ),
                     child: Column(
@@ -382,7 +428,7 @@ class __RecordState extends State<_Record> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset(
-            image_path ?? "assets/images/types/${widget.typeList[activeOption].img}",
+            currentType != null ? "assets/images/types/${currentType!.img}" : "assets/loader/loading1.gif",
             height: 50,
             width: 50,
           ),
@@ -390,7 +436,7 @@ class __RecordState extends State<_Record> {
             minFontSize: 12.0,
             maxFontSize: 16.0,
             maxLines: 2,
-            menu_text ?? widget.typeList[activeOption].name,
+            currentType != null ? currentType!.name : "กำลังโหลด...",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'thaifont',
@@ -405,20 +451,20 @@ class __RecordState extends State<_Record> {
   }
 
   Widget showOptions () {
-    return SizedBox(
+    if (typeList != null) {
+      return SizedBox(
       height: 100,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: List.generate(widget.typeList.length, (index){
+          children: List.generate(typeList!.length, (index){
             return Padding(
               padding: EdgeInsets.all(5),
-              child: GestureDetector(
+              child: CPointer(
                 onTap: () => setState(() {
-                  image_path = "assets/images/types/${widget.typeList[index].img}";
-                  menu_text = widget.typeList[index].name;
-                  activeOption = index;
+                  currentType = typeList![index];
+                  widget.setValueType(typeList![index].id);
                 }),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -430,24 +476,24 @@ class __RecordState extends State<_Record> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           width: 2,
-                          color: activeOption == index? AppPallete.gradient3 : Colors.transparent,
+                          color: currentType!.id == typeList![index].id? AppPallete.gradient3 : Colors.transparent,
                         ),
                         borderRadius: BorderRadius.circular(1000),
                         color: AppPallete.white
                       ),
-                      child: Center(child: Image.asset("assets/images/types/${widget.typeList[index].img}", width: 35,)),
+                      child: Center(child: Image.asset("assets/images/types/${typeList![index].img}", width: 35,)),
                     ),
                     SizedBox(height: 5,),
                     AutoSizeText(
                       minFontSize: 8.0,
                       maxFontSize: 12.0,
                       maxLines: 2,
-                      widget.typeList[index].name,
+                      typeList![index].name,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'thaifont',
                         fontWeight: FontWeight.bold,
-                        color: activeOption == index ? AppPallete.gradient3 : AppPallete.white,
+                        color: currentType!.id == typeList![index].id ? AppPallete.gradient3 : AppPallete.white,
                       ),
                       overflow: TextOverflow.ellipsis,
                     )
@@ -459,6 +505,28 @@ class __RecordState extends State<_Record> {
         ),
       ),
     );
+    } else {
+      return Container(
+      height: 100,
+      child: Center(
+        child: AutoSizeText(
+            minFontSize: 12.0,
+            maxFontSize: 16.0,
+            maxLines: 2,
+            "กำลังโหลด...",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'thaifont',
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+      ),
+    );
+    }
+    
+    
   }
 
   Widget numpad () {
@@ -471,7 +539,7 @@ class __RecordState extends State<_Record> {
         flex: item['flex'],
         child: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: GestureDetector(
+          child: CPointer(
             onTap: () {
               setState(() {
                 item['ontap']();
@@ -481,7 +549,7 @@ class __RecordState extends State<_Record> {
               width: 65,
               height: 40,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(1000),
+                borderRadius: BorderRadius.circular(16),
                 color: AppPallete.white
               ),
               child: Center(child: item['key'],),

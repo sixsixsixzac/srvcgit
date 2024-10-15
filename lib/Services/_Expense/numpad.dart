@@ -15,7 +15,7 @@ class Numpad {
     {'flex': 1, 'key': Text('9'), 'type': 'number', 'ontap': () => Numpad().keyPress('9')},
     {'flex': 1, 'key': Text('.'), 'type': 'number', 'ontap': () => Numpad().keyPress('.')},
     {'flex': 1, 'key': Text('0'), 'type': 'number', 'ontap': () => Numpad().keyPress('0')},
-    {'flex': 1, 'key': Icon(FontAwesomeIcons.backspace), 'type': 'functional', 'ontap': () => Numpad().erasePress()}
+    {'flex': 1, 'key': Icon(FontAwesomeIcons.backspace, color: Colors.red,), 'type': 'functional', 'ontap': () => Numpad().erasePress()}
   ];
 
   void erasePress() {
@@ -24,7 +24,6 @@ class Numpad {
   }
 
   void keyPress(String key) {
-    print(key);
     if(value.length == 1 && value[0] == '0' && key == '0') return;
     if(key == '.' && value.isEmpty) return;
     if(key == '.' && value[value.length-1] == '.') return;
@@ -41,5 +40,9 @@ class Numpad {
       value += key;
     }
     
+  }
+
+  void clearValue(){
+    value = "";
   }
 }

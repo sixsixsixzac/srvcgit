@@ -3,125 +3,98 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:srvc/Models/_AddExpense/account_types.dart';
 import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Widgets/CPointer.dart';
 
 class AccountTypesOptions extends StatefulWidget {
   final List<AccountTypesModel> accountTypesModel;
-  final int defaultAccountTypesIndex;
+  final AccountTypesModel currentAccountType;
   final Function setValueAccount;
-  final int? currentAccountType;
   const AccountTypesOptions(
-      {super.key,
-      required this.accountTypesModel,
-      required this.defaultAccountTypesIndex,
-      required this.setValueAccount,
-      this.currentAccountType});
+      {
+        super.key,
+        required this.accountTypesModel,
+        required this.currentAccountType,
+        required this.setValueAccount, 
+      });
 
   @override
   State<AccountTypesOptions> createState() => _AccountTypesOptionsState();
 }
 
 class _AccountTypesOptionsState extends State<AccountTypesOptions> {
-  String? accountTypeImage;
-  String? accountTypeText;
-  int? accountType;
+  AccountTypesModel? newAccountType;
   @override
-  void initState() {
-    super.initState();
-    accountType = widget.currentAccountType;
-
-    // เซตค่าจาก accountTypesModel โดยตรง
-    if (accountType != null) {
-      var matchedAccountType = widget.accountTypesModel.firstWhere(
-        (account) => account.id == accountType,
-      );
-
-      // ใช้ null check แทน if statement
-      accountTypeImage = "assets/images/account_types/${matchedAccountType.img}";
-      accountTypeText = matchedAccountType.name; 
-    }
-  }
-
-
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigoAccent,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.indigoAccent,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CPointer(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(
+                        FontAwesomeIcons.times,
+                        size: 20,
+                        color: AppPallete.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      FontAwesomeIcons.times,
-                      size: 20,
-                      color: AppPallete.white,
+                  Text(
+                    "ประเภทบัญชี",
+                    style: TextStyle(
+                        fontFamily: 'thaifont',
+                        fontSize: 16,
+                        color: AppPallete.white),
+                  ),
+                  _PreviewAccountSelected(show: newAccountType ?? widget.currentAccountType,),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${widget.accountTypesModel.length} ตัวเลือก",
+                          style: TextStyle(
+                              fontFamily: 'thaifont',
+                              fontSize: 10,
+                              color: const Color.fromARGB(170, 255, 255, 255)),
+                        ),
+                        Text(
+                          "สไลด์เพื่อดูเพิ่มเติม",
+                          style: TextStyle(
+                              fontFamily: 'thaifont',
+                              fontSize: 10,
+                              color: const Color.fromARGB(170, 255, 255, 255)),
+                        )
+                      ],
                     ),
+                  ),
+                  _AccountOptions(
+                    accountTypesModel: widget.accountTypesModel,
+                    selectedOption: newAccountType ?? widget.currentAccountType,
+                    changeAccountType: (item) {
+                      setState(() {
+                        newAccountType = item;
+                        widget.setValueAccount(item);
+                      });
+                    },
                   )
                 ],
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "ประเภทบัญชี",
-                  style: TextStyle(
-                      fontFamily: 'thaifont',
-                      fontSize: 16,
-                      color: AppPallete.white),
-                ),
-                _PreviewAccountSelected(
-                    accountTypeImage: accountTypeImage ??
-                        "assets/images/account_types/${widget.accountTypesModel[widget.defaultAccountTypesIndex].img}",
-                    accountTypeText: accountTypeText ??
-                        widget
-                            .accountTypesModel[widget.defaultAccountTypesIndex]
-                            .name),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${widget.accountTypesModel.length} ตัวเลือก",
-                        style: TextStyle(
-                            fontFamily: 'thaifont',
-                            fontSize: 10,
-                            color: const Color.fromARGB(170, 255, 255, 255)),
-                      ),
-                      Text(
-                        "สไลด์เพื่อดูเพิ่มเติม",
-                        style: TextStyle(
-                            fontFamily: 'thaifont',
-                            fontSize: 10,
-                            color: const Color.fromARGB(170, 255, 255, 255)),
-                      )
-                    ],
-                  ),
-                ),
-                _AccountOptions(
-                  accountTypesModel: widget.accountTypesModel,
-                  accountType: accountType ??
-                      widget.accountTypesModel[widget.defaultAccountTypesIndex]
-                          .id,
-                  changeAccountType: (item) {
-                    setState(() {
-                      accountType = item.id;
-                      accountTypeText = item.name;
-                      accountTypeImage =
-                          "assets/images/account_types/${item.img}";
-                      widget.setValueAccount(item.id, item.name);
-                    });
-                  },
-                )
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -129,12 +102,12 @@ class _AccountTypesOptionsState extends State<AccountTypesOptions> {
 }
 
 class _PreviewAccountSelected extends StatefulWidget {
-  final String accountTypeImage;
-  final String accountTypeText;
+  final AccountTypesModel show;
   const _PreviewAccountSelected(
-      {super.key,
-      required this.accountTypeImage,
-      required this.accountTypeText});
+      {
+        super.key, 
+        required this.show,
+      });
 
   @override
   State<_PreviewAccountSelected> createState() =>
@@ -158,7 +131,7 @@ class __PreviewAccountSelectedState extends State<_PreviewAccountSelected> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              widget.accountTypeImage,
+              "assets/images/account_types/${widget.show.img}",
               width: 50,
               height: 50,
             ),
@@ -166,7 +139,7 @@ class __PreviewAccountSelectedState extends State<_PreviewAccountSelected> {
               minFontSize: 12.0,
               maxFontSize: 16.0,
               maxLines: 2,
-              widget.accountTypeText,
+              widget.show.name,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'thaifont',
@@ -184,13 +157,16 @@ class __PreviewAccountSelectedState extends State<_PreviewAccountSelected> {
 
 class _AccountOptions extends StatefulWidget {
   final List<AccountTypesModel> accountTypesModel;
-  final int accountType;
-  final Function(dynamic) changeAccountType;
+  final AccountTypesModel selectedOption;
+  final Function(AccountTypesModel item) changeAccountType;
+
   const _AccountOptions(
-      {super.key,
-      required this.accountTypesModel,
-      required this.accountType,
-      required this.changeAccountType});
+      {
+        super.key, 
+        required this.accountTypesModel, 
+        required this.selectedOption, 
+        required this.changeAccountType,
+      });
 
   @override
   State<_AccountOptions> createState() => __AccountOptionsState();
@@ -237,7 +213,7 @@ class __AccountOptionsState extends State<_AccountOptions> {
     List<Widget> columns = [];
 
     for (var item in widget.accountTypesModel) {
-      Widget menu = GestureDetector(
+      Widget menu = CPointer(
         onTap: () => widget.changeAccountType(item),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
@@ -266,7 +242,7 @@ class __AccountOptionsState extends State<_AccountOptions> {
                   style: TextStyle(
                     fontFamily: 'thaifont',
                     fontWeight: FontWeight.bold,
-                    color: widget.accountType == item.id
+                    color: widget.selectedOption.id == item.id
                         ? AppPallete.gradient3
                         : Colors.indigo,
                   ),
