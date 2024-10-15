@@ -1,84 +1,105 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:srvc/Models/_AddExpense/account_types.dart';
 import 'package:srvc/Models/_AddExpense/expense_types.dart';
+import 'package:srvc/Models/_AddExpense/member_types.dart';
 import 'package:srvc/Pages/AppPallete.dart';
-import 'package:srvc/Services/Shortcut.dart';
+import 'package:srvc/Pages/_Expense/_MemberTypes.dart';
 import 'package:srvc/Services/_Expense/numpad.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Services/APIService.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
+import '_AccountTypes.dart';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({super.key});
 
   @override
-  State<AddExpense> createState() => __AddExpenseState();
+  State<AddExpense> createState() => _AddExpenseState();
 }
 
-class __AddExpenseState extends State<AddExpense> {
-  final ApiService apiService = ApiService(serverURL);
-  @override
-  Widget build(BuildContext context) {
-    return IncomeExpenseForm(apiService: apiService);
-  }
-}
+class _AddExpenseState extends State<AddExpense> {
+  late final AuthProvider authProvider;
+  String recordType = 'expense';
+  int? accountType;
+  String? accountTypesText;
 
-class IncomeExpenseForm extends StatefulWidget {
-  final ApiService apiService;
-  const IncomeExpenseForm({super.key, required this.apiService});
+  int defaultAccountTypesIndex = 1;
+  List<AccountTypesModel>? accountTypesModel;
 
-  @override
-  State<IncomeExpenseForm> createState() => _IncomeExpenseFormState();
-}
-
-class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
-  List<ExpenseTypesModel>? expenseTypesModel;
-  int activeOption = 0;
-  int? activeOptionID;
+  List<ExpenseTypesModel>? incomeTypes;
+  List<ExpenseTypesModel>? expenseTypes;
 
   @override
   void initState() {
     super.initState();
+    authProvider = Provider.of<AuthProvider>(context, listen: false);
+    loadAccountTypes();
     loadExpenseTypes();
   }
 
-  void loadExpenseTypes() async {
-    expenseTypesModel = await ExpenseTypes().getExpenseTypes();
+  void loadAccountTypes() async {
+    accountTypesModel = await AccountTypes().getAccountTypes();
+    setDefaultAccount();
     setState(() {});
   }
 
-  // Future<void> _saveExpense() async {
-  //   final response = await widget.apiService.post("/SRVC/ExpenseController.php", {
-  //     "act": "saveExpense",
-  //     "type_id": activeOptionID,
-  //     "amont": Numpad.value,
+  void setDefaultAccount () {
+    if (accountTypesModel != null && accountTypesModel!.isNotEmpty) {
+      setState(() {
+        accountType = accountTypesModel![defaultAccountTypesIndex].id;
+        accountTypesText = accountTypesModel![defaultAccountTypesIndex].name;
+      });
+    }
+  }
 
-  //   });
-  // }
+  void setValueAccount (int selectAccountType, String selectAccountTypetext) {
+    setState(() {
+      accountType = selectAccountType;
+      accountTypesText = selectAccountTypetext;
+    });
+  }
+
+  void changeRecordType (newRecordType) {
+    setState(() {
+      recordType = newRecordType;
+    });
+  }
+
+  void loadExpenseTypes () async{
+    List<ExpenseTypesModel> expenseTypeModel = await ExpenseTypes().getExpenseTypes();
+    incomeTypes = expenseTypeModel.where((item) => item.type == "income").toList();
+    expenseTypes = expenseTypeModel.where((item) => item.type == "expense").toList();
+    setState(() {
+      
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.indigo,
-        body: Column(
+      backgroundColor: Colors.indigoAccent,
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             SizedBox(
               child: Padding(
-                padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(
                       FontAwesomeIcons.check,
-                      size: 20.0,
+                      size: 20,
                       color: AppPallete.white,
                     ),
+                    accountTypesSelection(),
                     InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Icon(
                         FontAwesomeIcons.times,
-                        size: 20.0,
+                        size: 20,
                         color: AppPallete.white,
                       ),
                     ),
@@ -86,220 +107,349 @@ class _IncomeExpenseFormState extends State<IncomeExpenseForm> {
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 4),
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _PreviewOptions(
-                          expenseTypesModel: expenseTypesModel,
-                          activeOption: activeOption,
-                        ),
-                        SizedBox(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8, right: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(
-                                  FontAwesomeIcons.arrowLeftLong,
-                                  color: Colors.grey.withOpacity(0.35),
-                                  size: 15,
-                                ),
-                                Icon(
-                                  FontAwesomeIcons.arrowRightLong,
-                                  color: Colors.grey.withOpacity(0.35),
-                                  size: 15,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        __ListOptionState(
-                          expenseTypesModel: expenseTypesModel,
-                          ontap: (index, id) {
-                            setState(() {
-                              activeOption = index;
-                              activeOptionID = id;
-                            });
-                          },
-                          activeOption: activeOption,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                color: AppPallete.backgroundColor,
-              ),
-              width: double.infinity,
-              height: resize(context: context, type: 'h', value: 0.475),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 4, left: 1, bottom: 4),
-                          child: Container(
-                            decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey), borderRadius: BorderRadius.circular(4)),
-                            height: resize(context: context, type: 'h', value: 0.075),
-                            child: Center(child: Text(Numpad.value)),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Container(
-                              decoration: BoxDecoration(border: Border.all(width: 2.5, color: Colors.transparent), borderRadius: BorderRadius.circular(5), color: AppPallete.green),
-                              height: resize(context: context, type: 'h', value: 0.075),
-                              child: Center(
-                                  child: Text(
-                                "Save",
-                                style: TextStyle(color: Colors.white),
-                              )),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  _Mynumpad(ontap: (item) {
-                    setState(() {
-                      item['ontap']();
-                    });
-                  })
-                ],
-              ),
-            )
+            waitIncomeExpense(),
           ],
-        ));
-  }
-}
-
-class _PreviewOptions extends StatefulWidget {
-  final List<ExpenseTypesModel>? expenseTypesModel;
-  final int activeOption;
-  const _PreviewOptions({super.key, required this.expenseTypesModel, this.activeOption = 0});
-  @override
-  State<_PreviewOptions> createState() => __PreviewOptionsState();
-}
-
-class __PreviewOptionsState extends State<_PreviewOptions> {
-  @override
-  Widget build(BuildContext context) {
-    String image_path = widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![widget.activeOption].img}" : "assets/loader/loading1.gif";
-    String menu_text = widget.expenseTypesModel != null ? widget.expenseTypesModel![widget.activeOption].name : "Loading...";
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: AppPallete.gradient3, width: 5),
-        color: AppPallete.backgroundColor,
-        borderRadius: BorderRadius.circular(1000),
-      ),
-      width: 150,
-      height: 150,
-      child: Padding(
-        padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                image_path,
-                height: 50,
-                width: 50,
-              ),
-              AutoSizeText(
-                minFontSize: 12.0,
-                maxFontSize: 16.0,
-                maxLines: 2,
-                menu_text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'thaifont',
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
-                ),
-                overflow: TextOverflow.ellipsis,
-              )
-            ],
-          ),
         ),
       ),
     );
   }
+
+  Widget accountTypesSelection() {
+    if (accountTypesModel != null && accountTypesModel!.isNotEmpty){
+      return GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AccountTypesOptions(accountTypesModel: accountTypesModel!, defaultAccountTypesIndex: defaultAccountTypesIndex, setValueAccount: setValueAccount, currentAccountType: accountType,))
+        ),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.transparent
+            ),
+            color: const Color.fromARGB(25, 0, 0, 0),
+            borderRadius: BorderRadius.circular(25)
+          ),
+          child: Center(
+            child: Row(
+              children: [
+                Text(accountTypesText!, style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white)),
+                SizedBox(width: 5,),
+                Icon(FontAwesomeIcons.chevronDown, size: 8, color: AppPallete.white,)
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.transparent
+          ),
+          color: const Color.fromARGB(25, 0, 0, 0),
+          borderRadius: BorderRadius.circular(25)
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              Text("กำลังโหลด...", style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white)),
+              SizedBox(width: 5,),
+              Icon(FontAwesomeIcons.chevronDown, size: 8, color: AppPallete.white,)
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget waitIncomeExpense() {
+    if (incomeTypes != null && expenseTypes != null) {
+      return _Record(changeRecordType: changeRecordType, recordType: recordType, typeList: recordType == "income" ? incomeTypes! : expenseTypes!,);
+    } else {
+      return Text("กำลังโหลด...", style: TextStyle(fontFamily: 'thaifont', fontSize: 12, color: AppPallete.white));
+
+    }
+  }
 }
 
-class __ListOptionState extends StatefulWidget {
-  final List<ExpenseTypesModel>? expenseTypesModel;
-  final Function(int, int) ontap;
-  final int activeOption;
-  const __ListOptionState({super.key, required this.expenseTypesModel, required this.ontap(index, id), this.activeOption = 0});
+class _Record extends StatefulWidget {
+  final Function(String) changeRecordType;
+  final String recordType;
+  final List<ExpenseTypesModel> typeList;
+  const _Record({super.key, required this.changeRecordType, required this.typeList, required this.recordType});
 
   @override
-  State<__ListOptionState> createState() => ___ListOptionStateState();
+  State<_Record> createState() => __RecordState();
 }
 
-class ___ListOptionStateState extends State<__ListOptionState> {
+class __RecordState extends State<_Record> {
+  List<MemberTypesModel>? memberTypesModel;
+  int defaultMemberTypesIndex = 0;
+  int? memberTypes;
+  String? memberTypesText;
+  String? memberTypesImage;
+
+  String? image_path;
+  String? menu_text;
+  int activeOption = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadMemberTypes();
+    
+  }
+
+  void loadMemberTypes() async{
+    memberTypesModel = await MemberTypes().getMemberTypes();
+    setDefaultMember();
+    setState(() {
+      
+    });
+  }
+
+  void setDefaultMember() {
+    memberTypes = memberTypesModel![defaultMemberTypesIndex].id;
+    memberTypesText = memberTypesModel![defaultMemberTypesIndex].name;
+    memberTypesImage = "assets/images/member_types/${memberTypesModel![defaultMemberTypesIndex].img}";
+  }
+
+  void setValueMember(int selectIndex){
+    setState(() {
+      memberTypes = memberTypesModel![selectIndex].id;
+      memberTypesText = memberTypesModel![selectIndex].name;
+      memberTypesImage = "assets/images/member_types/${memberTypesModel![selectIndex].img}";
+    });
+  }
+
+  void returnToZero () {
+    setState(() {
+      image_path = null;
+      menu_text = null;
+      activeOption = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    int max_loop = widget.expenseTypesModel != null ? widget.expenseTypesModel!.length : 1;
-    return SizedBox(
-      height: 90,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(max_loop, (index) {
-            String image_path = widget.expenseTypesModel != null ? "assets/images/types/${widget.expenseTypesModel![index].img}" : "assets/loader/loading1.gif";
-            String menu_text = widget.expenseTypesModel != null ? widget.expenseTypesModel![index].name : "Loading...";
-            return Padding(
-              padding: EdgeInsets.fromLTRB(10, 12, 10, 0),
-              child: GestureDetector(
-                onTap: () {
-                  widget.ontap(index, widget.expenseTypesModel![index].id);
-                },
-                child: Column(
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(widget.recordType == "income" ? "รายรับ" : "รายจ่าย", style: TextStyle(fontFamily: 'thaifont', fontSize: 14, color: AppPallete.white),),
+              SizedBox(width: 10,),
+              InkWell(
+                onTap: () => setState(() {
+                   widget.changeRecordType(widget.recordType == "income" ? "expense" : "income");
+                   returnToZero();
+                }),
+                child: Icon(FontAwesomeIcons.sync, size: 20, color: AppPallete.gradient3,)
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                previewType(),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(FontAwesomeIcons.arrowLeft, size: 15, color: const Color.fromARGB(175, 255, 255, 255),),
+                      Icon(FontAwesomeIcons.arrowRight, size: 15, color: const Color.fromARGB(175, 255, 255, 255),),
+                    ],
+                  ),
+                ),
+                showOptions(),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      decoration:
-                          BoxDecoration(border: Border.all(width: 2, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.transparent), shape: BoxShape.circle, color: Colors.white),
-                      width: 50,
-                      height: 50,
-                      child: Center(
-                        child: Image.asset(
-                          image_path,
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: AppPallete.white
+                          ),
+                          child: Center(
+                            child: Text(Numpad.value),
+                          ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 25,
-                      child: Center(
-                        child: AutoSizeText(
-                          minFontSize: 8.0,
-                          maxFontSize: 14.0,
-                          maxLines: 1,
-                          menu_text,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontFamily: 'thaifont', fontWeight: FontWeight.bold, color: widget.activeOption == index ? AppPallete.gradient3 : Colors.white, fontSize: 10),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                    previewMemberType()
+                  ],
+                ),
+                numpad()
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget previewMemberType () {
+    if (memberTypesModel != null) {
+      return Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MemberTypesOptions(memberTypesModel: memberTypesModel!, defaultMemberTypesIndex: defaultMemberTypesIndex, setValueMember: setValueMember, currentMemberTypes: memberTypes!))
+                    ),
+                    child: Container(
+                      width: 65,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(1000),
+                        color: AppPallete.white
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(memberTypesImage!, width: 30,),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+    } else {
+      return Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    width: 65,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(1000),
+                      color: AppPallete.white
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset("assets/loader/loading1.gif", width: 30,),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+    }
+  }
+
+  Widget previewType () {
+    return Container(
+      width: 150,
+      height: 150,
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 5,
+          color: AppPallete.gradient3
+        ),
+        borderRadius: BorderRadius.circular(1000),
+        color: AppPallete.white
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            image_path ?? "assets/images/types/${widget.typeList[activeOption].img}",
+            height: 50,
+            width: 50,
+          ),
+          AutoSizeText(
+            minFontSize: 12.0,
+            maxFontSize: 16.0,
+            maxLines: 2,
+            menu_text ?? widget.typeList[activeOption].name,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'thaifont',
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo,
+            ),
+            overflow: TextOverflow.ellipsis,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget showOptions () {
+    return SizedBox(
+      height: 100,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: List.generate(widget.typeList.length, (index){
+            return Padding(
+              padding: EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  image_path = "assets/images/types/${widget.typeList[index].img}";
+                  menu_text = widget.typeList[index].name;
+                  activeOption = index;
+                }),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: activeOption == index? AppPallete.gradient3 : Colors.transparent,
+                        ),
+                        borderRadius: BorderRadius.circular(1000),
+                        color: AppPallete.white
+                      ),
+                      child: Center(child: Image.asset("assets/images/types/${widget.typeList[index].img}", width: 35,)),
+                    ),
+                    SizedBox(height: 5,),
+                    AutoSizeText(
+                      minFontSize: 8.0,
+                      maxFontSize: 12.0,
+                      maxLines: 2,
+                      widget.typeList[index].name,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'thaifont',
+                        fontWeight: FontWeight.bold,
+                        color: activeOption == index ? AppPallete.gradient3 : AppPallete.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     )
                   ],
                 ),
@@ -310,40 +460,31 @@ class ___ListOptionStateState extends State<__ListOptionState> {
       ),
     );
   }
-}
 
-class _Mynumpad extends StatefulWidget {
-  final Function(dynamic) ontap;
-  const _Mynumpad({super.key, required this.ontap(item)});
-
-  @override
-  State<_Mynumpad> createState() => __MynumpadState();
-}
-
-class __MynumpadState extends State<_Mynumpad> {
-  List<Map<String, dynamic>> numkeys = Numpad.numpadKeys;
-
-  @override
-  Widget build(BuildContext context) {
-    return createNumpad();
-  }
-
-  Widget createNumpad() {
+  Widget numpad () {
+    List<Map<String, dynamic>> numpadKeys = Numpad.numpadKeys;
     int maxKeysPerRow = 3;
     List<Widget> currentRowItems = [];
     List<Widget> rows = [];
-
-    for (var item in numkeys) {
-      Widget key = Placeholder();
-      key = Expanded(
-        child: GestureDetector(
-          onTap: () => widget.ontap(item),
-          child: Padding(
-            padding: const EdgeInsets.all(1.0),
+    for (var item in numpadKeys) {
+      Widget key = Expanded(
+        flex: item['flex'],
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                item['ontap']();
+              });
+            },
             child: Container(
-              decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey), borderRadius: BorderRadius.circular(5)),
-              height: resize(context: context, type: 'h', value: 0.075),
-              child: Center(child: item['key']),
+              width: 65,
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(1000),
+                color: AppPallete.white
+              ),
+              child: Center(child: item['key'],),
             ),
           ),
         ),
@@ -353,6 +494,8 @@ class __MynumpadState extends State<_Mynumpad> {
 
       if (currentRowItems.length >= maxKeysPerRow) {
         rows.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: currentRowItems,
         ));
         currentRowItems = [];
@@ -361,11 +504,15 @@ class __MynumpadState extends State<_Mynumpad> {
 
     if (currentRowItems.isNotEmpty) {
       rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: currentRowItems,
       ));
     }
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: rows,
     );
   }

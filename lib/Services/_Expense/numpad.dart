@@ -24,6 +24,7 @@ class Numpad {
   }
 
   void keyPress(String key) {
+    print(key);
     if(value.length == 1 && value[0] == '0' && key == '0') return;
     if(key == '.' && value.isEmpty) return;
     if(key == '.' && value[value.length-1] == '.') return;
