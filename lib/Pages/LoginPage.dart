@@ -8,9 +8,10 @@ import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Pages/RegisterPage.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Widgets/CustomInput.dart';
 import 'package:srvc/Widgets/Fetching.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +22,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final ApiService apiService = ApiService(serverURL);
+  bool _isChecked = false;
+  final storage = FlutterSecureStorage();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -32,11 +35,36 @@ class _LoginPageState extends State<LoginPage> {
     });
     bool fetchStatus = response['status'];
     if (fetchStatus == true) {
-      final userId = response['data']['id'].toString();
-      final name = response['data']['name'];
       Provider.of<AuthProvider>(context, listen: false).login(response['data']);
     }
     return response;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCheckboxState();
+  }
+
+  Future<void> _loadCheckboxState() async {
+    String? storedPassword = await storage.read(key: 'password');
+    String? storedPhone = await storage.read(key: 'phone');
+    setState(() {
+      _phoneController.text = storedPhone ?? "";
+      _passwordController.text = storedPassword ?? "";
+
+      _isChecked = storedPassword != null;
+    });
+  }
+
+  Future<void> _savePassword(String phone, String password) async {
+    await storage.write(key: 'password', value: password);
+    await storage.write(key: 'phone', value: phone);
+  }
+
+  Future<void> _deletePassword() async {
+    await storage.delete(key: 'phone');
+    await storage.delete(key: 'password');
   }
 
   @override
@@ -106,14 +134,36 @@ class _LoginPageState extends State<LoginPage> {
                               prefixIcon: FontAwesomeIcons.mobileAlt,
                             ),
                             CustomTextFormField(
+                              hashPass: true,
                               controller: _passwordController,
                               hintText: 'รหัสผ่าน',
                               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              prefixIcon: FontAwesomeIcons.user,
+                              prefixIcon: FontAwesomeIcons.lock,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _isChecked,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _isChecked = value ?? false;
+                                            if (_isChecked) {
+                                              _savePassword(_phoneController.text, _passwordController.text);
+                                            } else {
+                                              _deletePassword();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Text('บันทึกรหัสผ่าน'),
+                                    ],
+                                  ),
+                                ),
                                 Container(
                                   margin: const EdgeInsets.symmetric(horizontal: 10),
                                   child: AutoSizeText(

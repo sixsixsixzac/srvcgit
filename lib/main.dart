@@ -9,7 +9,7 @@ import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

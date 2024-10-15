@@ -11,7 +11,7 @@ import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
 import 'package:srvc/Pages/WalletPage.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Widgets/CustomButtonBar.dart';
 
 class HomePage extends StatefulWidget {
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: HexColor("#f5f5f7"),
       body: _fillIncome
           ? SafeArea(
-              child: Container(
+              child: SizedBox(
               height: MediaQuery.of(context).size.height,
               child: _widgetPages[currentIndex],
             ))

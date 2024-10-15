@@ -10,7 +10,7 @@ import 'package:srvc/Pages/_Family/_FamJoin.dart';
 import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Services/HexColor.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 import 'dart:async';
 
 class FamilyPage extends StatefulWidget {

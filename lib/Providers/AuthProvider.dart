@@ -52,6 +52,12 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> saveData(Map<String, dynamic> Data) async {
+    _userData = Data;
+    await _saveLoginStatus();
+    notifyListeners();
+  }
+
   Future<void> _saveLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userInfoJson = jsonEncode(_userData);

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 
 class FamilyWelcomePage extends StatefulWidget {
   final VoidCallback onCreated;

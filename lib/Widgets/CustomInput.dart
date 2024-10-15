@@ -7,9 +7,10 @@ class CustomTextFormField extends StatelessWidget {
   final Color fillColor;
   final Color iconColor;
   final double borderRadius;
+  final bool? hashPass;
   final EdgeInsetsGeometry margin;
   final TextEditingController controller;
-  final String? Function(String?)? validator; // Add this line
+  final String? Function(String?)? validator;
 
   const CustomTextFormField({
     super.key,
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
     this.fillColor = const Color(0xFFE4E4E4),
     this.iconColor = const Color(0xFFA0A0A0),
     this.borderRadius = 10,
+    this.hashPass = false,
     this.margin = EdgeInsets.zero,
   });
 
@@ -32,6 +34,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller,
         validator: validator,
         autovalidateMode: AutovalidateMode.always,
+        obscureText: hashPass!,
         decoration: InputDecoration(
           filled: true,
           fillColor: fillColor,

@@ -5,7 +5,7 @@ import 'package:srvc/Pages/AppPallete.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/APIService.dart';
 
-import 'package:srvc/Services/auth_provider.dart';
+import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Widgets/Fetching.dart';
 import 'package:srvc/Widgets/Loading.dart';
 
@@ -44,8 +44,7 @@ class _AuthcontrollerState extends State<Authcontroller> {
             } else {
               final isLoggedIn = Provider.of<AuthProvider>(context).isLoggedIn;
               final id = Provider.of<AuthProvider>(context).id;
-
-              return isLoggedIn && id != null && id.isNotEmpty && int.tryParse(id) != null ? FetchingContainer(userID: int.parse(id)) : const LoginPage();
+              return isLoggedIn && id.isNotEmpty && int.tryParse(id) != null ? FetchingContainer(userID: int.parse(id)) : const LoginPage();
             }
           },
         ),

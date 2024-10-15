@@ -13,7 +13,7 @@ class AppPallete {
   static Color error = HexColor('#ff5252');
   static Color transparent = Colors.transparent;
   static Color purple = HexColor('#3f51b5');
-  static Color green = HexColor('#31c18d');
+  static Color green = HexColor('#5bc658');
   static Color orange = Colors.orange;
 
 }
