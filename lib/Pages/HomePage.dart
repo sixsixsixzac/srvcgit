@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
+import 'package:srvc/Pages/FamilyPage.dart';
 import 'package:srvc/Pages/FillInformation.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     _apiService = ApiService(serverURL);
 
     _widgetPages = [
-      WalletPage(),
+      FamilyPage(),
       ReportPage(),
       Mainpage(
         ontab: (index) => updateIndex(index),
@@ -97,15 +98,15 @@ class _HomePageState extends State<HomePage> {
           ? CustomButtonBar(
               defaultIndex: currentIndex,
               imagePaths: const [
-                'assets/images/icons/wallet.png',
+                'assets/images/icons/family-symbol.png',
                 'assets/images/icons/analysis.png',
                 'assets/images/icons/home.png',
                 'assets/images/icons/graduate-cap.png',
                 'assets/images/icons/settings.png',
               ],
               labels: const [
-                'กระเป๋า',
-                'รายงาน',
+                'กลุ่ม',
+                'ประเมิน',
                 'หน้าหลัก',
                 'ศึกษา',
                 'ตั้งค่า',

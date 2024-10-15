@@ -28,8 +28,16 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
   int? selectedIndex;
   final ApiService apiService = ApiService(serverURL);
   void _toggleModal() {
-    final FamState = Provider.of<FamilyModel>(context, listen: false);
-    FamState.setModal(!FamState.isModalVisible);
+    // final FamState = Provider.of<FamilyModel>(context, listen: false);
+    // FamState.setModal(!FamState.isModalVisible);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UserModal(
+                userData: widget.groupMembers[selectedIndex!],
+                onClose: _toggleModal,
+              )),
+    );
   }
 
   Future<void> _leaveGroup(int index) async {
@@ -120,7 +128,7 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
                     ),
                     itemCount: widget.groupMembers.length,
                     itemBuilder: (context, index) {
-                      print(widget.groupMembers);
+                      // print(widget.groupMembers);
                       final user = widget.groupMembers[index];
                       return MyImageContainer(
                         data: widget.groupMembers[index],
@@ -167,11 +175,8 @@ class _FamilyHomePageState extends State<FamilyHomePage> {
             ],
           ),
         ),
-        if (FamState.isModalVisible)
-          UserModal(
-            userData: widget.groupMembers[selectedIndex!],
-            onClose: _toggleModal,
-          ),
+        // if (FamState.isModalVisible)
+        // ,
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
+import 'package:srvc/Models/group_members.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
 
@@ -29,15 +30,7 @@ class _FamilyWelcomePageState extends State<FamilyWelcomePage> {
         FamState.setCode(data['data']['group_code'].toString());
         FamState.setTitle('กลุ่มของฉัน');
         FamState.setHas(true);
-        // print(data);
-        // QuickAlert.show(
-        //   context: context,
-        //   type: QuickAlertType.success,
-        //   title: data['title'],
-        //   text: data['msg'],
-        //   autoCloseDuration: const Duration(seconds: 2),
-        //   showConfirmBtn: false,
-        // );
+        FamState.setMember((data['data']['members'] as List<dynamic>).map((item) => GroupMembersModel.fromJson(item)).toList());
       } else {
         print("Error: ${data['title']}");
       }

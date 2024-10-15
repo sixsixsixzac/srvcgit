@@ -31,6 +31,7 @@ class _FamilyPageState extends State<FamilyPage> {
   @override
   void initState() {
     super.initState();
+
     _checkGroup();
   }
 
@@ -41,6 +42,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   Future<void> _checkGroup() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
+
     setState(() {
       _isLoading = true;
     });
@@ -116,17 +118,6 @@ class _FamilyPageState extends State<FamilyPage> {
               ],
               backgroundColor: AppPallete.purple,
               centerTitle: true,
-              leading: IconButton(
-                icon: const Icon(FontAwesomeIcons.arrowLeft, color: Colors.white, size: 20),
-                onPressed: () {
-                  if (FamState.isJoining && FamState.hasGroup == false) {
-                    FamState.setJoin(false);
-                    FamState.setTitle("สร้างกลุ่ม");
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
               title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
             ),
       body: Stack(
