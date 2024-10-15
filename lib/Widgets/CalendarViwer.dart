@@ -205,7 +205,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               children: [
                 IconButton(
                   onPressed: () => _navigateMonth(-1),
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.chevron_left, size: 30),
                 ),
                 Text(
                   '${thaiMonths[_focusedDate.month - 1]} ${_focusedDate.year}',
@@ -213,7 +213,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 ),
                 IconButton(
                   onPressed: () => _navigateMonth(1),
-                  icon: const Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.chevron_right, size: 30),
                 ),
               ],
             ),
@@ -237,7 +237,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               itemBuilder: (context, index) {
                 final Expen = listData[index];
                 final EType = Expen['record_type'];
-                print(Expen);
+              
                 // if (EType != showDataType[0]) return null;
 
                 return Visibility(

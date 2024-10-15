@@ -167,10 +167,9 @@ class _MainpageState extends State<Mainpage> {
                   height: 40,
                   width: 40,
                   child: GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const FamilyPage()),
-                    ),
+                    onTap: () {
+                      widget.ontab(0);
+                    },
                     child: ClipOval(
                       child: Image.asset(
                         'assets/images/icons/family-symbol.png',

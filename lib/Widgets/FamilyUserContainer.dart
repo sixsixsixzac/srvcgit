@@ -61,6 +61,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
   @override
   Widget build(BuildContext context) {
     bool itMe = (widget.data.id == UserData['id']);
+
     return GestureDetector(
       onTap: _onLongPress,
       child: Container(
@@ -77,7 +78,7 @@ class _MyImageContainerState extends State<MyImageContainer> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Image.asset('assets/images/test/person.png', height: 100, width: 100),
+            Image.asset('assets/images/profiles/${widget.data.profile}', height: 100, width: 100),
             if (widget.data.level == "A")
               Positioned(
                 top: 5,

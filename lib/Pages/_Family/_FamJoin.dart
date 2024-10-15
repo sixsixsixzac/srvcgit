@@ -7,6 +7,7 @@ import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
+import 'package:srvc/Widgets/CPointer.dart';
 
 class FamilyJoinGroupPage extends StatefulWidget {
   final VoidCallback joined;
@@ -115,29 +116,59 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
               }),
             ),
           ),
-          GestureDetector(
+          CPointer(
             onTap: () {
               _confirmJoin(context);
             },
             child: Container(
+              width: MediaQuery.of(context).size.width * .4,
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               decoration: BoxDecoration(
                 color: Colors.indigo,
                 borderRadius: BorderRadius.circular(5),
               ),
               margin: const EdgeInsets.only(top: 20),
-              child: const AutoSizeText(
-                "เข้าร่วมกลุ่ม",
-                maxLines: 1,
-                minFontSize: 20,
-                maxFontSize: 26,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.white,
+              child: Center(
+                child: const AutoSizeText(
+                  "เข้าร่วมกลุ่ม",
+                  maxLines: 1,
+                  minFontSize: 20,
+                  maxFontSize: 26,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
-          )
+          ),
+          CPointer(
+            onTap: () {
+              final famState = Provider.of<FamilyModel>(context, listen: false);
+              famState.setJoin(false);
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width * .4,
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              margin: const EdgeInsets.only(top: 10),
+              child: Center(
+                child: const AutoSizeText(
+                  "ย้อนกลับ",
+                  maxLines: 1,
+                  minFontSize: 20,
+                  maxFontSize: 26,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
