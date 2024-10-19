@@ -11,7 +11,6 @@ import 'package:srvc/Pages/MainPage.dart';
 import 'package:srvc/Pages/PlanPage.dart';
 import 'package:srvc/Pages/SettingPage.dart';
 import 'package:srvc/Pages/StudyPage.dart';
-import 'package:srvc/Pages/WalletPage.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
 import 'package:srvc/Widgets/CustomButtonBar.dart';
 

@@ -20,7 +20,7 @@ class Transactioncontainer extends StatefulWidget {
 }
 
 class __TransactioncontainerState extends State<Transactioncontainer> {
-  bool state = false;
+  bool state = true;
   List<Widget> expense_list = [];
   final formatter = ThaiDateFormatter();
   @override
@@ -43,7 +43,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
 
     final int etotal = exp['etotal'];
     final int itotal = exp['itotal'];
-    Color bgColor = etotal > itotal ? Colors.deepOrangeAccent : HexColor("#5bc658");
+    Color bgColor = HexColor("#6e77ca");
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -108,10 +108,37 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: expense_list.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    return innerRow(index);
-                  }).toList(),
+                  children: [
+                    ...expense_list.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      return innerRow(index);
+                    }),
+                    Column(
+                      children: [
+                        Divider(color: Colors.grey.withOpacity(.2)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: AutoSizeText("รายได้: ฿${formatNumber("$itotal", withCommas: true)}",
+                                    style: TextStyle(color: Colors.green), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.start),
+                              ),
+                              Expanded(
+                                child: AutoSizeText("ค่าใช้จ่าย: ฿${formatNumber("$etotal", withCommas: true)}",
+                                    style: TextStyle(color: Colors.red), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.center),
+                              ),
+                              Expanded(
+                                child: AutoSizeText("คงเหลือ: ${itotal - etotal < 0 ? "฿0" : "฿${formatNumber("${itotal - etotal}", withCommas: true)}"}",
+                                    style: TextStyle(color: Colors.grey), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.end),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -29,7 +29,7 @@ class _TransactionCardState extends State<TransactionCard> {
 
   int totalExpense = 0;
   int totalIncome = 0;
-  late Future<List<Map<String, dynamic>>> plansFuture;
+  List<Map<String, dynamic>> plans = [];
   late Future<List<Map<String, dynamic>>> expensesFuture;
   List<Map<String, dynamic>> ExpenseData = [];
   bool isLoading = true;
@@ -39,38 +39,10 @@ class _TransactionCardState extends State<TransactionCard> {
     super.initState();
     auth = Provider.of<AuthProvider>(context, listen: false);
 
-    plansFuture = _loadPlan();
     expensesFuture = _loadExpense(Month: currentMonth, Year: currentYear);
   }
 
-  Future<void> _loadUserData({required int month, required int year}) async {
-    await Future.delayed(Duration(milliseconds: 300));
-    final response = await apiService.post("/SRVC/MainPageController.php", {
-      'act': 'getUserTransaction',
-      'userID': auth.data['id'],
-      'Year': year,
-      'Month': month,
-    });
-
-    setState(() {
-      totalExpense = response['status'] ? response['data']['expense'] ?? 0 : 0;
-      totalIncome = response['status'] ? response['data']['income'] ?? 0 : 0;
-    });
-  }
-
-  Future<List<Map<String, dynamic>>> _loadPlan() async {
-    final responses = await apiService.post("/SRVC/MainPageController.php", {
-      'act': 'getPlan',
-      'phone': auth.data['phone'],
-    });
-
-    final planData = responses['data'];
-
-    return List<Map<String, dynamic>>.from(planData);
-  }
-
   Future<List<Map<String, dynamic>>> _loadExpense({required int Month, required int Year}) async {
-    await _loadUserData(month: Month, year: Year);
     final responses = await apiService.post("/SRVC/MainPageController.php", {
       'act': 'getExpense',
       'phone': auth.phone,
@@ -78,10 +50,24 @@ class _TransactionCardState extends State<TransactionCard> {
       'currentMonth': Month,
     });
 
-    final expenseData = responses['data'];
+    final expenseData = responses['data']['expense'];
+    final plansResult = List<Map<String, dynamic>>.from(responses['data']['plans']);
+
     if (expenseData is List) {
       setState(() {
-        ExpenseData = expenseData.map((item) => Map<String, dynamic>.from(item)).toList();
+        totalIncome = 0;
+        totalExpense = 0;
+        ExpenseData = expenseData.map((item) {
+          final data = item['data'];
+          data.forEach((data) {
+            final dataType = data['record_type'];
+            final amount = int.parse(data['amount'].toString());
+            dataType == "i" ? totalIncome += amount : totalExpense += amount;
+          });
+
+          return Map<String, dynamic>.from(item);
+        }).toList();
+        plans = plansResult;
       });
       return expenseData.map((item) => Map<String, dynamic>.from(item)).toList();
     }
@@ -91,29 +77,17 @@ class _TransactionCardState extends State<TransactionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        FutureBuilder(
-          future: plansFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final planData = snapshot.data ?? [];
-
-              return _Card(planData: planData);
-            }
-          },
-        ),
-        FutureBuilder<List<Map<String, dynamic>>>(
-          future: expensesFuture,
-          builder: (context, snapshot) {
-            return _List(transactionData: snapshot.data ?? [], connectionState: snapshot.connectionState);
-          },
-        ),
-      ],
+    return FutureBuilder(
+      future: expensesFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        return Column(
+          children: [
+            _Card(planData: plans),
+            _List(transactionData: snapshot.data ?? [], connectionState: snapshot.connectionState),
+          ],
+        );
+      },
     );
   }
 
@@ -209,10 +183,10 @@ class _TransactionCardState extends State<TransactionCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextAnimationColumn(
-                              amount: "${totalExpense > totalIncome ? "-" : ''}฿${formatNumber("${totalExpense - totalIncome}", withCommas: true)}", color: Colors.red, label: 'ทั้งหมด', bold: true),
                           TextAnimationColumn(amount: "฿${formatNumber(totalIncome.toString(), withCommas: true)}", color: HexColor('#6ccb69'), label: 'รายได้', bold: true),
                           TextAnimationColumn(amount: "฿${formatNumber(totalExpense.toString(), withCommas: true)}", color: Colors.red, label: 'ค่าใช้จ่าย', bold: true),
+                          TextAnimationColumn(
+                              amount: "${totalExpense > totalIncome ? "-" : ''}฿${formatNumber("${totalExpense - totalIncome}", withCommas: true)}", color: Colors.red, label: 'คงเหลือ', bold: true),
                         ],
                       ),
                       if (planData.isNotEmpty) const Divider(height: 20),

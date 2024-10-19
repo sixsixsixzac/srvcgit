@@ -46,7 +46,7 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
     // print(data);
     if (data['status'] == true) {
       familyModel.setCode(data['data']['group_code']);
-      familyModel.setHas(true);
+      familyModel.setWName('home', title: "กลุ่มของฉัน");
       widget.joined();
     } else {}
   }
@@ -145,7 +145,7 @@ class _FamilyJoinGroupPageState extends State<FamilyJoinGroupPage> {
           CPointer(
             onTap: () {
               final famState = Provider.of<FamilyModel>(context, listen: false);
-              famState.setJoin(false);
+              famState.setWName('welcome', title: "สร้างกลุ่ม");
             },
             child: Container(
               width: MediaQuery.of(context).size.width * .4,

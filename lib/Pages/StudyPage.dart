@@ -114,47 +114,42 @@ class _StudyPageState extends State<StudyPage> {
               child: Container(
                 margin: const EdgeInsets.all(10),
                 width: MediaQuery.of(context).size.width * 1,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        color: Colors.transparent,
-                        child: const Row(
-                          children: [
-                            AutoSizeText(
-                              "คอรส์แนะนำ",
-                              maxLines: 1,
-                              minFontSize: 20,
-                              maxFontSize: 24,
-                              style: TextStyle(
-                                fontFamily: 'thaifont',
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                child: Column(
+                  children: [
+                    const Row(
+                      children: [
+                        AutoSizeText(
+                          "คอรส์แนะนำ",
+                          maxLines: 1,
+                          minFontSize: 20,
+                          maxFontSize: 24,
+                          style: TextStyle(
+                            fontFamily: 'thaifont',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                      ],
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: videoList.length,
+                        itemBuilder: (context, index) {
+                          final video = videoList[index];
+                          return SetCard(
+                            video: video,
+                          );
+                        },
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 1,
-                        child: ListView.builder(
-                          itemCount: videoList.length,
-                          itemBuilder: (context, index) {
-                            final video = videoList[index];
-                            return SetCard(
-                              video: video,
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             )
           ],
         ),
-        if (showContainer)
-          Center(
+        Visibility(
+          visible: showContainer,
+          child: Center(
             child: Container(
               height: MediaQuery.of(context).size.height * 1,
               width: MediaQuery.of(context).size.width * 1,
@@ -199,6 +194,7 @@ class _StudyPageState extends State<StudyPage> {
               ),
             ),
           ),
+        ),
       ],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Pages/LoginPage.dart';
 import 'package:srvc/Services/APIService.dart';
 

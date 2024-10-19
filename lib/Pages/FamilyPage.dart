@@ -1,17 +1,21 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/Family.dart';
 import 'package:srvc/Models/group_members.dart';
-import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Pages/_Family/_FamDashboard.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Pages/_Family/_FamHome.dart';
 import 'package:srvc/Pages/_Family/_FamJoin.dart';
 import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
-import 'package:srvc/Services/HexColor.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
 import 'dart:async';
+
+import 'package:srvc/Widgets/CPointer.dart';
+import 'package:srvc/Widgets/CustomPopupMenuButton.dart';
+import 'package:srvc/Widgets/FamilyUserModal.dart';
 
 class FamilyPage extends StatefulWidget {
   const FamilyPage({super.key});
@@ -21,18 +25,16 @@ class FamilyPage extends StatefulWidget {
 }
 
 class _FamilyPageState extends State<FamilyPage> {
+  late FamilyModel familyModel;
   final ApiService apiService = ApiService(serverURL);
-
-  String? groupCode;
-  bool _isLoading = true;
-
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
-    _checkGroup();
+    familyModel = Provider.of<FamilyModel>(context, listen: false);
+    _checkGroup(familyModel);
   }
 
   @override
@@ -40,7 +42,7 @@ class _FamilyPageState extends State<FamilyPage> {
     super.dispose();
   }
 
-  Future<void> _checkGroup() async {
+  Future<void> _checkGroup(FamilyModel familyModel) async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
     setState(() {
@@ -49,7 +51,7 @@ class _FamilyPageState extends State<FamilyPage> {
     try {
       final response = await _fetch_check_group(auth.id);
 
-      _updateStateWithResponse(response);
+      _updateStateWithResponse(response, familyModel);
     } catch (e) {
       _handleError(e);
     } finally {
@@ -64,27 +66,25 @@ class _FamilyPageState extends State<FamilyPage> {
     });
   }
 
-  void _updateStateWithResponse(Map<String, dynamic> response) {
+  void _updateStateWithResponse(Map<String, dynamic> response, FamilyModel familyModel) {
     try {
       final groupData = response['data'] ?? {};
       final hasGroup = response['status'] as bool;
-      final FamState = Provider.of<FamilyModel>(context, listen: false);
 
-      setState(() {
-        FamState.setHas(hasGroup);
-        FamState.setTitle(hasGroup ? "กลุ่มของฉัน" : "สร้างกลุ่ม");
+      final String wName = hasGroup ? "home" : "welcome";
+      final String title = hasGroup ? "กลุ่มของฉัน" : "สร้างกลุ่ม";
 
-        groupCode = groupData.isNotEmpty ? groupData['group_code'].toString() : "";
+      familyModel.setWName(wName, title: title);
 
-        if (hasGroup == true) {
-          FamState.setCode(groupCode.toString());
-          FamState.setLevel(groupData['level'] ?? "");
-          _updateGroupMembers(response['data']['members'] ?? []);
-        }
-      });
-    } catch (e, stackTrace) {
-      print('Error occurred: $e');
-      print('Stack trace: $stackTrace');
+      if (hasGroup == true) {
+        familyModel.setCode(groupData['group_code'].toString());
+        familyModel.setLevel(groupData['level'] ?? "");
+        _updateGroupMembers(response['data']['members'] ?? []);
+      } else {
+        familyModel.reset();
+      }
+    } catch (e) {
+      _handleError(e);
     }
   }
 
@@ -97,117 +97,82 @@ class _FamilyPageState extends State<FamilyPage> {
     print("An error occurred: $error");
   }
 
-  void refreshGroupStatus() {
-    _checkGroup();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final FamState = Provider.of<FamilyModel>(context, listen: true);
-    return Scaffold(
-      backgroundColor: (_isLoading == true) ? Colors.indigo : HexColor('#ffffff'),
-      appBar: FamState.isModalVisible
-          ? null
-          : AppBar(
-              actions: [
-                if (FamState.hasGroup)
-                  CustomPopupMenuButton(
-                    FamState: FamState,
-                    onFetchSuccess: refreshGroupStatus,
-                  ),
-              ],
-              backgroundColor: AppPallete.purple,
-              centerTitle: true,
-              title: Text(FamState.title, style: const TextStyle(color: Colors.white, fontFamily: 'thaifont')),
+    return Consumer<FamilyModel>(
+      builder: (context, familyModel, child) {
+        return Scaffold(
+          backgroundColor: AppPallete.white,
+          appBar: _buildAppBar(familyModel),
+          body: _buildBody(familyModel),
+        );
+      },
+    );
+  }
+
+  PreferredSizeWidget? _buildAppBar(FamilyModel familyModel) {
+    if (familyModel.isModalVisible || familyModel.title == "สร้างกลุ่ม") return null;
+
+    return PreferredSize(
+      preferredSize: Size.fromHeight(56.0),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: AppPallete.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 0,
+              blurRadius: 4,
+              offset: Offset(0, 0),
             ),
-      body: Stack(
-        children: [
-          if (_isLoading)
-            Container(
-                color: Colors.indigo,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                ))
-          else if (!FamState.hasGroup && !FamState.isJoining)
-            FamilyWelcomePage(onCreated: () => _checkGroup())
-          else if (FamState.hasGroup)
-            FamilyHomePage(groupCode: FamState.groupCode, groupMembers: FamState.members)
-          else if (FamState.isJoining)
-            FamilyJoinGroupPage(joined: () => _checkGroup()),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomPopupMenuButton extends StatelessWidget {
-  final FamilyModel FamState;
-  final Function onFetchSuccess;
-  CustomPopupMenuButton({super.key, required this.FamState, required this.onFetchSuccess});
-  final ApiService apiService = ApiService(serverURL);
-  Future<void> _groupAction(BuildContext context, String action, String groupCode) async {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    try {
-      final response = await apiService.post("/SRVC/FamilyController.php", {
-        'act': action,
-        'groupCode': groupCode,
-        'userID': auth.id,
-      });
-
-      bool fetchStatus = response['status'];
-      if (fetchStatus == true) {
-        if (action == "delGroup") {
-          FamState.removeMembersExcept(int.parse(auth.id));
-        }
-        onFetchSuccess();
-      } else {}
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $error')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: PopupMenuButton<String>(
-        icon: const Icon(
-          FontAwesomeIcons.ellipsisV,
-          color: Colors.white,
+          ],
         ),
-        onSelected: (action) {
-          _groupAction(context, action, FamState.groupCode);
-        },
-        itemBuilder: (BuildContext context) {
-          return [
-            if (FamState.level != "A")
-              const PopupMenuItem<String>(
-                value: 'levelGroup',
-                child: Text(
-                  'ออกจากกลุ่ม',
-                  style: TextStyle(fontFamily: 'thaifont'),
+        child: Stack(
+          children: [
+            if (familyModel.showBack)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: CPointer(
+                  onTap: () => familyModel.setWName("home", title: 'กลุ่มของฉัน'),
+                  child: Icon(Icons.chevron_left, color: AppPallete.purple, size: 30),
                 ),
               ),
-            if (FamState.level == "A")
-              const PopupMenuItem<String>(
-                value: 'delGroup',
-                child: Text(
-                  'ลบกลุ่ม',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'thaifont'),
+            Align(
+              alignment: Alignment.center,
+              child: AutoSizeText(
+                familyModel.title,
+                maxLines: 1,
+                minFontSize: 18,
+                maxFontSize: 26,
+                style: TextStyle(color: AppPallete.purple, fontFamily: 'thaifont', fontWeight: FontWeight.bold),
+              ),
+            ),
+            if (familyModel.widget_name == 'home')
+              Align(
+                alignment: Alignment.centerRight,
+                child: CustomPopupMenuButton(
+                  ontap: (type) => (type == "dashboard") ? familyModel.setWName("dashboard", title: 'ภาพรวม', showBack: true) : null,
+                  famState: familyModel,
+                  onFetchSuccess: _checkGroup,
                 ),
               ),
-          ];
-        },
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildBody(FamilyModel familyModel) {
+    if (_isLoading) return Center(child: CircularProgressIndicator());
+
+    final Map Widgets = {
+      "home": FamilyHomePage(groupCode: familyModel.groupCode, groupMembers: familyModel.members),
+      "dashboard": FamilyDashboard(),
+      "loading": Center(child: CircularProgressIndicator(color: Colors.white)),
+      "welcome": FamilyWelcomePage(onCreated: () => _checkGroup(familyModel)),
+      "join": FamilyJoinGroupPage(joined: () => _checkGroup(familyModel)),
+    };
+    return Widgets[familyModel.widget_name] ?? Widgets["welcome"];
   }
 }

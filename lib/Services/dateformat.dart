@@ -62,6 +62,7 @@ class ThaiDateFormatter {
     return _returnString;
   }
 
+
   DateTime _parseDate(String inputDate) {
     final List<String> parts = inputDate.split('-');
     return DateTime(

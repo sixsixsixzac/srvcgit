@@ -8,7 +8,7 @@ import 'package:srvc/Configs/URL.dart';
 import 'package:srvc/Models/group_members.dart';
 import 'package:srvc/Models/topExpense.dart';
 
-import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'package:srvc/Services/APIService.dart';
 

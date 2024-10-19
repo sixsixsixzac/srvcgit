@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:srvc/Configs/URL.dart';
-import 'package:srvc/Pages/AppPallete.dart';
+import 'package:srvc/Services/AppPallete.dart';
 import 'package:http/http.dart' as http;
 import 'package:srvc/Providers/FetchingHome.dart';
 import 'dart:convert';

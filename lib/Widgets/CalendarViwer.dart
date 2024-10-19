@@ -58,8 +58,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     super.initState();
     authProvider = Provider.of<AuthProvider>(context, listen: false);
     _focusedDate = DateTime.now();
+    selectedDay = "${_focusedDate.day}-${_focusedDate.month}-${_focusedDate.year}";
+
     expenseData = widget.data;
     _updateTotals();
+    _selectDate(selectedDay!);
   }
 
   void _updateTotals() {
@@ -83,8 +86,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       'currentYear': year,
       'currentMonth': month,
     });
+    final data = response['data']['expense'];
 
-    final data = response['data'];
     if (data is List) {
       setState(() {
         expenseData = data.map((item) => Map<String, dynamic>.from(item)).toList();
@@ -127,20 +130,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       final total = _totalsByDate[dateKey] ?? 0;
       final isToday = day == DateTime.now().day && _focusedDate.month == DateTime.now().month && _focusedDate.year == DateTime.now().year;
       bool isSelected = selectedDay == dateKey;
-      Color? boxColor = isToday
-          ? const Color.fromARGB(255, 0, 182, 6).withOpacity(0.3)
-          : total > 0
-              ? showDataType == "etotal"
-                  ? Colors.red.withOpacity(0.1)
-                  : Colors.green.withOpacity(0.1)
-              : null;
+      Color? boxColor = total > 0
+          ? showDataType == "etotal"
+              ? Colors.red.withOpacity(0.1)
+              : Colors.green.withOpacity(0.1)
+          : null;
       days.add(
         CPointer(
           onTap: () => _selectDate(dateKey),
           child: Container(
             decoration: BoxDecoration(
               color: _isLoading ? null : boxColor,
-              border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
+              border: isSelected ? Border.all(color: Colors.blue, width: 2) : (isToday ? Border.all(color: Colors.blue.withOpacity(0.3), width: 2) : null),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -237,7 +238,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               itemBuilder: (context, index) {
                 final Expen = listData[index];
                 final EType = Expen['record_type'];
-              
+
                 // if (EType != showDataType[0]) return null;
 
                 return Visibility(
