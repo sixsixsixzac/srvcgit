@@ -12,10 +12,8 @@ import 'package:srvc/Pages/_Family/_FamWelcome.dart';
 import 'package:srvc/Services/APIService.dart';
 import 'package:srvc/Providers/AuthProvider.dart';
 import 'dart:async';
-
 import 'package:srvc/Widgets/CPointer.dart';
 import 'package:srvc/Widgets/CustomPopupMenuButton.dart';
-import 'package:srvc/Widgets/FamilyUserModal.dart';
 
 class FamilyPage extends StatefulWidget {
   const FamilyPage({super.key});
@@ -111,7 +109,7 @@ class _FamilyPageState extends State<FamilyPage> {
   }
 
   PreferredSizeWidget? _buildAppBar(FamilyModel familyModel) {
-    if (familyModel.isModalVisible || familyModel.title == "สร้างกลุ่ม") return null;
+    if (familyModel.isModalVisible || familyModel.title == "สร้างกลุ่ม" || familyModel.title == "ภาพรวม") return null;
 
     return PreferredSize(
       preferredSize: Size.fromHeight(56.0),

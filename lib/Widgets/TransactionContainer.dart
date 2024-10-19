@@ -123,15 +123,15 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                             children: [
                               Expanded(
                                 child: AutoSizeText("รายได้: ฿${formatNumber("$itotal", withCommas: true)}",
-                                    style: TextStyle(color: Colors.green), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.start),
+                                    style: TextStyle(color: Colors.green), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis, textAlign: TextAlign.start),
                               ),
                               Expanded(
-                                child: AutoSizeText("ค่าใช้จ่าย: ฿${formatNumber("$etotal", withCommas: true)}",
-                                    style: TextStyle(color: Colors.red), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.center),
+                                child: AutoSizeText("ใช้จ่าย: ฿${formatNumber("$etotal", withCommas: true)}",
+                                    style: TextStyle(color: Colors.red), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
                               ),
                               Expanded(
                                 child: AutoSizeText("คงเหลือ: ${itotal - etotal < 0 ? "฿0" : "฿${formatNumber("${itotal - etotal}", withCommas: true)}"}",
-                                    style: TextStyle(color: Colors.grey), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis,textAlign: TextAlign.end),
+                                    style: TextStyle(color: Colors.grey), maxLines: 2, minFontSize: 12, overflow: TextOverflow.ellipsis, textAlign: TextAlign.end),
                               ),
                             ],
                           ),
@@ -190,7 +190,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       AutoSizeText(
-                        item['for_who'],
+                        item['is_stable'].toString() == "1" ? "จำเป็น" : "ไม่จำเป็น",
                         minFontSize: 12,
                         maxFontSize: 12,
                         maxLines: 1,
@@ -222,7 +222,7 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     AutoSizeText(
-                      item['account_type_name'],
+                      "เวลา ${item['time']}",
                       minFontSize: 12,
                       maxFontSize: 12,
                       maxLines: 1,

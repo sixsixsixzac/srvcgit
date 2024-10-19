@@ -9,8 +9,6 @@ class ExpenseData {
   final int createBy;
   final String typeName;
   final String typeImg;
-  final String forWho;
-  final String accountTypeName;
 
   ExpenseData({
     required this.id,
@@ -23,8 +21,7 @@ class ExpenseData {
     required this.createBy,
     required this.typeName,
     required this.typeImg,
-    required this.forWho,
-    required this.accountTypeName,
+
   });
 
   factory ExpenseData.fromJson(Map<String, dynamic> json) {
@@ -39,8 +36,6 @@ class ExpenseData {
       createBy: json['create_by'],
       typeName: json['type_name'],
       typeImg: json['type_img'],
-      forWho: json['for_who'],
-      accountTypeName: json['account_type_name'],
     );
   }
 
@@ -56,8 +51,6 @@ class ExpenseData {
       'create_by': createBy,
       'type_name': typeName,
       'type_img': typeImg,
-      'for_who': forWho,
-      'account_type_name': accountTypeName,
     };
   }
 }

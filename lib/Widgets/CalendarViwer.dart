@@ -263,7 +263,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(Expen['type_name'], style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text(Expen['for_who'], style: TextStyle(color: Colors.grey)),
+                                  Text(Expen['is_stable'].toString() == "1" ? "จำเป็น" : "ไม่จำเป็น", style: TextStyle(color: Colors.grey)),
                                 ],
                               ),
                             ),
@@ -273,7 +273,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             children: [
                               Text("${EType == 'e' ? '-' : '+'}฿${formatNumber("${Expen['amount']}", withCommas: true)}",
                                   style: TextStyle(fontWeight: FontWeight.bold, color: EType == 'e' ? Colors.red : Colors.green)),
-                              Text(Expen['account_type_name'], style: TextStyle(color: Colors.grey)),
+                              Text(Expen['time'], style: TextStyle(color: Colors.grey)),
                             ],
                           ),
                         ],
