@@ -46,7 +46,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   late AuthProvider authProvider;
   late DateTime _focusedDate;
-  late Map<String, int> _totalsByDate;
+  late Map<String, double> _totalsByDate;
 
   List<Map<String, dynamic>> expenseData = [];
   List<Map<String, dynamic>> listData = [];
@@ -66,7 +66,17 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _updateTotals() {
-    _totalsByDate = {for (var record in expenseData) record['date']: record[showDataType]};
+    _totalsByDate = {};
+    for (var record in expenseData) {
+      String date = record['date'];
+      String value = record[showDataType]?.toString() ?? '0';
+      double parsedValue = double.tryParse(value) ?? 0;
+      if (_totalsByDate.containsKey(date)) {
+        _totalsByDate[date] = _totalsByDate[date]! + parsedValue;
+      } else {
+        _totalsByDate[date] = parsedValue;
+      }
+    }
   }
 
   void _navigateMonth(int delta) {
@@ -172,7 +182,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       Expanded(
                         child: Center(
                           child: AutoSizeText(
-                            formatNumber("$total", withCommas: true),
+                            "฿${formatNumber(total.toStringAsFixed(0), withCommas: true)}",
                             maxLines: 1,
                             minFontSize: 2,
                             maxFontSize: 20,
@@ -238,8 +248,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               itemBuilder: (context, index) {
                 final Expen = listData[index];
                 final EType = Expen['record_type'];
-
-                // if (EType != showDataType[0]) return null;
 
                 return Visibility(
                   visible: (EType == showDataType[0]),

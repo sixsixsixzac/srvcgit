@@ -41,8 +41,9 @@ class __TransactioncontainerState extends State<Transactioncontainer> {
   Widget build(BuildContext context) {
     final exp = widget.data;
 
-    final int etotal = exp['etotal'];
-    final int itotal = exp['itotal'];
+    final double etotal = double.parse(exp['etotal'].toString());
+    final double itotal = double.parse(exp['itotal'].toString());
+
     Color bgColor = HexColor("#6e77ca");
 
     return Container(

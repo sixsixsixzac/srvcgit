@@ -27,8 +27,8 @@ class _TransactionCardState extends State<TransactionCard> {
   int currentMonth = DateTime.now().month;
   int currentYear = DateTime.now().year;
 
-  int totalExpense = 0;
-  int totalIncome = 0;
+  double totalExpense = 0;
+  double totalIncome = 0;
   List<Map<String, dynamic>> plans = [];
   late Future<List<Map<String, dynamic>>> expensesFuture;
   List<Map<String, dynamic>> ExpenseData = [];
@@ -61,7 +61,7 @@ class _TransactionCardState extends State<TransactionCard> {
           final data = item['data'];
           data.forEach((data) {
             final dataType = data['record_type'];
-            final amount = int.parse(data['amount'].toString());
+            final amount = double.parse(data['amount'].toString()); 
             dataType == "i" ? totalIncome += amount : totalExpense += amount;
           });
 
@@ -183,10 +183,10 @@ class _TransactionCardState extends State<TransactionCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextAnimationColumn(amount: "฿${formatNumber(totalIncome.toString(), withCommas: true)}", color: HexColor('#6ccb69'), label: 'รายได้', bold: true),
-                          TextAnimationColumn(amount: "฿${formatNumber(totalExpense.toString(), withCommas: true)}", color: Colors.red, label: 'ค่าใช้จ่าย', bold: true),
+                          TextAnimationColumn(amount: "฿${formatNumber(totalIncome.toStringAsFixed(0), withCommas: true)}", color: HexColor('#6ccb69'), label: 'รายได้', bold: true),
+                          TextAnimationColumn(amount: "฿${formatNumber(totalExpense.toStringAsFixed(0), withCommas: true)}", color: Colors.red, label: 'ค่าใช้จ่าย', bold: true),
                           TextAnimationColumn(
-                              amount: "${totalExpense > totalIncome ? "-" : ''}฿${formatNumber("${totalExpense - totalIncome}", withCommas: true)}", color: Colors.red, label: 'คงเหลือ', bold: true),
+                              amount: "${totalExpense > totalIncome ? "-" : ''}฿${formatNumber((totalExpense - totalIncome).toStringAsFixed(0), withCommas: true)}", color: Colors.red, label: 'คงเหลือ', bold: true),
                         ],
                       ),
                       if (planData.isNotEmpty) const Divider(height: 20),
