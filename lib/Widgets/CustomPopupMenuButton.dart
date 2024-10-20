@@ -22,7 +22,7 @@ class CustomPopupMenuButton extends StatelessWidget {
   final ApiService apiService = ApiService(serverURL);
   Future<void> _groupAction(BuildContext context, String action, String groupCode) async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-
+    if (action == "dashboard") return;
     try {
       final response = await apiService.post("/SRVC/FamilyController.php", {
         'act': action,
@@ -54,7 +54,7 @@ class CustomPopupMenuButton extends StatelessWidget {
         data: Theme.of(context).copyWith(
           popupMenuTheme: PopupMenuThemeData(
             textStyle: TextStyle(color: AppPallete.white),
-            color: Colors.indigo, 
+            color: Colors.indigo,
           ),
         ),
         child: PopupMenuButton<String>(
@@ -81,22 +81,22 @@ class CustomPopupMenuButton extends StatelessWidget {
     final menuItems = <PopupMenuEntry<String>>[
       PopupMenuItem<String>(
         value: 'dashboard',
-        child: Text('ภาพรวม', style: TextStyle(fontFamily: 'thaifont',color: AppPallete.white)),
+        child: Text('ภาพรวม', style: TextStyle(fontFamily: 'thaifont', color: AppPallete.white)),
       ),
     ];
 
     if (famState.level != "A") {
       menuItems.add(
-         PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'levelGroup',
-          child: Text('ออกจากกลุ่ม', style: TextStyle(fontFamily: 'thaifont',color: AppPallete.white)),
+          child: Text('ออกจากกลุ่ม', style: TextStyle(fontFamily: 'thaifont', color: AppPallete.white)),
         ),
       );
     } else if (famState.level == "A") {
       menuItems.add(
-         PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'delGroup',
-          child: Text('ลบกลุ่ม', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'thaifont',color: AppPallete.white)),
+          child: Text('ลบกลุ่ม', textAlign: TextAlign.center, style: TextStyle(fontFamily: 'thaifont', color: AppPallete.white)),
         ),
       );
     }

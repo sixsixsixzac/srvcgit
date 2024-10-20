@@ -48,6 +48,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   audioplayers: ^6.1.0
   just_audio: ^0.9.41
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
