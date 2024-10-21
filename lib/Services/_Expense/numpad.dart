@@ -13,7 +13,20 @@ class Numpad {
     {'flex': 1, 'key': Text('7'), 'type': 'number', 'ontap': () => Numpad().keyPress('7')},
     {'flex': 1, 'key': Text('8'), 'type': 'number', 'ontap': () => Numpad().keyPress('8')},
     {'flex': 1, 'key': Text('9'), 'type': 'number', 'ontap': () => Numpad().keyPress('9')},
-    {'flex': 1, 'key': Text('.'), 'type': 'number', 'ontap': () => Numpad().keyPress('.')},
+    {
+      'flex': 1, 
+      'key': Container(
+                height: 3,
+                width: 3,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.black),
+                  borderRadius: BorderRadius.circular(1000),
+                  color: Colors.black
+                ),
+              ), 
+      'type': 'number', 
+      'ontap': () => Numpad().keyPress('.')
+    },
     {'flex': 1, 'key': Text('0'), 'type': 'number', 'ontap': () => Numpad().keyPress('0')},
     {'flex': 1, 'key': Icon(FontAwesomeIcons.backspace, color: Colors.red,), 'type': 'functional', 'ontap': () => Numpad().erasePress()}
   ];
